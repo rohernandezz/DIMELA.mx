@@ -1,16 +1,13 @@
-baseURL = "https://mynewhugosite.com"
-title = "My New Hugo Site"
+baseURL = "https://dimela.mx"
+title = "DIMELA.mx - Directorio Mexicano de Letristas"
 theme = "DIMELA-theme"
+
+languageCode = 'es-419'
+languageName = 'Spanish'
 
 [menu]
   [[menu.main]]
-    identifier = "posts"
-    name = "Posts"
-    url = "/posts"
+    identifier = "directorio"
+    name = "Directorio"
+    url = "/directorio"
     weight = 10
-
-  [[menu.main]]
-    identifier = "about"
-    name = "About"
-    url = "/about"
-    weight = 20

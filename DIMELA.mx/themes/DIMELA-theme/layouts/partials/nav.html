@@ -1,14 +1,21 @@
 <header class="site-header">
   <nav class="site-nav">
-    <a class="logo" href="{{ .Site.BaseURL }}">
-      {{ .Site.Title }}
-    </a>
-    <ul class="main-menu">
-      {{ range.Site.Menus.main }}
-      <li>
-        <a href="{{ .URL }}">{{ .Name }}</a>
-      </li>
-      {{ end }}
-    </ul>
+    <div class="top-row">
+      <a href="{{ .Site.BaseURL }}" class="logo">
+        <img src="{{ "/DIMELA_logo.png" | relURL }}" alt="{{ .Site.Title }}">
+      </a>
+      <button class="hamburger-menu" aria-label="Menu">
+        &#9776; <!-- Unicode for hamburger icon -->
+      </button>
+    </div>
+    <div class="bottom-row">
+      <ul class="main-menu">
+        {{ range .Site.Menus.main }}
+        <li>
+          <a href="{{ .URL }}">{{ .Name }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </div>
   </nav>
 </header>
