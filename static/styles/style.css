@@ -12,6 +12,10 @@
     box-sizing: border-box;
 }
 
+body {
+    font-family: "Verdana";
+}
+
 .container {
     padding-left: 0px;
     padding-right: 0px;
