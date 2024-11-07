@@ -1,0 +1,23 @@
+{{ define "main" }}
+<div class="list">
+    <div class="grid-container">
+     {{ range .Paginator.Pages }}
+    <div class="tarjeta-regular">
+        <div class="tarjetaTop">
+            <h2><a href={{ .Permalink }}> {{ .Name}}</a>
+</h2>
+            <p>{{ .Params.estado }}</p>
+            <a href="{{ .Params.link }}">{{ .Params.link }}</a>
+        </div>
+        <div class="tarjetaBottom">
+            <div class="serviciosContainer">
+                {{ range (.GetTerms "servicios") }}
+                    <a class="serviciosTag" href="{{ .Permalink }}">{{ .Name }}</a>
+                {{ end }}
+            </div>
+        </div>
+    </div>
+    {{ end }}
+    </div>
+</div>
+{{ end }}

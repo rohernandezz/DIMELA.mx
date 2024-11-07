@@ -1,13 +1,6 @@
-baseURL = "https://rohernandezz.github.io/DIMELA.mx/"
-title = "DIMELA.mx - Directorio Mexicano de Letristas"
-theme = "DIMELA-theme"
+baseURL = 'https://dimela.mx'
+languageCode = 'en-us'
+title = 'DIMELA: Directorio Mexicano de Letristas'
 
-languageCode = 'es-419'
-languageName = 'Spanish'
-
-[menu]
-  [[menu.main]]
-    identifier = "directorio"
-    name = "Directorio"
-    url = "/directorio"
-    weight = 10
+[taxonomies]
+  servicio = "servicios"
