@@ -4,3 +4,4 @@ title = 'DIMELA: Directorio Mexicano de Letristas'
 
 [taxonomies]
   servicio = "servicios"
+  estado   = "estado"

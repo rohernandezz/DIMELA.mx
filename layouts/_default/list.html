@@ -1,12 +1,12 @@
 {{ define "main" }}
+
 <div class="list">
     <div class="grid-container">
      {{ range .Paginator.Pages }}
     <div class="tarjeta-regular">
         <div class="tarjetaTop">
-            <h2><a href={{ .Permalink }}> {{ .Name}}</a>
-</h2>
-            <p>{{ .Params.estado }}</p>
+            <h2><a href="{{ .Permalink }}"> {{ .Name}}</a></h2>                
+            <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>
             <a href="{{ .Params.link }}">{{ .Params.link }}</a>
         </div>
         <div class="tarjetaBottom">

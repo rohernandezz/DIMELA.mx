@@ -90,6 +90,12 @@ a {
     border: 5px solid black; /* Optional styling */
 }
 
+.estadoTag {
+    padding: 5px;
+    background-color: #ef40ef;
+    font-size: 12px;
+}
+
 .serviciosContainer {
     display: flex;
     gap:10px;
@@ -104,6 +110,14 @@ a {
 
 /* ----------- LIST PAGE END--------- */
 
+
+/* ----------- SINGLE PAGE START--------- */
+
+.descripcionTarjeta {
+    padding: 10px;
+}
+
+/* ----------- SINGLE PAGE END--------- */
 
 /* ----------- FOOTER START--------- */
 .footer {
