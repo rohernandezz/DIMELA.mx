@@ -76,14 +76,15 @@ a {
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Auto-fit columns horizontally */
-    gap: 10px; /* Space between grid items */
+    gap: 15px; /* Space between grid items */
+    margin:20px;
 }
 
 .tarjeta-regular {
     background-color: #4CAF50;
     color: white;
-    margin:20px;
-    padding: 20px;
+    margin:0px;
+    padding: 15px;
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
     border: 5px solid black; /* Optional styling */
