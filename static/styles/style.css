@@ -59,6 +59,12 @@ a {
     text-decoration: underline;
 }
 
+.serviciosTagBarra {
+    padding: 5px;
+    background-color: #3099ff;
+    font-size: 12px;
+}
+
 /* ----------- NAVBAR END----------- */
 
 
