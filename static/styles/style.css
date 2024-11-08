@@ -68,6 +68,28 @@ a {
     font-size: 20px;
 }
 
+/* ----------- BREADCRUMB from CGPT: */
+.breadcrumb {
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+  .breadcrumb a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumb > *:not(:last-child)::after {
+    content: '>';
+    margin: 0 0.5rem;
+    color: #999;
+  }
+/* ----------- /BREADCRUMB from CGPT: */
+
 .filter-bar-container {
     padding: 5px;
     background-color: #309930;
