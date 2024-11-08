@@ -14,65 +14,62 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const container = document.querySelector('.card-container'); // Use querySelector to select by class
-            const items = Array.from(container.children);
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.querySelector('.card-container'); // Use querySelector to select by class
+        const items = Array.from(container.children);
     
-            // Shuffle the items array
-            items.sort(() => Math.random() - 0.5);
+        // Shuffle the items array
+        items.sort(() => Math.random() - 0.5);
     
-            // Clear the container
-            container.innerHTML = '';
+        // Clear the container
+        container.innerHTML = '';
     
-            // Append shuffled items back to the container
-            items.forEach(item => container.appendChild(item));
-        });
+        // Append shuffled items back to the container
+        items.forEach(item => container.appendChild(item));
+    });
 
-        // Filter function based on selected service tags
-        function filterByService(servicio) {
-            const allCards = document.querySelectorAll('.tarjeta-regular');
-            allCards.forEach(card => {
-            const servicios = JSON.parse(card.getAttribute('data-servicios').split(','));
-            console.log(servicios); // Print the servicios array to the console
+    // Filter function with AND logic
+    function filterByServiceAndLogic(activeTags) {
+        const allCards = document.querySelectorAll('.tarjeta-regular');
 
-                if (servicios.includes(servicio) || servicio === 'all') {
-                    card.style.display = 'block';
-                    card.style.opacity = 1;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }    
+        allCards.forEach(card => {
+            const servicios = JSON.parse(card.getAttribute('data-servicios'));
 
-        // Add click event to service tags for filtering
-        document.querySelectorAll('.tagServicioFiltrar').forEach(tag => {
-            tag.addEventListener('click', function() {
-                const servicio = JSON.parse(this.getAttribute('data-servicios'));
-  
-                // Toggle active state for the clicked tag
-                this.classList.toggle('active');
-  
-                // If no tag is active, show all cards
-                if (document.querySelectorAll('.tagServicioFiltrar.active').length === 0) {
-                    filterByService('all');
-                } else {
-                    // Filter cards based on active tags
-                    document.querySelectorAll('.tagServicioFiltrar').forEach(t => {
-                    if (t.classList.contains('active')) {
-                        filterByService(t.getAttribute('data-servicio'));
+            // Check if card includes all active tags (AND logic)
+            const matchesAllTags = activeTags.every(tag => servicios.includes(tag));
+
+            if (matchesAllTags || activeTags.length === 0) {
+                card.style.display = 'block';
+                card.style.opacity = 1;
+            } else {
+                card.style.display = 'none';
             }
-            });
-          }
         });
-      });
-      
-      // On page load, filter all cards initially (you can choose to show all or filter by default)
-    window.addEventListener('load', () => {
-        filterByService('all'); // Show all cards initially
-      });
-  
+    }
 
-    </script>
+    // Add click event to service tags for filtering
+    document.querySelectorAll('.tagServicioFiltrar').forEach(tag => {
+        tag.addEventListener('click', function() {
+            this.classList.toggle('active');
+
+             // Get all active tags
+            const activeTags = Array.from(document.querySelectorAll('.tagServicioFiltrar.active'))
+                .map(t => t.getAttribute('data-servicio')); // Assuming this is a single tag string in data-servicio
+
+            // Flatten and deduplicate active tags (if multiple tags per service)
+            const uniqueActiveTags = [...new Set(activeTags.flat())];
+
+            // Filter cards based on active tags with AND logic
+            filterByServiceAndLogic(uniqueActiveTags);
+        });
+    });
+
+    // On page load, filter all cards initially (show all cards)
+    window.addEventListener('load', () => {
+        filterByServiceAndLogic([]); // Show all cards initially
+    });
+</script>
+
 
 </body>
 </html>
