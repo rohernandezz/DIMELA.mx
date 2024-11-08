@@ -1,9 +1,17 @@
 {{ define "main" }}
 
 <div class="list">
-    <div class="grid-container">
-     {{ range .Pages }}
-    <div class="tarjeta-regular">
+    <div class="card-container">
+     {{ range .Site.RegularPages }}     
+     <div class="tarjeta-regular" data-servicios="[ 
+  {{ $first := true }} 
+  {{ range .Params.servicios }}
+    {{ if not $first }}{{ "," }}{{ end }}
+    {{ . | lower | jsonify }}
+    {{ $first = false }}
+  {{ end }}
+]">
+
         <div class="tarjetaTop">
             <h2><a href="{{ .Permalink }}"> {{ .Name}}</a></h2>                
             <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>

@@ -5,6 +5,7 @@
 
     --DMblack: #000000;
     --DMoffwhite:#efcfef;
+    --DMbuttonRadius: 5px;
 }
 
 * {
@@ -67,22 +68,33 @@ a {
     font-size: 20px;
 }
 
-.filter-bar {
-    padding: 10px;
+.filter-bar-container {
+    padding: 5px;
     background-color: #309930;
     display: flex;
     justify-content: space-between;
 }
 
-.filter-bar a {
+.filter-bar-container a {
+    margin: 20px 0;
     text-decoration: underline;
 }
 
-.serviciosTagBarra {
-    padding: 5px;
-    background-color: #3099ff;
-    font-size: 12px;
-}
+.tagServicioFiltrar {
+    display: inline-block;
+    padding: 8px 12px;
+    background: #ddd;
+    border-radius: var(--DMbuttonRadius);
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: .8em;
+    transition: background-color 0.3s ease;
+  }
+
+  .tagServicioFiltrar.active {
+    background: #007bff;
+    color: white;
+  }
 
 /* ----------- NAVBAR END----------- */
 
@@ -97,10 +109,9 @@ a {
     min-height: 100%; 
 }
 
-.grid-container {
-
+.card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); /* Auto-fit columns horizontally */
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* Auto-fit columns horizontally */
     gap: 15px; /* Space between grid items */
     margin:20px;
 }
@@ -113,12 +124,20 @@ a {
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
     border: 5px solid black; /* Optional styling */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
+
+.tarjeta-regular.loaded {
+    opacity: 1;
+  }
+
 
 .estadoTag {
     padding: 5px;
     background-color: #ef40ef;
     font-size: 12px;
+    border-radius: var(--DMbuttonRadius);
 }
 
 .serviciosContainer {
@@ -131,6 +150,7 @@ a {
     padding: 5px;
     background-color: #3099ff;
     font-size: 12px;
+    border-radius: var(--DMbuttonRadius);
 }
 
 /* ----------- LIST PAGE END--------- */

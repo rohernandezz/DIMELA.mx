@@ -3,18 +3,12 @@
         <a class="site-logo" href="/DIMELA.mx">DIMELA.mx</a>
         <p class="searchButton">🔍 Search</p>
     </div>
+
+    <div class="filter-bar-container">
+        {{ $servicios := .Site.Taxonomies.servicios }}
+        {{ range $servicio, $pages := $servicios }}
+          <span class="tagServicioFiltrar" data-servicio="{{ $servicio }}">{{ $servicio }}</span>
+        {{ end }}
+      </div>
     
-    <div class="filter-bar">
-        <a class="serviciosTagBarra" href="/DIMELA.mx/servicios/branding">Branding</a>
-        <a class="serviciosTagBarra" href="/DIMELA.mx/servicios/diseño-editorial">Diseño Editorial</a>
-        <a class="serviciosTagBarra" href="/DIMELA.mx/servicios/diseño-de-tipografía/">Diseño de Tipografía</a>
-        <a class="serviciosTagBarra" href="/DIMELA.mx/servicios/ingeniería-de-fuentes/">Ingeniería de Fuentes</a>
-        <a class="serviciosTagBarra" href="/DIMELA.mx/servicios/rotulación-manual/">Rotulación Manual</a>
-        <a class="serviciosTagBarra" href="/DIMELA.mx/servicios/lettering">Lettering</a>
-
-
-    </div>
-
 </nav>
-
- 

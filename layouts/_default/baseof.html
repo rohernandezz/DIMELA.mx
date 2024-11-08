@@ -15,7 +15,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const container = document.querySelector('.grid-container'); // Use querySelector to select by class
+            const container = document.querySelector('.card-container'); // Use querySelector to select by class
             const items = Array.from(container.children);
     
             // Shuffle the items array
@@ -27,7 +27,52 @@
             // Append shuffled items back to the container
             items.forEach(item => container.appendChild(item));
         });
-        </script>
+
+        // Filter function based on selected service tags
+        function filterByService(servicio) {
+            const allCards = document.querySelectorAll('.tarjeta-regular');
+            allCards.forEach(card => {
+            const servicios = JSON.parse(card.getAttribute('data-servicios').split(','));
+            console.log(servicios); // Print the servicios array to the console
+
+                if (servicios.includes(servicio) || servicio === 'all') {
+                    card.style.display = 'block';
+                    card.style.opacity = 1;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }    
+
+        // Add click event to service tags for filtering
+        document.querySelectorAll('.tagServicioFiltrar').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const servicio = JSON.parse(this.getAttribute('data-servicios'));
+  
+                // Toggle active state for the clicked tag
+                this.classList.toggle('active');
+  
+                // If no tag is active, show all cards
+                if (document.querySelectorAll('.tagServicioFiltrar.active').length === 0) {
+                    filterByService('all');
+                } else {
+                    // Filter cards based on active tags
+                     document.querySelectorAll('.tagServicioFiltrar').forEach(t => {
+            if (t.classList.contains('active')) {
+            filterByService(t.getAttribute('data-servicio'));
+            }
+            });
+          }
+        });
+      });
+      
+      // On page load, filter all cards initially (you can choose to show all or filter by default)
+    window.addEventListener('load', () => {
+        filterByService('all'); // Show all cards initially
+      });
+  
+
+    </script>
 
 </body>
 </html>
