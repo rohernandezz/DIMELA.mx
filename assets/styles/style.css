@@ -48,7 +48,6 @@ a {
 }
 
 .logo-and-search-container {
-    padding: 5px;
     display: flex;
     flex-direction:row;
     justify-content: space-between;       
@@ -56,10 +55,7 @@ a {
 
 
 .searchButton {
-    padding: 2px;
-    padding-left: 8px;
-    padding-right: 8px;
-    background-color: #3099ff;
+
 }
 
 .logo {

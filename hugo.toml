@@ -2,6 +2,9 @@ baseURL = 'https://rohernandezz.github.io/DIMELA.mx'
 languageCode = 'en-us'
 title = 'DIMELA: Directorio Mexicano de Letristas'
 
+enableEmoji = true
+
+
 [taxonomies]
   servicio = "servicios"
   estado   = "estado"
