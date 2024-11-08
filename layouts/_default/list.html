@@ -1,31 +1,23 @@
 {{ define "main" }}
 
-<div class="list">
-    <div class="card-container">
-     {{ range .Site.RegularPages }}     
-     <div class="tarjeta-regular" data-servicios="[ 
-  {{ $first := true }} 
-  {{ range .Params.servicios }}
-    {{ if not $first }}{{ "," }}{{ end }}
-    {{ . | lower | jsonify }}
-    {{ $first = false }}
-  {{ end }}
-]">
-
-        <div class="tarjetaTop">
-            <h2><a href="{{ .Permalink }}"> {{ .Name}}</a></h2>                
-            <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>
-            <a href="{{ .Params.link }}">{{ .Params.link }}</a>
-        </div>
-        <div class="tarjetaBottom">
-            <div class="serviciosContainer">
-                {{ range (.GetTerms "servicios") }}
-                    <a class="serviciosTag" href="{{ .Permalink }}">{{ .Name }}</a>
-                {{ end }}
+    <div class="list">
+        <div class="card-container">
+        {{ range .Pages }}
+        <div class="tarjeta-regular" data-servicios="[{{ $first := true }}{{ range .Params.servicios }}{{ if not $first }}{{ "," }}{{ end }}{{ . | lower | jsonify }}{{ $first = false }}{{ end }}]">
+            <div class="tarjetaTop">
+                <h2><a href="{{ .Permalink }}"> {{ .Name}}</a></h2>                
+                <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>
+                <a href="{{ .Params.link }}">{{ .Params.link }}</a>
+            </div>
+            <div class="tarjetaBottom">
+                <div class="serviciosContainer">
+                    {{ range (.GetTerms "servicios") }}
+                        <a class="serviciosTag" href="{{ .Permalink }}">{{ .Name }}</a>
+                    {{ end }}
+                </div>
             </div>
         </div>
+        {{ end }}
+        </div>
     </div>
-    {{ end }}
-    </div>
-</div>
 {{ end }}

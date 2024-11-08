@@ -3,7 +3,7 @@ languageCode = 'en-us'
 title = 'DIMELA: Directorio Mexicano de Letristas'
 
 enableEmoji = true
-
+removePathAccents = true
 
 [taxonomies]
   servicio = "servicios"

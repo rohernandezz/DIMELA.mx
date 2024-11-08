@@ -57,9 +57,9 @@
                     filterByService('all');
                 } else {
                     // Filter cards based on active tags
-                     document.querySelectorAll('.tagServicioFiltrar').forEach(t => {
-            if (t.classList.contains('active')) {
-            filterByService(t.getAttribute('data-servicio'));
+                    document.querySelectorAll('.tagServicioFiltrar').forEach(t => {
+                    if (t.classList.contains('active')) {
+                        filterByService(t.getAttribute('data-servicio'));
             }
             });
           }

@@ -128,6 +128,16 @@ a {
     transition: opacity 0.3s ease-in-out;
 }
 
+.tarjeta-regular-individual {
+    background-color: #4CAF50;
+    color: white;
+    margin:0px;
+    padding: 15px;
+    text-align: center;
+    aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
+    border: 5px solid black; /* Optional styling */
+}
+
 .tarjeta-regular.loaded {
     opacity: 1;
   }
