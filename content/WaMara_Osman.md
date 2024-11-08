@@ -1,7 +1,7 @@
 +++
 draft  = false
 date   = '2024-11-06T20:15:31-06:00'
-title  = 'Mara Osman'
+title  = 'WaMara Osman'
 link   = 'http://maraosman.com'
 estado = 'Nuevo León'
 servicios = ["Branding", "Lettering"] 
