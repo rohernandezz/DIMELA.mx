@@ -100,7 +100,7 @@ a {
 .grid-container {
 
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Auto-fit columns horizontally */
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); /* Auto-fit columns horizontally */
     gap: 15px; /* Space between grid items */
     margin:20px;
 }
