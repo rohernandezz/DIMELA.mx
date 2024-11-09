@@ -1,17 +1,18 @@
 :root {
-    --DMpink: #f0d9f0;
+    --DMpink: #ffe2ea;
     --DMblue: #cfe3f6;
-    --DMgreen:#cff2cf;
-    --DMyellow: #f6fbda;
+    --DMgreen: #dcf9dc;
+    --DMyellow: #ffffe5;
 
     --DMfullblack: #000000;
-    --DMoffblack: #242121;
+    --DMoffblack: #383636;
     --DMfullwhite:#ffffff;
-    --DMoffwhite:#dddadd;
+    --DMoffwhite:#eee9eb;
 
     --DMtarjetaPadding: 15px;
-    --DMstrokeWidth: 2px;
-    --DMbuttonRadius: 5px;
+    --DMstrokeWidth:    2px;
+    --DMstrokeWidth-S:  1.5px;
+    --DMbuttonRadius:   5px;
 
     --DMfont-XL: 1.2rem;
     --DMfont-L: 1rem;
@@ -26,7 +27,7 @@
 }
 
 body {
-    font-family: "Verdana";
+    font-family: "Comic Sans MS";
 }
 
 h1 {
@@ -61,22 +62,24 @@ a {
     background-color: var(--DMoffblack);
     color: var(--DMoffwhite);
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;       
+    flex-direction: column;      
 }
 
 .logo-and-search-container {
-    padding: 5px;
+    padding: 18px;
+    padding-bottom: 5px;
+    padding-top: 10px;
     display: flex;
     flex-direction:row;
     justify-content: space-between;       
 }
 
-
 .searchButton {
     padding: 2px;
     padding-left: 8px;
     padding-right: 8px;
+    color: var(--DMoffblack);
+    font-size: var(--DMfont-L);
     background-color: var(--DMblue);
 }
 
@@ -107,14 +110,16 @@ a {
 /* ----------- /BREADCRUMB from CGPT: */
 
 .filter-bar-container {
-    padding: 5px;
+    padding: 20px;
+    padding-bottom: 0px;
+    padding-top: 16px;
     background-color: var(--DMoffwhite);
     display: flex;
     justify-content: space-between;
+    overflow: auto;
 }
 
 .filter-bar-container a {
-    margin: 20px 0;
     text-decoration: underline;
 }
 
@@ -128,6 +133,7 @@ a {
     cursor: pointer;
     font-size: var(--DMfont-M);
     transition: background-color 0.3s ease;
+    border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
   }
 
   .tagServicioFiltrar.active {
@@ -164,7 +170,7 @@ a {
     margin:0px;
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
-    border: var(--DMstrokeWidth) solid black; /* Optional styling */
+    border: var(--DMstrokeWidth) solid black; /* ButtonBorder */
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
@@ -213,13 +219,18 @@ a {
 
 
 .estadoTag {
-    padding: 5px;
+    padding: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: var(--DMfullwhite);
+    background-color: var(--DMpink);
     background-color: var(--DMyellow);
     font-size: var(--DMfont-M);
     border-radius: var(--DMbuttonRadius);
     align-self: center;
-    min-width: 25% ;
-    max-width: 50% ;
+    border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
+    min-width: 20% ;
+    max-width: 70% ;
 }
 
 .serviciosContainer {
@@ -236,6 +247,7 @@ a {
     background-color: var(--DMblue);
     font-size: var(--DMfont-M);
     border-radius: var(--DMbuttonRadius);
+    border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
 }
 
 /* ----------- LIST PAGE END--------- */
