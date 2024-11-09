@@ -1,10 +1,13 @@
 :root {
-    --DMpink: #ef40ef;
-    --DMblue: #3099ff;
-    --DMgreen:#309930;
+    --DMpink: #f0d9f0;
+    --DMblue: #cfe3f6;
+    --DMgreen:#cff2cf;
 
-    --DMblack: #000000;
-    --DMoffwhite:#efcfef;
+    --DMfullblack: #000000;
+    --DMoffblack: #171515;
+    --DMfullwhite:#ffffff;
+    --DMoffwhite:#dddadd;
+    --DMstrokeWidth: 2px;
     --DMbuttonRadius: 5px;
 }
 
@@ -42,7 +45,7 @@ a {
 /* ----------- NAVBAR START--------- */
 
 .navbar {
-    background-color: #ef40ef;
+    background-color: var(--DMoffwhite);
     display: flex;
     flex-direction: column;
     justify-content: space-between;       
@@ -60,7 +63,7 @@ a {
     padding: 2px;
     padding-left: 8px;
     padding-right: 8px;
-    background-color: #3099ff;
+    background-color: var(--DMblue);
 }
 
 .logo {
@@ -71,11 +74,10 @@ a {
 /* ----------- BREADCRUMB from CGPT: */
 .breadcrumb {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--DMblack)
   }
   
   .breadcrumb a {
-    color: white;
     text-decoration: none;
   }
   
@@ -92,7 +94,7 @@ a {
 
 .filter-bar-container {
     padding: 5px;
-    background-color: #309930;
+    background-color: var(--DMgreen)
     display: flex;
     justify-content: space-between;
 }
@@ -105,7 +107,7 @@ a {
 .tagServicioFiltrar {
     display: inline-block;
     padding: 8px 12px;
-    background: #ddd;
+    background: var(--DMfullwhite);
     border-radius: var(--DMbuttonRadius);
     margin-right: 10px;
     cursor: pointer;
@@ -114,8 +116,8 @@ a {
   }
 
   .tagServicioFiltrar.active {
-    background: #007bff;
-    color: white;
+    background: var(--DMoffblack);
+    color: var(--DMfullwhite);
   }
 
 /* ----------- NAVBAR END----------- */
@@ -124,7 +126,7 @@ a {
 /* ----------- LIST PAGE START--------- */
 
 .list {
-    background-color: var(--DMoffwhite);
+    background-color: var(--DMwhite);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -139,25 +141,25 @@ a {
 }
 
 .tarjeta-regular {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--DMfullwhite);
+    color: var(--DMoffblack);
     margin:0px;
     padding: 15px;
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
-    border: 5px solid black; /* Optional styling */
+    border: var(--DMstrokeWidth) solid black; /* Optional styling */
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
 
 .tarjeta-regular-individual {
-    background-color: #4CAF50;
-    color: white;
-    margin:0px;
+    background-color: var(--DMfullwhite);
+    color: var(var(--DMoffblack));
+    margin:20px;
     padding: 15px;
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
-    border: 5px solid black; /* Optional styling */
+    border: var(--DMstrokeWidth) solid black; /* Optional styling */
 }
 
 .tarjeta-regular.loaded {
@@ -167,7 +169,7 @@ a {
 
 .estadoTag {
     padding: 5px;
-    background-color: #ef40ef;
+    background-color: var(--DMpink);
     font-size: 12px;
     border-radius: var(--DMbuttonRadius);
 }
@@ -180,7 +182,7 @@ a {
 
 .serviciosTag {
     padding: 5px;
-    background-color: #3099ff;
+    background-color: var(--DMblue);
     font-size: 10px;
     border-radius: var(--DMbuttonRadius);
 }
@@ -199,6 +201,7 @@ a {
 /* ----------- FOOTER START--------- */
 .footer {
     height:60px;
-    background-color: #3099ff;
+    color: var(--DMoffwhite);
+    background-color: var(--DMoffblack);
 }
 /* ----------- FOOTER END--------- */

@@ -1,5 +1,5 @@
 baseURL = 'https://rohernandezz.github.io/DIMELA.mx'
-languageCode = 'en-us'
+languageCode = 'es'
 title = 'DIMELA: Directorio Mexicano de Letristas'
 
 enableEmoji = true
