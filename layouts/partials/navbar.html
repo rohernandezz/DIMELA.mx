@@ -1,13 +1,13 @@
 <nav class="navbar">
     <div class="logo-and-search-container">
-        <a class="site-logo" href="/DIMELA.mx">DIMELA.mx</a>
+        {{/*  <a class="site-logo" href="/DIMELA.mx">DIMELA.mx</a>  */}}
         
         <div class="breadcrumb">
           {{- $segments := split .RelPermalink "/" -}}
           {{- range $index, $segment := $segments -}}
             {{- if gt (len $segment) 0 -}}
               <a href="{{ printf "%s/DIMELA.mx" (delimit (slice (slice $segments 0 (add $index 1))) "/") }}">{{ $segment | title }}</a>
-              {{- if lt (add $index 1) (len $segments) -}} > {{- end -}}
+              {{- if lt (add $index 1) (len $segments) -}} {{- end -}}
             {{- end -}}
           {{- end -}}
         </div>
@@ -16,6 +16,7 @@
     </div>
 
     <div class="filter-bar-container">
+        <span class="tagServicioFiltrar" data-servicio="['lettering','branding','diseño de tipografía','diseño editorial','caligrafía','ingeniería de fuentes','rotulación manual']"> X </span>
         {{ $servicios := .Site.Taxonomies.servicios }}
         {{ range $servicio, $pages := $servicios }}
           <span class="tagServicioFiltrar" data-servicio="{{ $servicio }}">{{ $servicio }}</span>

@@ -1,12 +1,12 @@
 {{ define "main" }}
 <div class="single">
     <div class="tarjeta-regular-individual">
-        <div class="tarjetaTop">
+        <div class="tarjetaTop-individual">
             <h2><a href="{{ .Permalink }}"> {{ .Name}}</a></h2>
             <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>
             <a href="{{ .Params.link }}">{{ .Params.link }}</a>
         </div>
-        <div class="tarjetaBottom">
+        <div class="tarjetaBottom-individual">
             <div class="serviciosContainer">
                 {{ range (.GetTerms "servicios") }}
                     <a class="serviciosTag" href="{{ .Permalink }}">{{ .Name }}</a>

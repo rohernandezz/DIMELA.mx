@@ -2,13 +2,22 @@
     --DMpink: #f0d9f0;
     --DMblue: #cfe3f6;
     --DMgreen:#cff2cf;
+    --DMyellow: #f6fbda;
 
     --DMfullblack: #000000;
-    --DMoffblack: #171515;
+    --DMoffblack: #242121;
     --DMfullwhite:#ffffff;
     --DMoffwhite:#dddadd;
+
+    --DMtarjetaPadding: 15px;
     --DMstrokeWidth: 2px;
     --DMbuttonRadius: 5px;
+
+    --DMfont-XL: 1.2rem;
+    --DMfont-L: 1rem;
+    --DMfont-M: .75rem;
+    --DMfont-S: .5rem;
+    --DMfont-XS: .25rem;
 }
 
 * {
@@ -18,6 +27,10 @@
 
 body {
     font-family: "Verdana";
+}
+
+h1 {
+    font-size: var(--DMfont-XL);
 }
 
 .container {
@@ -45,7 +58,8 @@ a {
 /* ----------- NAVBAR START--------- */
 
 .navbar {
-    background-color: var(--DMoffwhite);
+    background-color: var(--DMoffblack);
+    color: var(--DMoffwhite);
     display: flex;
     flex-direction: column;
     justify-content: space-between;       
@@ -73,8 +87,8 @@ a {
 
 /* ----------- BREADCRUMB from CGPT: */
 .breadcrumb {
-    font-size: 0.875rem;
-    color: var(--DMblack)
+    font-size: var(--DMfont-L);
+    color: var(--DMblack);
   }
   
   .breadcrumb a {
@@ -94,7 +108,7 @@ a {
 
 .filter-bar-container {
     padding: 5px;
-    background-color: var(--DMgreen)
+    background-color: var(--DMoffwhite);
     display: flex;
     justify-content: space-between;
 }
@@ -108,10 +122,11 @@ a {
     display: inline-block;
     padding: 8px 12px;
     background: var(--DMfullwhite);
+    color: var(--DMoffblack);
     border-radius: var(--DMbuttonRadius);
     margin-right: 10px;
     cursor: pointer;
-    font-size: .8em;
+    font-size: var(--DMfont-M);
     transition: background-color 0.3s ease;
   }
 
@@ -141,16 +156,44 @@ a {
 }
 
 .tarjeta-regular {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     background-color: var(--DMfullwhite);
     color: var(--DMoffblack);
     margin:0px;
-    padding: 15px;
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
     border: var(--DMstrokeWidth) solid black; /* Optional styling */
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
+
+.tarjetaTop {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--DMtarjetaPadding);
+    min-height: 40%;
+    gap: .2rem;
+    background-color: var(--DMgreen);
+}
+
+.tarjetaTop-individual {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: .5rem;
+    padding: var(--DMtarjetaPadding);
+    min-height: 15%;
+    max-height: 30%;
+    background-color: var(--DMgreen);
+}
+
+.tarjetaBottom {
+    padding: var(--DMtarjetaPadding);
+}
+
 
 .tarjeta-regular-individual {
     background-color: var(--DMfullwhite);
@@ -162,6 +205,8 @@ a {
     border: var(--DMstrokeWidth) solid black; /* Optional styling */
 }
 
+
+
 .tarjeta-regular.loaded {
     opacity: 1;
   }
@@ -169,21 +214,27 @@ a {
 
 .estadoTag {
     padding: 5px;
-    background-color: var(--DMpink);
-    font-size: 12px;
+    background-color: var(--DMyellow);
+    font-size: var(--DMfont-M);
     border-radius: var(--DMbuttonRadius);
+    align-self: center;
+    min-width: 25% ;
+    max-width: 50% ;
 }
 
 .serviciosContainer {
-    display: flex;
-    gap:10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 15px;
+    row-gap: 10px;
     margin-top: 10px;
 }
 
 .serviciosTag {
+    min-height: 10px;
     padding: 5px;
     background-color: var(--DMblue);
-    font-size: 10px;
+    font-size: var(--DMfont-M);
     border-radius: var(--DMbuttonRadius);
 }
 
