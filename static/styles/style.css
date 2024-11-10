@@ -9,7 +9,7 @@
     --DMfullblack: #000000;
     --DMoffblack: #383636;
     --DMfullwhite:#ffffff;
-    --DMoffwhite:#eee9eb;
+    --DMoffwhite:#e9ebee;
 
     --DMtarjetaPadding: 20px;
     --DMstrokeWidth:    1px;
@@ -304,14 +304,15 @@ a {
 .serviciosTag {
     min-height: 10px;
     padding: 5px;
-    background-color: var(--DMblue);
+    background-color: var(--DMoffwhite);
     font-size: var(--DMfont-M);
     border-radius: var(--DMbuttonRadius);
     border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
 }
 
 .serviciosTag:hover {
-    background-color: var(--DMblueStrong);
+    background-color: var(--DMoffblack);
+    color: var(--DMfullwhite);
 }
 
 
