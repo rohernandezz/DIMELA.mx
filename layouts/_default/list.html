@@ -5,9 +5,11 @@
         {{ range .Pages }}
         <div class="tarjeta-regular" data-servicios="[{{ $first := true }}{{ range .Params.servicios }}{{ if not $first }}{{ "," }}{{ end }}{{ . | lower | jsonify }}{{ $first = false }}{{ end }}]">
             <div class="tarjetaTop">
-                <h2><a href="{{ .Permalink }}"> {{ .Name}}</a></h2>                
-                <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>
-                <a href="{{ .Params.link }}">{{ .Params.link }}</a>
+                <h2><a class="nombreTarjeta"  href="{{ .Permalink }}"> {{ .Name}}</a></h2>                
+                <div class="tarjetaTop-info">
+                    <a class="estadoTag" href="{{ .Site.BaseURL }}estado/{{ .Params.estado | urlize }}">{{ .Params.estado }}</a>
+                    <a class="linkTarjeta" href="{{ .Params.link }}">{{ .Params.link }}</a>
+                </div>
             </div>
             <div class="tarjetaBottom">
                 <div class="serviciosContainer">

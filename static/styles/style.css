@@ -1,7 +1,9 @@
 :root {
-    --DMpink: #ffe2ea;
-    --DMblue: #cfe3f6;
-    --DMgreen: #dcf9dc;
+    --DMpink: #fbeff2;
+    --DMblue: #e8f2fb;
+    --DMblueStrong: #cde7fe;
+
+    --DMgreen: #eff9ef;
     --DMyellow: #ffffe5;
 
     --DMfullblack: #000000;
@@ -9,12 +11,12 @@
     --DMfullwhite:#ffffff;
     --DMoffwhite:#eee9eb;
 
-    --DMtarjetaPadding: 15px;
-    --DMstrokeWidth:    2px;
-    --DMstrokeWidth-S:  1.5px;
-    --DMbuttonRadius:   5px;
+    --DMtarjetaPadding: 20px;
+    --DMstrokeWidth:    1px;
+    --DMstrokeWidth-S:  1px;
+    --DMbuttonRadius:   3px;
 
-    --DMfont-XL: 1.2rem;
+    --DMfont-XL: 1.4rem;
     --DMfont-L: 1rem;
     --DMfont-M: .75rem;
     --DMfont-S: .5rem;
@@ -27,7 +29,8 @@
 }
 
 body {
-    font-family: "Comic Sans MS";
+    font-family: "Verdana";
+    overflow-y: scroll;
 }
 
 h1 {
@@ -141,6 +144,15 @@ a {
     color: var(--DMfullwhite);
   }
 
+  .tagServicioFiltrar:hover {
+  background-color: var(--DMoffblack);
+  color: var(--DMoffwhite);
+  }
+
+  .tagServicioFiltrar.active:hover {
+    background: var(--DMfullwhite);
+    color: var(--DMoffblack);
+    }
 /* ----------- NAVBAR END----------- */
 
 
@@ -157,7 +169,7 @@ a {
 .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* Auto-fit columns horizontally */
-    gap: 15px; /* Space between grid items */
+    gap: 20px; /* Space between grid items */
     margin:20px;
 }
 
@@ -171,24 +183,39 @@ a {
     text-align: center;
     aspect-ratio: 5 / 3; /* Maintain a 5:3 aspect ratio */
     border: var(--DMstrokeWidth) solid black; /* ButtonBorder */
+    border-radius: var(--DMbuttonRadius);
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
+    box-shadow: 4px 4px var(--DMoffblack);
 }
 
 .tarjetaTop {
     display: flex;
     flex-direction: column;
+    align-items: start;
     justify-content: space-between;
     padding: var(--DMtarjetaPadding);
-    min-height: 40%;
+    min-height: 35%;
     gap: .2rem;
     background-color: var(--DMgreen);
+    border-bottom: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
+}
+
+.tarjetaTop-info {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* Controls the gap between items */
+    padding: 0px; /* No padding on container */
+    width: 100%; /* Container spans full width */
+    align-items: flex-start; /* Aligns items at the top */
+    box-sizing: border-box; /* Ensures padding doesn’t affect width */
+    vertical-align: baseline;
 }
 
 .tarjetaTop-individual {
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    
     gap: .5rem;
     padding: var(--DMtarjetaPadding);
     min-height: 15%;
@@ -196,8 +223,17 @@ a {
     background-color: var(--DMgreen);
 }
 
+.nombreTarjeta{
+    font-size: var(--DMfont-XL);      
+}
+
+.linkTarjeta{
+ font-size: var(--DMfont-M);   
+}
+
 .tarjetaBottom {
     padding: var(--DMtarjetaPadding);
+    padding-top: 0px;
 }
 
 
@@ -211,8 +247,6 @@ a {
     border: var(--DMstrokeWidth) solid black; /* Optional styling */
 }
 
-
-
 .tarjeta-regular.loaded {
     opacity: 1;
   }
@@ -222,23 +256,28 @@ a {
     padding: 6px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: var(--DMfullwhite);
-    background-color: var(--DMpink);
     background-color: var(--DMyellow);
+    background-color: var(--DMpink);
+    background-color: var(--DMfullwhite);
     font-size: var(--DMfont-M);
     border-radius: var(--DMbuttonRadius);
-    align-self: center;
+    align-self: start;
     border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
     min-width: 20% ;
     max-width: 70% ;
 }
 
+.estadoTag:hover {
+    background-color: var(--DMyellow);
+}
+
 .serviciosContainer {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Auto-fit columns horizontally */
+    gap: 16px; /* For spacing */
     column-gap: 15px;
     row-gap: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .serviciosTag {
@@ -249,6 +288,12 @@ a {
     border-radius: var(--DMbuttonRadius);
     border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
 }
+
+.serviciosTag:hover {
+    background-color: var(--DMblueStrong);
+}
+
+
 
 /* ----------- LIST PAGE END--------- */
 
