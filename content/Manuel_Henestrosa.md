@@ -1,7 +1,7 @@
 +++
 draft  = false
 date   = '2024-11-06T22:31:05-06:00'
-title  = 'WaCristobal Henestrosa'
+title  = 'Manuel Henestrosa'
 link   = 'http://henestrosatype.com'
 estado = 'CDMX'
 servicios = ["Diseño Editorial", "Diseño de Tipografía"]

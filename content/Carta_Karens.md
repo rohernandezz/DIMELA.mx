@@ -1,7 +1,7 @@
 +++
 draft  = false
 date   = '2024-11-06T21:48:17-06:00'
-title  = 'WaKaren Cartas'
+title  = 'Diana Goldberg'
 link   = 'http://karenCartas.mx'
 estado = 'CDMX'
 servicios = ["Rotulación Manual", "Caligrafía"]
