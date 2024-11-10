@@ -23,13 +23,23 @@
     --DMfont-XS: .25rem;
 }
 
+@font-face {
+    font-family: 'Outpact';
+    src: url('/DIMELA.mx/fonts/Outpact-VF.woff2') format('woff2');
+    font-variation-settings: 'slnt' 500;
+    font-style: normal;
+  }
+
+  
+
 * {
     margin: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: "Verdana";
+    font-family: 'Outpact';
+    font-variation-settings: 'slnt'500;
     overflow-y: scroll;
 }
 
@@ -196,7 +206,7 @@ a {
     justify-content: space-between;
     padding: var(--DMtarjetaPadding);
     min-height: 35%;
-    gap: .2rem;
+    gap: .5rem;
     background-color: var(--DMgreen);
     border-bottom: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
 }
@@ -215,7 +225,7 @@ a {
 .tarjetaTop-individual {
     display: flex;
     flex-direction: column;
-    
+    align-items: start;
     gap: .5rem;
     padding: var(--DMtarjetaPadding);
     min-height: 15%;
@@ -223,14 +233,24 @@ a {
     background-color: var(--DMgreen);
 }
 
-.nombreTarjeta{
+.nombreTarjeta {
     font-size: var(--DMfont-XL);      
+}
+
+.nombreTarjeta:hover {
+    font-size: var(--DMfont-XL);      
+    text-decoration: underline;
 }
 
 .linkTarjeta{
  font-size: var(--DMfont-M);   
+ padding-top: 6px;
 }
 
+.linkTarjeta:hover {
+    text-decoration: underline;
+   }
+   
 .tarjetaBottom {
     padding: var(--DMtarjetaPadding);
     padding-top: 0px;
