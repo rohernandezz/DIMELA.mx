@@ -13,13 +13,5 @@
 
         <p class="searchButton">🔍 Search</p>
     </div>
-
-    <div class="filter-bar-container">
-        <span class="tagServicioFiltrar" data-servicio="['lettering','branding','diseño de tipografía','diseño editorial','caligrafía','ingeniería de fuentes','rotulación manual']"> X </span>
-        {{ $servicios := .Site.Taxonomies.servicios }}
-        {{ range $servicio, $pages := $servicios }}
-          <span class="tagServicioFiltrar" data-servicio="{{ $servicio }}">{{ $servicio }}</span>
-        {{ end }}
-      </div>
     
 </nav>

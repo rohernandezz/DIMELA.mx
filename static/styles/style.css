@@ -1,5 +1,5 @@
 :root {
-    --DMpink: #f8eaf2;
+    --DMpink: #f6aed7;
     --DMblue: #e8f2fb;
     --DMblueStrong: #cde7fe;
 
@@ -123,10 +123,11 @@ a {
 /* ----------- /BREADCRUMB from CGPT: */
 
 .filter-bar-container {
+    color: #000000;
     padding: 20px;
     padding-bottom: 0px;
     padding-top: 16px;
-    background-color: var(--DMoffwhite);
+    background-color: var(--DMpink);
     display: flex;
     justify-content: space-between;
     overflow: auto;
@@ -170,6 +171,13 @@ a {
     flex-direction: column;
     flex-grow: 1;
     min-height: 100%; 
+}
+
+.intro {
+    margin: 15px;
+    background-color: var(--DMfullwhite);
+    line-height: 1.4rem;
+    padding: 20px;
 }
 
 .card-container {

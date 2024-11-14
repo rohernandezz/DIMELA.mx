@@ -1,0 +1,7 @@
+<div class="filter-bar-container">
+      <div>TEMP: FILTRAR POR SERVICIOS (AND)</div>
+        {{ $servicios := .Site.Taxonomies.servicios }}
+        {{ range $servicio, $pages := $servicios }}
+          <span class="tagServicioFiltrar" data-servicio="{{ $servicio }}">{{ $servicio }}</span>
+        {{ end }}
+      </div>
