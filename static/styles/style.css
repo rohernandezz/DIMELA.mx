@@ -159,10 +159,6 @@ a {
   color: var(--DMoffwhite);
   }
 
-  .tagServicioFiltrar.active:hover {
-    background: var(--DMfullwhite);
-    color: var(--DMoffblack);
-    }
 /* ----------- NAVBAR END----------- */
 
 
@@ -204,12 +200,35 @@ a {
     flex-direction: column;
     align-items: start;
     justify-content: space-between;
-    padding: var(--DMtarjetaPadding);
+    padding: 0;
     min-height: 35%;
     gap: .5rem;
     background-color: var(--DMgreen);
     border-bottom: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
 }
+
+.coverImg {
+    padding: 0;
+    width: 100%;  /* Fills the container's width */
+    height: 100%; /* Fills the container's height */
+    object-fit: cover; /* Maintains aspect ratio while covering the container */
+  }
+
+.tarjetaName-Avatar{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: start;
+    gap: 20px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover; /* Adjusts how the image fits within the dimensions */
+    border-radius: var(--DMbuttonRadius);
+    border: var(--DMstrokeWidth) solid black; /* Optional styling */
+  }
 
 .tarjetaTop-info {
     display: flex;
@@ -234,7 +253,9 @@ a {
 }
 
 .nombreTarjeta {
+    padding-top: 100px;
     font-size: var(--DMfont-XL);      
+    text-align: left;
 }
 
 .nombreTarjeta:hover {
@@ -330,8 +351,19 @@ a {
 
 /* ----------- FOOTER START--------- */
 .footer {
-    height:60px;
+    display: flex;
+justify-content: space-between;
+    font-size: var(--DMfont-M);
+    line-height: 1.2rem;
+    max-height:90px;
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     color: var(--DMoffwhite);
     background-color: var(--DMoffblack);
 }
+
+.footer a:hover {
+    text-decoration: underline;  
+  }
 /* ----------- FOOTER END--------- */
