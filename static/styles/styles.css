@@ -23,6 +23,19 @@
     --DMfont-XS: .25rem;
 }
 
+/* Color utilities */
+/* Backgrounds */
+.bg-blue { background-color: var(--DMblue); }
+.bg-pink { background-color: var(--DMpink); }
+.bg-blueStrong { background-color: var(--DMblueStrong); }
+.bg-green { background-color: var(--DMgreen); }
+.bg-yellow { background-color: var(--DMyellow); }
+.bg-full-black { background-color: var(--DMfullblack); }
+.bg-off-black { background-color: var(--DMoffblack); }
+.bg-full-white { background-color: var(--DMfullwhite); }
+.bg-off-white { background-color: var(--DMoffwhite); }
+
+
 @font-face {
     font-family: 'Outpact';
     src: url('/DIMELA.mx/fonts/Outpact-VF.woff2') format('woff2');
@@ -125,9 +138,6 @@ a {
 .filter-bar-container {
     color: #000000;
     padding: 20px;
-    padding-bottom: 0px;
-    padding-top: 16px;
-    background-color: var(--DMpink);
     display: flex;
     justify-content: space-between;
     overflow: auto;
@@ -360,7 +370,7 @@ a {
 /* ----------- FOOTER START--------- */
 .footer {
     display: flex;
-justify-content: space-between;
+    justify-content: space-between;
     font-size: var(--DMfont-M);
     line-height: 1.2rem;
     max-height:90px;
