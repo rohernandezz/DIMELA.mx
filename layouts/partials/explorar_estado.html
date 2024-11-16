@@ -1,2 +1,6 @@
-<div class="filter-bar-container bg-blueStrong">
-  EXPLORAR POR LOCALIZACIÓN: </div>
+<div class="explore-bar bg-blueStrong">
+  EXPLORAR POR UBICACIÓN:
+  {{ range .Site.Taxonomies.estado }}
+      <a class="tagExplorar" href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a>
+  {{ end }}
+</div>

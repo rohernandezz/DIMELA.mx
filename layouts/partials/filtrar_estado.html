@@ -1,0 +1,7 @@
+<div class="explore-bar bg-pink">
+    <p>FILTRAR POR ESTADO (AND) NO SIRVE</p>
+      {{ $estado := .Site.Taxonomies.estado }}
+      {{ range $estado, $pages := $estado }}
+        <span class="tagServicioFiltrar" data-estado="{{ $estado }}">{{ $estado }}</span>
+      {{ end }}
+  </div>

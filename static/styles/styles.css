@@ -1,10 +1,10 @@
 :root {
-    --DMpink: #f6aed7;
+    --DMpink: #f5c1df;
     --DMblue: #e8f2fb;
     --DMblueStrong: #cde7fe;
 
-    --DMgreen: #eff9ef;
-    --DMyellow: #f8f8e5;
+    --DMgreen: #d9f7d9;
+    --DMyellow: #fafad7;
 
     --DMfullblack: #000000;
     --DMoffblack: #383636;
@@ -30,11 +30,16 @@
 .bg-blueStrong { background-color: var(--DMblueStrong); }
 .bg-green { background-color: var(--DMgreen); }
 .bg-yellow { background-color: var(--DMyellow); }
-.bg-full-black { background-color: var(--DMfullblack); }
-.bg-off-black { background-color: var(--DMoffblack); }
-.bg-full-white { background-color: var(--DMfullwhite); }
-.bg-off-white { background-color: var(--DMoffwhite); }
+.bg-fullblack { background-color: var(--DMfullblack); }
+.bg-offblack { background-color: var(--DMoffblack); }
+.bg-fullwhite { background-color: var(--DMfullwhite); }
+.bg-offwhite { background-color: var(--DMoffwhite); }
 
+
+.withBorder {
+    border: var(--DMstrokeWidth);
+    border-color: var(--DMfullblack); /* ButtonBorder */
+}
 
 @font-face {
     font-family: 'Outpact';
@@ -135,7 +140,20 @@ a {
   }
 /* ----------- /BREADCRUMB from CGPT: */
 
-.filter-bar-container {
+.container-fitros {
+    padding-top: 10rem;
+    background-color: orange;
+    padding: 3px;
+}
+
+.container-explorar {
+    padding-top: 10rem;
+    background-color: blueviolet;
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+.explore-bar {
     color: #000000;
     padding: 20px;
     display: flex;
@@ -143,9 +161,21 @@ a {
     overflow: auto;
 }
 
-.filter-bar-container a {
+.explore-bar a {
     text-decoration: underline;
 }
+
+.tagExplorar {
+    display: flex;
+    border-radius: var(10px);
+    color: var(--DMoffblack);
+    padding: .4rem;
+    border: var(--DMstrokeWidth-S) solid black; /* ButtonBorder */
+    margin-right: 10px;
+    font-size: var(--DMfont-M);
+    align-items: center;
+    text-align: center;
+  }
 
 .tagServicioFiltrar {
     display: inline-block;
@@ -188,6 +218,7 @@ a {
     background-color: var(--DMfullwhite);
     line-height: 1.4rem;
     padding: 20px;
+    color: var(--DMfullblack);
 }
 
 .card-container {
@@ -298,7 +329,7 @@ a {
 
 .tarjeta-regular-individual {
     background-color: var(--DMfullwhite);
-    color: var(var(--DMoffblack));
+    color: var(--DMoffblack);
     margin:20px;
     padding: 15px;
     text-align: center;

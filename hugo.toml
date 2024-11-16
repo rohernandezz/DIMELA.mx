@@ -8,3 +8,7 @@ removePathAccents = true
 [taxonomies]
   servicio = "servicios"
   estado   = "estado"
+
+[minify]
+# js = true  # Uncomment to enable JS minification later
+# css = true  # Uncomment to enable CSS minification later

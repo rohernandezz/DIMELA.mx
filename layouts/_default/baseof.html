@@ -1,75 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=[device-width], initial-scale=1.0">
-    <link rel="stylesheet" href="/DIMELA.mx/styles/styles.css">
-    <title>Document</title>
-</head>
-<body>
-    <div class="container">
-        {{ partial "navbar" . }}
-        {{ block "main" . }} {{ end }}
-        {{ partial "footer" . }}
-    </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=[device-width], initial-scale=1.0">
+        <link rel="stylesheet" href="/DIMELA.mx/styles/styles.css">
+        <title>Document</title>
+    </head>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const container = document.querySelector('.card-container'); // Use querySelector to select by class
-        const items = Array.from(container.children);
-    
-        // Shuffle the items array
-        items.sort(() => Math.random() - 0.5);
-    
-        // Clear the container
-        container.innerHTML = '';
-    
-        // Append shuffled items back to the container
-        items.forEach(item => container.appendChild(item));
-    });
-
-    // Filter function with AND logic
-    function filterByServiceAndLogic(activeTags) {
-        const allCards = document.querySelectorAll('.tarjeta-regular');
-
-        allCards.forEach(card => {
-            const servicios = JSON.parse(card.getAttribute('data-servicios'));
-
-            // Check if card includes all active tags (AND logic)
-            const matchesAllTags = activeTags.every(tag => servicios.includes(tag));
-
-            if (matchesAllTags || activeTags.length === 0) {
-                card.style.display = 'block';
-                card.style.opacity = 1;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    // Add click event to service tags for filtering
-    document.querySelectorAll('.tagServicioFiltrar').forEach(tag => {
-        tag.addEventListener('click', function() {
-            this.classList.toggle('active');
-
-             // Get all active tags
-            const activeTags = Array.from(document.querySelectorAll('.tagServicioFiltrar.active'))
-                .map(t => t.getAttribute('data-servicio')); // Assuming this is a single tag string in data-servicio
-
-            // Flatten and deduplicate active tags (if multiple tags per service)
-            const uniqueActiveTags = [...new Set(activeTags.flat())];
-
-            // Filter cards based on active tags with AND logic
-            filterByServiceAndLogic(uniqueActiveTags);
-        });
-    });
-
-    // On page load, filter all cards initially (show all cards)
-    window.addEventListener('load', () => {
-        filterByServiceAndLogic([]); // Show all cards initially
-    });
-</script>
-
-
-</body>
+    <body>
+        <div class="container">
+            {{ partial "navbar" . }}
+            {{ block "main" . }} {{ end }}
+            {{ partial "footer" . }}
+        </div>
+        
+        {{ $shuffleJS := resources.Get "js/shuffle.js" }}
+        {{ $filterAndJS := resources.Get "js/filter-and.js" }}
+        <script src="{{ $shuffleJS.RelPermalink }}"></script>
+        <script src="{{ $filterAndJS.RelPermalink }}"></script>
+    </body>
 </html>

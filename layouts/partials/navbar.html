@@ -11,7 +11,22 @@
           {{- end -}}
         </div>
 
-        <p class="searchButton">🔍 Search</p>
+        <p class="searchButton">🔍 Búsqueda</p>
     </div>
+
+    <div class="containerFiltraciones">
+      
+      <div class="container-explorar">
+      {{ partial "explorar_servicio" . }}
+      {{ partial "explorar_estado" . }}
+      </div>
+      
+      <div class="container-fitros">
+        {{ partial "filtrar_servicios" . }}
+      </div>
+
+    </div>
+
+      {{ partial "intro" . }}
     
 </nav>
