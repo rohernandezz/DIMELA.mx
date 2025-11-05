@@ -1,7 +1,0 @@
-<div class="explore-bar bg-green">
-  <p>FILTRAR POR SERVICIOS (AND)</p>
-  {{ $servicios := .Site.Taxonomies.servicios }}
-  {{ range $servicio, $pages := $servicios }}
-    <span class="tagServicioFiltrar" data-servicio="{{ $servicio }}">{{ $servicio }}</span>
-  {{ end }}
-</div>
