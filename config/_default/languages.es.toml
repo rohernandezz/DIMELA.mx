@@ -12,11 +12,12 @@ title = "DIMELA.mx"
   description = "A powerful, lightweight theme for Hugo."
 
 [params.author]
-  name = "Tortilla.studio"
+  name = "DIMELA.mx"
   email = "hola@tortilla.studio"
   image = "img/blowfish_logo.png"
-  headline = "author_Headline"
-  bio = "Author_bio"
+  headline = "Directorio Mexicano de Letristas"
+  bio = "Author_bio blablablab"
   links = [
-    { github = "https://github.com/tortillastudio" },
+    { github = "https://github.com/rohernandezz/DIMELA.mx"},
+
   ]
