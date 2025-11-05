@@ -1,3 +1,5 @@
+theme = "blowfish"
+
 baseURL = 'https://rohernandezz.github.io/DIMELA.mx'
 languageCode = 'es'
 title = 'DIMELA: Directorio Mexicano de Letristas'
