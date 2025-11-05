@@ -5,7 +5,7 @@
 theme = "blowfish"
 
 title = 'DIMELA: Directorio Mexicano de Letristas'
-baseURL = 'https://rohernandezz.github.io/DIMELA.mx'
+baseURL = 'https://dimela.netlify.app'
 
 defaultContentLanguage = "es"
 
@@ -19,6 +19,9 @@ buildFuture = false
 
 enableEmoji = true
 removePathAccents = true #Quita diacriticos de URLs
+
+canonifyURLs = true
+# canonifyURLs = true
 
 # googleAnalytics = "G-XXXXXXXXX"
 

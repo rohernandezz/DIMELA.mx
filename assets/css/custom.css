@@ -1,9 +1,12 @@
 @font-face {
-    font-family: 'OutpactVF';
-    src: url('./fonts/Outpact-VF.woff2') format('woff2');    
+  font-family: 'OutpactVF';
+  src: url('https://cdn.jsdelivr.net/gh/tortillaStudio/stuff@main/f_dev/Outpact/Outpact-VF.woff2') format('woff2');
+  font-weight: 1 1000; /* assuming it's a variable font covering full weight range */
+  font-style: normal;
+  font-display: swap;
 }
-
 
 html {
-    font-family: Outpact;
+    font-family: OutpactVF;
 }
+
