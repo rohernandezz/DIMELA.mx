@@ -65,11 +65,11 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   showViews = false
   showLikes = false
   showDateOnlyInArticle = false
-  showDateUpdated = false
-  showAuthor = true
+  showDateUpdated = true
+  showAuthor = false
   # showAuthorBottom = false
   showHero = true
-  heroStyle = "background" # valid options: basic, big, background, thumbAndBackground
+  heroStyle = "big" # valid options: basic, big, background, thumbAndBackground
   layoutBackgroundBlur = true # only used when heroStyle equals background
   layoutBackgroundHeaderSpace = true # only used when heroStyle equals background
   showBreadcrumbs = true
@@ -88,7 +88,7 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   showTaxonomies = true
   showAuthorsBadges = true
   showWordCount = false
-  sharingLinks = [ "email"]
+  sharingLinks = [ "whatsapp","facebook","email","twitter"]
   showZenMode = true
 
 [list]
@@ -157,11 +157,11 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   # enableTrackEvent = false
 
 [buymeacoffee]
-  identifier = "nunocoracao"
-  globalWidget = true
-  globalWidgetMessage = ""
-  globalWidgetColor = "#FFDD00"
-  globalWidgetPosition = "right"
+  #identifier = "nunocoracao"
+  #globalWidget = true
+  #globalWidgetMessage = ""
+  #globalWidgetColor = "#FFDD00"
+  #globalWidgetPosition = "right"
 
 [verification]
   # google = ""
