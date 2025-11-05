@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'OutpactVF';
+    src: url('./fonts/Outpact-VF.woff2') format('woff2');    
+}
+
+
+html {
+    font-family: Outpact;
+}
