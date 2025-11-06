@@ -19,6 +19,24 @@
     {{ $shouldShowDate = false }}
   {{ end }}
 
+  {{/* 👉🏼👉🏼👉🏼 CUSTOM: CONVERTIR Author Badges OFF en badges de estado */}}
+  {{ if not .Params.showAuthorsBadges | default (.Site.Params.article.showAuthorsBadges | default false) }}
+    <div class="flex flex-row flex-wrap items-center">
+      {{ range $taxonomy, $terms := .Site.Taxonomies }}
+        {{ if (eq $taxonomy "estado") }}
+          {{ if (gt (len ($context.GetTerms $taxonomy)) 0) }}
+            {{ range $i, $a := $context.GetTerms $taxonomy }}
+              {{ if not (eq $i 0) }}
+                ,&nbsp;
+              {{ end }}
+              <a href="{{ $a.RelPermalink }}" class="relative">{{ $a.LinkTitle }}</a>
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    </div>
+  {{ end }}
+
   {{ if (.Params.showDateOnlyInArticle | default (.Site.Params.article.showDateOnlyInArticle | default false)) }}
     {{ if (ne $scope "single") }}
       {{/* only takes effect when not called directly in the header of single.html */}}
@@ -81,25 +99,6 @@
     <div class="flex flex-row flex-wrap items-center">
       {{ range $taxonomy, $terms := .Site.Taxonomies }}
         {{ if (eq $taxonomy "authors") }}
-          {{ if (gt (len ($context.GetTerms $taxonomy)) 0) }}
-            {{ range $i, $a := $context.GetTerms $taxonomy }}
-              {{ if not (eq $i 0) }}
-                ,&nbsp;
-              {{ end }}
-              <a href="{{ $a.RelPermalink }}" class="relative">{{ $a.LinkTitle }}</a>
-            {{ end }}
-          {{ end }}
-        {{ end }}
-      {{ end }}
-    </div>
-  {{ end }}
-
-
-{{/* 👉🏼👉🏼👉🏼 CUSTOM: CONVERTIR Author Badges OFF en badges de estado */}}
-  {{ if not .Params.showAuthorsBadges | default (.Site.Params.article.showAuthorsBadges | default false) }}
-    <div class="flex flex-row flex-wrap items-center">
-      {{ range $taxonomy, $terms := .Site.Taxonomies }}
-        {{ if (eq $taxonomy "estado") }}
           {{ if (gt (len ($context.GetTerms $taxonomy)) 0) }}
             {{ range $i, $a := $context.GetTerms $taxonomy }}
               {{ if not (eq $i 0) }}
