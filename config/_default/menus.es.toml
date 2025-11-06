@@ -11,23 +11,23 @@
 # ordered by weight from lowest to highest.
 
 [[main]]
-  name = "Todxs"
+  name = "Todo"
   pageRef = "directorio"
   weight = 10
 
 [[main]]
-  name = "Explorar"
+  name = "Explorar por"
   weight = 20
 
 [[main]]
-  name = "por locación"
-  parent = "Explorar"
+  name = "Locación"
+  parent = "Explorar por"
   pageRef = "estado"
   weight = 16
 
 [[main]]
-  name = "por servicio"
-  parent = "Explorar"
+  name = "Servicio"
+  parent = "Explorar por"
   pageRef = "servicios"
   weight = 30
 

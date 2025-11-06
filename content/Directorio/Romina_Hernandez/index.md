@@ -1,7 +1,7 @@
 +++
 draft  = false
 date   = '2024-11-06T20:07:12-06:00'
-title  = 'Romina Hernandez'
+title  = 'Romina Hernández'
 link   = 'http://www.tortilla.studio'
 estado = "CDMX"
 servicios = [ "Diseño de Tipografía", "Lettering", "Ingeniería de Fuentes" ]
