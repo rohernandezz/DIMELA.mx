@@ -81,15 +81,15 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   showHeadingAnchors = true
   showPagination = true
   invertPagination = false
-  showReadingTime = true
+  showReadingTime = false
   showTableOfContents = true
   showRelatedContent = true
-  relatedContentLimit = 9
+  relatedContentLimit = 3
   showTaxonomies = true
-  showAuthorsBadges = true
+  showAuthorsBadges = false
   showWordCount = false
   sharingLinks = [ "whatsapp","facebook","email","twitter"]
-  showZenMode = true
+  showZenMode = false
 
 [list]
   showHero = true
@@ -105,7 +105,7 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   orderByWeight = true
   groupByYear = false
   cardView = true
-  cardViewScreenWidth = false
+  cardViewScreenWidth = true
   constrainItemsWidth = false
 
 [sitemap]
@@ -118,8 +118,8 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   showBreadcrumbs = false
   showViews = false
   showLikes = false
-  showTableOfContents = true
-  cardView = false
+  showTableOfContents = false
+  cardView = true
 
 [term]
   showHero = true
@@ -129,7 +129,7 @@ fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384",
   showLikes = false
   showTableOfContents = true
   groupByYear = false
-  cardView = true
+  cardView = false
   cardViewScreenWidth = false
 
 [firebase]

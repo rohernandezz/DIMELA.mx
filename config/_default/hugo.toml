@@ -6,8 +6,7 @@ theme = "blowfish"
 baseURL = "https://dimela.netlify.app/"
 defaultContentLanguage = "es"
 disableLanguages = [] #to allow translation work requiring shipping to production
-
-# pluralizeListTitles = "true" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles
+pluralizeListTitles = "true" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles
 
 enableRobotsTXT = true
 summaryLength = 30
@@ -32,9 +31,9 @@ enableEmoji = true
   author = "authors"
   series = "series"
 
+  #DIMELA-specific:
   servicio = "servicios"
   estado   = "estado"
-
 
 [sitemap]
   changefreq = 'always'
@@ -67,6 +66,14 @@ enableEmoji = true
     [[related.indices]]
         name = "date"
         weight = 10
+
+    [[related.indices]]
+        name = "servicios"
+        weight = 5
+        
+    [[related.indices]]
+        name = "estado"
+        weight = 1    
 
     [[related.indices]]
       applyFilter = false
