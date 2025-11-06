@@ -6,7 +6,7 @@ theme = "blowfish"
 baseURL = "https://dimela.netlify.app/"
 defaultContentLanguage = "es"
 disableLanguages = [] #to allow translation work requiring shipping to production
-pluralizeListTitles = "true" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles
+pluralizeListTitles = "false" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles
 
 enableRobotsTXT = true
 summaryLength = 30

@@ -31,6 +31,10 @@
   pageRef = "servicios"
   weight = 30
 
+[[main]]
+  name = "Acerca de"
+  pageRef = "acerca-de"
+  weight = 30
 
 #[[main]]
 #  name = "Test"
