@@ -9,7 +9,7 @@ title = "DIMELA.mx"
   rtl = false
   dateFormat = "2 January 2006"
   logo = "img/blowfish_logo_transparent.png"
-  description = "A powerful, lightweight theme for Hugo."
+  description = "DIMELA.mx - Directorio Mexicano de Letristas"
 
 [params.author]
   name = "DIMELA.mx"
