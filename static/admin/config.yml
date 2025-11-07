@@ -7,22 +7,22 @@ public_folder: "/assets"              # Path used by the site when serving
 
 collections:
   - name: "Directorio"
-    label: "entrada del Directorio"
+    label: "Entrada del Directorio"
     folder: "content/Directorio"
     create: true
     slug: "{{slug}}"                   # Each entry = its own folder
     path: "{{slug}}/index"             # Ensures index.md inside folder
-    media_folder: ""                   # Override: upload inside post folder
+    media_folder: ""                   # Uploads inside each post folder
     public_folder: ""
 
     fields:
-# Nombre: Title
+      # Nombre: Title
       - { name: "title", label: "Title", widget: "string" }
 
-# Fecha
-      - { name: "date", label: "Date", widget: "datetime" }
+      # Fecha
+      - { name: "date", label: "Date", widget: "datetime", default: "{{now}}" }
 
-# Servicios — multiple selection
+      # Servicios — multiple selection
       - label: "Servicios"
         name: "servicios"
         widget: "select"
@@ -75,15 +75,15 @@ collections:
           - "Yucatán"
           - "Zacatecas"
 
-      # Link — URL field
+    # Link — URL field
       - label: "Link"
         name: "Sitio Web"
         widget: "url"
-        #default: "http://www.dimela.mx"
 
-
+    # Cuerpo de la entrada
       - { name: "body", label: "Body", widget: "markdown" }
 
+  # IMAGEN featured
       - label: "Featured Image"
         name: "Imagen principal"
         widget: "image"
@@ -92,7 +92,6 @@ collections:
         media_library:
           config:
             multiple: false
-        # Optional pattern validation to enforce a name
         pattern:
           - "featured\\.png$"
           - "The image must be named 'featured.png'"
