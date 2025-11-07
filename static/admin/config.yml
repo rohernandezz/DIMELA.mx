@@ -16,12 +16,76 @@ collections:
     public_folder: ""
 
     fields:
+# Nombre: Title
       - { name: "title", label: "Title", widget: "string" }
+
+# Fecha
       - { name: "date", label: "Date", widget: "datetime" }
+
+# Servicios — multiple selection
+      - label: "Servicios"
+        name: "servicios"
+        widget: "select"
+        multiple: true
+        options:
+          - "Lettering"
+          - "Branding"
+          - "Diseño de Tipografía"
+          - "Diseño Editorial"
+          - "Caligrafía"
+          - "Ingeniería de Fuentes"
+          - "Rotulación Manual"
+
+      # Estado — single selection from all Mexican states
+      - label: "Estado"
+        name: "estado"
+        widget: "select"
+        options:
+          - "Fuera de México"
+          - "Aguascalientes"
+          - "Baja California"
+          - "Baja California Sur"
+          - "Campeche"
+          - "Chiapas"
+          - "Chihuahua"
+          - "Ciudad de México"
+          - "Coahuila"
+          - "Colima"
+          - "Durango"
+          - "Estado de México"
+          - "Guanajuato"
+          - "Guerrero"
+          - "Hidalgo"
+          - "Jalisco"
+          - "Michoacán"
+          - "Morelos"
+          - "Nayarit"
+          - "Nuevo León"
+          - "Oaxaca"
+          - "Puebla"
+          - "Querétaro"
+          - "Quintana Roo"
+          - "San Luis Potosí"
+          - "Sinaloa"
+          - "Sonora"
+          - "Tabasco"
+          - "Tamaulipas"
+          - "Tlaxcala"
+          - "Veracruz"
+          - "Yucatán"
+          - "Zacatecas"
+
+      # Link — URL field
+      - label: "Link"
+        name: "Sitio Web"
+        widget: "url"
+        #default: "http://www.dimela.mx"
+
+
       - { name: "body", label: "Body", widget: "markdown" }
 
       - label: "Featured Image"
-        name: "featured"
+        name: "Imagen principal"
         widget: "image"
         choose_url: false
         allow_multiple: false
