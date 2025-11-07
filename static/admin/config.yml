@@ -17,7 +17,7 @@ collections:
 
     fields:
       # Nombre: Title
-      - { name: "title", label: "Title", widget: "string" }
+      - { name: "title", label: "Nombre", widget: "string" }
 
       # Fecha
       - { name: "date", label: "Date", widget: "datetime", default: "{{now}}" }
@@ -87,8 +87,8 @@ collections:
       - { name: "body", label: "Body", widget: "markdown" }
 
   # IMAGEN featured
-      - label: "Featured Image"
-        name: "Imagen principal"
+      - label: "Imagen principal"
+        name: "Featured Image"
         widget: "image"
         choose_url: false
         allow_multiple: false
