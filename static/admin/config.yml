@@ -76,9 +76,12 @@ collections:
           - "Zacatecas"
 
     # Link — URL field
-      - label: "Link"
-        name: "Sitio Web"
-        widget: "url"
+      - label: "Website URL"
+        name: "website"
+        widget: "string"
+        pattern:
+          - "https?:\\/\\/.+"
+          - "Must be a valid URL starting with http:// or https://"
 
     # Cuerpo de la entrada
       - { name: "body", label: "Body", widget: "markdown" }
