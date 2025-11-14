@@ -98,3 +98,16 @@ collections:
         pattern:
           - "featured\\.png$"
           - "The image must be named 'featured.png'"
+
+  # IMAGEN Avatar
+      - label: "Avatar "
+        name: "Avatar"
+        widget: "image"
+        choose_url: false
+        allow_multiple: false
+        media_library:
+          config:
+            multiple: false
+        pattern:
+          - "avatar\\.png$"
+          - "The image must be named 'avatar.png'"
