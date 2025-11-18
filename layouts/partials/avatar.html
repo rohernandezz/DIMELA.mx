@@ -1,0 +1,22 @@
+{{ $avatar_path := .Params.avatar }}
+{{ $avatar_url := "" }}
+{{ if $avatar_path }}
+    {{ $res := .Resources.GetMatch $avatar_path }}
+    {{ if $res }}
+        {{ $avatar_url = $res.RelPermalink }}
+    {{ else }}
+        {{ $avatar_url = printf "%s%s" .RelPermalink $avatar_path }}
+    {{ end }}
+{{ end }}
+
+{{ if $avatar_url }}
+<div class="card-avatar">
+    <img class="w-16 h-16 rounded-full border-2 border-white shadow-md object-cover" src="{{ $avatar_url }}" alt="{{ .Title }}">
+</div>
+{{ else }}
+<div class="card-avatar">
+    <div class="w-16 h-16 rounded-full border-2 border-white shadow-md bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center">
+        <svg class="w-10 h-10 text-neutral-500 dark:text-neutral-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+    </div>
+</div>
+{{ end }}

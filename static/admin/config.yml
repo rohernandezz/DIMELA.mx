@@ -1,9 +1,11 @@
 backend:
   name: git-gateway
+  repo: rohernandezz/DIMELA.mx
   branch: Netlify # Branch to update (optional; defaults to master)
 
 media_folder: "content/assets"        # Where uploaded media goes in repo
 public_folder: "/assets"              # Path used by the site when serving
+local_backend: true
 
 collections:
   - name: "Directorio"
@@ -17,10 +19,14 @@ collections:
 
     fields:
       # Nombre: Title
-      - { name: "title", label: "Nombre", widget: "string" }
+      - name: "title"
+        label: "Nombre"
+        widget: "string"
 
       # Fecha
-      - { name: "date", label: "Date", widget: "datetime", default: "{{now}}" }
+      - name: "date"
+        label: "Date"
+        widget: "datetime"
 
       # Servicios — multiple selection
       - label: "Servicios"
@@ -76,19 +82,19 @@ collections:
           - "Zacatecas"
 
     # Link — URL field
-      - label: "Website URL"
-        name: "website"
+      - name: "website"
+        label: "Website URL"
         widget: "string"
-        pattern:
-          - "https?:\\/\\/.+"
-          - "Must be a valid URL starting with http:// or https://"
+        pattern: ["https?:\\/\\/.+", "Must be a valid URL starting with http:// or https://"]
 
     # Cuerpo de la entrada
-      - { name: "body", label: "Body", widget: "markdown" }
+      - name: "body"
+        label: "Body"
+        widget: "markdown"
 
-  # IMAGEN featured
+      # IMAGEN featured
       - label: "Imagen principal"
-        name: "Featured Image"
+        name: "featured_image" # Changed name to be valid
         widget: "image"
         choose_url: false
         allow_multiple: false
@@ -99,9 +105,9 @@ collections:
           - "featured\\.png$"
           - "The image must be named 'featured.png'"
 
-  # IMAGEN Avatar
-      - label: "Avatar "
-        name: "Avatar"
+      # IMAGEN Avatar
+      - label: "Avatar"
+        name: "avatar" # 
         widget: "image"
         choose_url: false
         allow_multiple: false

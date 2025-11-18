@@ -1,0 +1,57 @@
+<header class=" flex flex-column gap-2 mb-1 items-center">
+
+    {{ $avatar_path := .Params.avatar }}
+    {{ $avatar_url := "" }}
+    {{ if $avatar_path }}
+    {{ $res := .Resources.GetMatch $avatar_path }}
+    {{ if $res }}
+    {{ $avatar_url = $res.RelPermalink }}
+    {{ else }}
+    {{ $avatar_url = printf "%s%s" .RelPermalink $avatar_path }}
+    {{ end }}
+    {{ end }}
+    {{ if $avatar_url }}
+    <img class="inline-block w-12 h-12 rounded-full mr-2 object-cover" src="{{ $avatar_url }}" alt="{{ .Title }}">
+    {{ else }}
+    <div
+        class="inline-block align-middle w-12 h-12 rounded-full mr-2 bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center">
+        <svg class="w-12 h-12 text-neutral-500 dark:text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+        </svg>
+    </div>
+    {{ end }}
+
+    <div>
+        <a {{ with .Params.externalUrl }} href="{{ . }}" target="_blank" rel="external" {{ else }}
+            href="{{ .RelPermalink }}" {{ end }}
+            class="not-prose before:absolute before:inset-0 decoration-primary-500 dark:text-neutral text-xl font-bold text-neutral-800 hover:underline hover:underline-offset-2">
+            {{ .Title | emojify }}
+        </a>
+        {{ if not .Params.showAuthorsBadges | default (.Site.Params.article.showAuthorsBadges | default false) }}
+        <div class="flex flex-row flex-wrap items-center">
+
+            {{ $context := . }}
+            {{ range $taxonomy, $terms := .Site.Taxonomies }}
+            {{ if (eq $taxonomy "estado") }}
+            {{ if (gt (len ($context.GetTerms $taxonomy)) 0) }}
+            {{ range $i, $a := $context.GetTerms $taxonomy }}
+            {{ if not (eq $i 0) }}
+            ,&nbsp;
+            {{ end }}
+            <a href="{{ $a.RelPermalink }}" class="relative text-sm text-neutral-900 dark:text-neutral-400 ">{{
+                $a.LinkTitle }}</a>
+            {{ end }}
+            {{ end }}
+            {{ end }}
+            {{ end }}
+        </div>
+        {{ end }}
+        {{ if .Params.externalUrl }}
+        <span class="cursor-default align-top text-xs text-neutral-400 dark:text-neutral-500">
+            <span class="rtl:hidden">&#8599;</span>
+            <span class="ltr:hidden">&#8598;</span>
+        </span>
+        {{ end }}
+
+    </div>
+</header>
