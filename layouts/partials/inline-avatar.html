@@ -1,4 +1,4 @@
-<header class=" flex flex-column gap-2 mb-1 items-center">
+<header class=" flex gap-2 mb-1 items-center">
 
     {{ $avatar_path := .Params.avatar }}
     {{ $avatar_url := "" }}
@@ -11,10 +11,10 @@
     {{ end }}
     {{ end }}
     {{ if $avatar_url }}
-    <img class="inline-block w-12 h-12 rounded-full mr-2 object-cover" src="{{ $avatar_url }}" alt="{{ .Title }}">
+    <img class="w-12 h-12 rounded-full mr-2 object-cover mt-0 mb-0" src="{{ $avatar_url }}" alt="{{ .Title }}">
     {{ else }}
     <div
-        class="inline-block align-middle w-12 h-12 rounded-full mr-2 bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center">
+        class="align-middle rounded-full mr-2 bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center">
         <svg class="w-12 h-12 text-neutral-500 dark:text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
         </svg>
