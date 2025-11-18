@@ -1,14 +1,16 @@
 ---
 draft: false
+estado: Puebla
+Featured Image: featured.png
 title: Miguel Contreras
 date: 2024-11-06T20:15:17-06:00
 servicios:
   - Lettering
-estado: Puebla
-website: https://miglconts.com
-Featured Image: featured.png
+featured_image: featured.png
+avatar: avatar.png
 Avatar: avatar.png
 link: http://miglconts.com
+website: https://miglconts.com
 description: Sleep meow for food, then when human fills food dish, take a few
   bites of food and continue meowing bring your owner a dead bird and attack
   dog, run away and pretend to be victim so and sometimes switches in french and
