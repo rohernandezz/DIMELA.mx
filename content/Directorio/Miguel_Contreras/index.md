@@ -6,6 +6,10 @@ title: Miguel Contreras
 date: 2024-11-06T20:15:17-06:00
 servicios:
   - Lettering
+  - Branding
+  - Diseño de Tipografía
+  - Caligrafía
+  - Ingeniería de Fuentes
 featured_image: featured.png
 avatar: avatar.png
 Avatar: avatar.png
