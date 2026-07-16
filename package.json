@@ -19,6 +19,7 @@
     "db:seed:auth:local": "wrangler d1 execute dimela-mx --local --file=./db/seed-auth.sql",
     "db:seed:auth:remote": "wrangler d1 execute dimela-mx --remote --file=./db/seed-auth.sql",
     "dev:api": "wrangler dev --port 8787",
+    "dev:all": "npx --yes concurrently -k -n api,web -c cyan,magenta \"npm run dev:api\" \"npm run dev\"",
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "npm run build && wrangler deploy"
