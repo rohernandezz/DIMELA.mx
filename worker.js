@@ -11,6 +11,7 @@ import {
   json,
   mapProfileRow,
 } from "./worker/auth.js";
+import { handleAdminDecide, handleAdminQueue } from "./worker/admin.js";
 
 function parseList(param) {
   if (!param) return [];
@@ -117,6 +118,10 @@ export default {
       return json({ ok: false, error: "Método no permitido." }, 405);
     }
     if (path === "/api/me/profile/submit") return handleMeProfileSubmit(request, env);
+    if (path === "/api/admin/queue") return handleAdminQueue(request, env);
+    if (path.startsWith("/api/admin/profiles/") && (path.endsWith("/approve") || path.endsWith("/reject"))) {
+      return handleAdminDecide(request, env, url);
+    }
 
     if (path === "/api/search") {
       if (request.method !== "GET" && request.method !== "HEAD") {

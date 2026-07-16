@@ -13,6 +13,8 @@ Browser → Cloudflare Worker (worker.js)
               ├─ POST /api/auth/logout
               ├─ PUT  /api/me/profile      → save draft to D1
               ├─ POST /api/me/profile/submit → pending_review
+              ├─ GET  /api/admin/queue     → admin review list
+              ├─ POST /api/admin/profiles/:slug/approve|reject
               └─ other → env.ASSETS → Astro dist/
 ```
 

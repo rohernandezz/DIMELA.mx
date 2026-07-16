@@ -1,0 +1,308 @@
+---
+/**
+ * Admin queue — approve / reject profiles pending review.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Admin — DIMELA.mx"
+  description="Cola de aprobación de perfiles."
+  headerVariant="simple"
+  homeHref="/"
+>
+  <div class="mx-auto max-w-3xl pb-16">
+    <section class="mb-8 space-y-4 rounded border border-dm-offblack/15 bg-white p-5" data-auth-panel hidden>
+      <div>
+        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Admin</p>
+        <h1 class="mt-1 text-2xl tracking-wide">Entrar</h1>
+        <p class="mt-1 text-sm text-dm-offblack/65">
+          Usa una cuenta con rol <code class="text-xs">admin</code>. Demo:
+          <span class="font-medium">hola@dimela.mx</span>
+        </p>
+      </div>
+      <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
+        <label class="block min-w-0 flex-1 space-y-1.5">
+          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Email</span>
+          <input
+            type="email"
+            name="email"
+            required
+            value="hola@dimela.mx"
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+          />
+        </label>
+        <button
+          type="submit"
+          class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+        >
+          Enviar enlace
+        </button>
+      </form>
+      <p class="text-sm text-dm-offblack/60" data-auth-message></p>
+      <p class="hidden break-all text-sm" data-auth-link></p>
+    </section>
+
+    <div data-admin-root hidden>
+      <header class="mb-8 space-y-3">
+        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+          Admin · <span data-user-email></span>
+        </p>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 class="text-3xl tracking-wide">Aprobaciones</h1>
+            <p class="mt-1 text-sm text-dm-offblack/65">
+              Perfiles en revisión. Aprobar publica en el directorio.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <select
+              data-status-filter
+              class="rounded border border-dm-offblack/20 bg-white px-2.5 py-1.5 text-sm"
+            >
+              <option value="pending_review">En revisión</option>
+              <option value="rejected">Rechazados</option>
+              <option value="draft">Borradores</option>
+              <option value="published">Publicados</option>
+            </select>
+            <button
+              type="button"
+              data-action="refresh"
+              class="rounded border border-dm-offblack/20 px-3 py-1.5 text-sm hover:border-dm-offblack/40"
+            >
+              Actualizar
+            </button>
+            <button
+              type="button"
+              data-action="logout"
+              class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60"
+            >
+              Salir
+            </button>
+          </div>
+        </div>
+        <p class="hidden text-sm text-dm-offblack/55" data-admin-toast role="status"></p>
+      </header>
+
+      <p class="mb-4 text-sm text-dm-offblack/60" data-queue-summary>Cargando…</p>
+      <ul class="space-y-3" data-queue-list></ul>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  type ProfileRow = {
+    slug: string;
+    name: string;
+    estado: string;
+    servicios: string[];
+    description: string;
+    status: string;
+    tier: string;
+    ownerEmail?: string | null;
+    updatedAt?: string | null;
+  };
+
+  const STATUS_LABEL: Record<string, string> = {
+    draft: "Borrador",
+    pending_review: "En revisión",
+    published: "Publicado",
+    rejected: "Rechazado",
+  };
+
+  function toast(message: string) {
+    const el = document.querySelector<HTMLElement>("[data-admin-toast]");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove("hidden");
+    window.setTimeout(() => el.classList.add("hidden"), 2800);
+  }
+
+  function escapeHtml(s: string) {
+    return s
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function showLogin(show: boolean) {
+    const auth = document.querySelector<HTMLElement>("[data-auth-panel]");
+    const root = document.querySelector<HTMLElement>("[data-admin-root]");
+    if (auth) auth.hidden = !show;
+    if (root) root.hidden = show;
+  }
+
+  function rowHtml(p: ProfileRow) {
+    const chips = (p.servicios || [])
+      .slice(0, 4)
+      .map(
+        (s) =>
+          `<span class="rounded border border-dm-offblack/15 bg-dm-offwhite px-1.5 py-0.5 text-[11px]">${escapeHtml(s)}</span>`,
+      )
+      .join("");
+    const canDecide = p.status === "pending_review" || p.status === "rejected" || p.status === "draft";
+    const actions =
+      p.status === "pending_review"
+        ? `<div class="mt-3 flex flex-wrap gap-2">
+            <button type="button" data-approve="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white">Aprobar</button>
+            <button type="button" data-reject="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/25 px-3 py-1.5 text-sm text-dm-offblack/80 hover:border-dm-offblack/50">Rechazar</button>
+            <a href="/directorio/${escapeHtml(p.slug)}/" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:underline">Ver</a>
+          </div>`
+        : canDecide
+          ? `<div class="mt-3 flex flex-wrap gap-2">
+              <button type="button" data-approve="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm">Publicar</button>
+              <a href="/directorio/${escapeHtml(p.slug)}/" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60">Ver</a>
+            </div>`
+          : `<div class="mt-3"><a href="/directorio/${escapeHtml(p.slug)}/" class="text-sm text-dm-offblack/60 hover:underline">Ver perfil</a></div>`;
+
+    return `<li class="rounded border border-dm-offblack/15 bg-white p-4" data-slug="${escapeHtml(p.slug)}">
+      <div class="flex flex-wrap items-start justify-between gap-2">
+        <div class="min-w-0">
+          <p class="font-bold text-dm-offblack">${escapeHtml(p.name)}</p>
+          <p class="text-sm text-dm-offblack/55">${escapeHtml(p.estado)} · <span class="font-mono text-xs">${escapeHtml(p.slug)}</span></p>
+          <p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail || "sin dueño")} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>
+        </div>
+        <span class="rounded border border-dm-offblack/15 bg-dm-blue/50 px-2 py-0.5 text-[10px] font-semibold uppercase">${STATUS_LABEL[p.status] || p.status}</span>
+      </div>
+      <p class="mt-2 line-clamp-2 text-sm text-dm-offblack/75">${escapeHtml((p.description || "").replace(/<[^>]+>/g, ""))}</p>
+      <div class="mt-2 flex flex-wrap gap-1">${chips}</div>
+      ${actions}
+    </li>`;
+  }
+
+  async function loadQueue() {
+    const filter = document.querySelector<HTMLSelectElement>("[data-status-filter]")?.value || "pending_review";
+    const list = document.querySelector<HTMLElement>("[data-queue-list]");
+    const summary = document.querySelector<HTMLElement>("[data-queue-summary]");
+    if (!list) return;
+
+    const res = await fetch(`/api/admin/queue?status=${encodeURIComponent(filter)}`, {
+      credentials: "same-origin",
+    });
+    if (res.status === 401 || res.status === 403) {
+      showLogin(true);
+      if (summary) summary.textContent = "Necesitas sesión admin.";
+      return;
+    }
+    if (!res.headers.get("content-type")?.includes("json")) {
+      showLogin(true);
+      return;
+    }
+    const data = await res.json();
+    if (!data.ok) {
+      toast(data.error || "Error al cargar cola.");
+      return;
+    }
+    showLogin(false);
+    const profiles = (data.profiles || []) as ProfileRow[];
+    if (summary) {
+      summary.textContent =
+        profiles.length === 0
+          ? `No hay perfiles en «${STATUS_LABEL[filter] || filter}».`
+          : `${profiles.length} perfil${profiles.length === 1 ? "" : "es"} · ${STATUS_LABEL[filter] || filter}`;
+    }
+    list.innerHTML = profiles.map(rowHtml).join("");
+  }
+
+  async function decide(slug: string, action: "approve" | "reject") {
+    const res = await fetch(`/api/admin/profiles/${encodeURIComponent(slug)}/${action}`, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo actualizar.");
+      return;
+    }
+    toast(action === "approve" ? "Publicado." : "Rechazado.");
+    await loadQueue();
+  }
+
+  async function loadSession() {
+    try {
+      const res = await fetch("/api/auth/me", { credentials: "same-origin" });
+      if (!res.headers.get("content-type")?.includes("json") || res.status === 401) {
+        showLogin(true);
+        return;
+      }
+      const data = await res.json();
+      if (!data.ok || data.user?.role !== "admin") {
+        showLogin(true);
+        const msg = document.querySelector<HTMLElement>("[data-auth-message]");
+        if (msg && data.ok) msg.textContent = "Esta cuenta no es admin.";
+        return;
+      }
+      const emailEl = document.querySelector<HTMLElement>("[data-user-email]");
+      if (emailEl) emailEl.textContent = data.user.email;
+      showLogin(false);
+      await loadQueue();
+    } catch {
+      showLogin(true);
+    }
+  }
+
+  function init() {
+    const authForm = document.querySelector<HTMLFormElement>("[data-auth-form]");
+    if (authForm && !authForm.dataset.ready) {
+      authForm.dataset.ready = "1";
+      authForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = new FormData(authForm).get("email") as string;
+        const msg = document.querySelector<HTMLElement>("[data-auth-message]");
+        const linkEl = document.querySelector<HTMLElement>("[data-auth-link]");
+        if (msg) msg.textContent = "Enviando…";
+        if (linkEl) {
+          linkEl.classList.add("hidden");
+          linkEl.innerHTML = "";
+        }
+        try {
+          const res = await fetch("/api/auth/request", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) {
+            if (msg) msg.textContent = data.error || "No se pudo enviar.";
+            return;
+          }
+          if (msg) msg.textContent = data.message || "Enlace listo.";
+          if (data.verifyUrl && linkEl) {
+            const url = new URL(data.verifyUrl);
+            url.searchParams.set("next", "/admin/");
+            linkEl.classList.remove("hidden");
+            linkEl.innerHTML = `<a class="text-dm-offblack underline" href="${url.pathname}${url.search}">Abrir enlace mágico</a>`;
+          }
+        } catch {
+          if (msg) msg.textContent = "API no disponible. Usa npm run dev:all o el Worker.";
+        }
+      });
+    }
+
+    const root = document.querySelector<HTMLElement>("[data-admin-root]");
+    if (root && !root.dataset.ready) {
+      root.dataset.ready = "1";
+      root.addEventListener("click", (e) => {
+        const t = e.target as HTMLElement;
+        const approve = t.closest<HTMLElement>("[data-approve]");
+        const reject = t.closest<HTMLElement>("[data-reject]");
+        if (approve?.dataset.approve) void decide(approve.dataset.approve, "approve");
+        if (reject?.dataset.reject) void decide(reject.dataset.reject, "reject");
+      });
+      document.querySelector("[data-action='refresh']")?.addEventListener("click", () => void loadQueue());
+      document.querySelector("[data-action='logout']")?.addEventListener("click", async () => {
+        await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+        showLogin(true);
+      });
+      document.querySelector("[data-status-filter]")?.addEventListener("change", () => void loadQueue());
+    }
+
+    void loadSession();
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
