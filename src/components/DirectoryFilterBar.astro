@@ -1,7 +1,8 @@
 ---
 /**
- * DirectoryFilterBar — visual + client mock of faceted search.
- * OR within a facet, AND across facets. Syncs to ?q=&servicio=&estado=
+ * DirectoryFilterBar — compact mock.
+ * Servicios: chips (≤10). Estados: select (32 + Fuera de México).
+ * OR within servicios, AND with estado + text. URL: ?q=&servicio=&estado=
  */
 interface Props {
   servicios: string[];
@@ -17,7 +18,7 @@ const { servicios, estados } = Astro.props;
   aria-label="Filtrar directorio"
 >
   <div class="flex flex-wrap items-center gap-2">
-    <label class="relative min-w-[12rem] flex-1">
+    <label class="relative w-full max-w-xs sm:w-64">
       <span class="sr-only">Buscar</span>
       <input
         type="search"
@@ -28,60 +29,48 @@ const { servicios, estados } = Astro.props;
         class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-1.5 text-sm text-dm-offblack outline-none placeholder:text-dm-offblack/40 focus:border-dm-offblack/50"
       />
     </label>
+
+    <label class="flex items-center gap-1.5 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+      Ubicación
+      <select
+        data-filter-estado
+        class="max-w-[11rem] rounded border border-dm-offblack/20 bg-dm-blue/50 px-1.5 py-1 text-[11px] font-normal normal-case tracking-normal text-dm-offblack outline-none focus:border-dm-offblack/50"
+      >
+        <option value="">Todo México</option>
+        {estados.map((estado) => <option value={estado}>{estado}</option>)}
+      </select>
+    </label>
+
     <p class="text-xs text-dm-offblack/50" data-filter-count aria-live="polite"></p>
     <button
       type="button"
       data-filter-clear
-      class="shrink-0 rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-dm-offwhite disabled:cursor-default disabled:opacity-40"
+      class="ml-auto shrink-0 rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-dm-offwhite disabled:cursor-default disabled:opacity-40 sm:ml-0"
       disabled
     >
       Limpiar
     </button>
   </div>
 
-  <div class="mt-2 flex flex-col gap-1.5">
-    <div class="flex flex-wrap items-center gap-1.5">
-      <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-        Servicio
-      </span>
-      <div class="flex flex-wrap gap-1" role="group" aria-label="Filtrar por servicio">
-        {
-          servicios.map((servicio) => (
-            <button
-              type="button"
-              class="filter-chip rounded border border-dm-offblack/20 bg-white px-1.5 py-0.5 text-[11px] leading-tight text-dm-offblack transition hover:border-dm-offblack"
-              data-filter-chip
-              data-facet="servicio"
-              data-value={servicio}
-              aria-pressed="false"
-            >
-              {servicio}
-            </button>
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-1.5">
-      <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-        Ubicación
-      </span>
-      <div class="flex flex-wrap gap-1" role="group" aria-label="Filtrar por ubicación">
-        {
-          estados.map((estado) => (
-            <button
-              type="button"
-              class="filter-chip rounded border border-dm-offblack/20 bg-dm-blue/70 px-1.5 py-0.5 text-[11px] leading-tight text-dm-offblack transition hover:border-dm-offblack"
-              data-filter-chip
-              data-facet="estado"
-              data-value={estado}
-              aria-pressed="false"
-            >
-              {estado}
-            </button>
-          ))
-        }
-      </div>
+  <div class="mt-2 flex flex-wrap items-center gap-1.5">
+    <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+      Servicio
+    </span>
+    <div class="flex flex-wrap gap-1" role="group" aria-label="Filtrar por servicio">
+      {
+        servicios.map((servicio) => (
+          <button
+            type="button"
+            class="filter-chip rounded border border-dm-offblack/20 bg-white px-1.5 py-0.5 text-[11px] leading-tight text-dm-offblack transition hover:border-dm-offblack"
+            data-filter-chip
+            data-facet="servicio"
+            data-value={servicio}
+            aria-pressed="false"
+          >
+            {servicio}
+          </button>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -98,7 +87,8 @@ const { servicios, estados } = Astro.props;
   type FilterState = {
     q: string;
     servicio: Set<string>;
-    estado: Set<string>;
+    /** Single estado for the select (32 options); empty = all */
+    estado: string;
   };
 
   function parseList(param: string | null): string[] {
@@ -111,10 +101,11 @@ const { servicios, estados } = Astro.props;
 
   function readUrl(): FilterState {
     const params = new URLSearchParams(window.location.search);
+    const estados = parseList(params.get("estado"));
     return {
       q: (params.get("q") || "").trim(),
       servicio: new Set(parseList(params.get("servicio"))),
-      estado: new Set(parseList(params.get("estado"))),
+      estado: estados[0] || "",
     };
   }
 
@@ -122,14 +113,14 @@ const { servicios, estados } = Astro.props;
     const params = new URLSearchParams();
     if (state.q) params.set("q", state.q);
     if (state.servicio.size) params.set("servicio", [...state.servicio].join(","));
-    if (state.estado.size) params.set("estado", [...state.estado].join(","));
+    if (state.estado) params.set("estado", state.estado);
     const qs = params.toString();
     const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
     window.history.replaceState({}, "", next);
   }
 
   function hasFilters(state: FilterState) {
-    return Boolean(state.q || state.servicio.size || state.estado.size);
+    return Boolean(state.q || state.servicio.size || state.estado);
   }
 
   function matches(card: HTMLElement, state: FilterState) {
@@ -148,15 +139,12 @@ const { servicios, estados } = Astro.props;
       if (!name.includes(q) && !description.includes(q)) return false;
     }
 
-    // OR within facet
     if (state.servicio.size) {
       const hit = [...state.servicio].some((s) => servicios.includes(s));
       if (!hit) return false;
     }
 
-    if (state.estado.size) {
-      if (!state.estado.has(estado)) return false;
-    }
+    if (state.estado && estado !== state.estado) return false;
 
     return true;
   }
@@ -171,14 +159,18 @@ const { servicios, estados } = Astro.props;
     });
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
-      const facet = chip.dataset.facet as "servicio" | "estado";
       const value = chip.dataset.value || "";
-      const active = state[facet].has(value);
+      const active = state.servicio.has(value);
       chip.setAttribute("aria-pressed", active ? "true" : "false");
     });
 
     const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
     if (qInput && qInput.value !== state.q) qInput.value = state.q;
+
+    const estadoSelect = root.querySelector<HTMLSelectElement>("[data-filter-estado]");
+    if (estadoSelect && estadoSelect.value !== state.estado) {
+      estadoSelect.value = state.estado;
+    }
 
     const clearBtn = root.querySelector<HTMLButtonElement>("[data-filter-clear]");
     if (clearBtn) clearBtn.disabled = !hasFilters(state);
@@ -212,19 +204,25 @@ const { servicios, estados } = Astro.props;
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
       chip.addEventListener("click", () => {
-        const facet = chip.dataset.facet as "servicio" | "estado";
         const value = chip.dataset.value || "";
-        const next = new Set(state[facet]);
+        const next = new Set(state.servicio);
         if (next.has(value)) next.delete(value);
         else next.add(value);
-        state = { ...state, [facet]: next };
+        state = { ...state, servicio: next };
         writeUrl(state);
         apply(root, state);
       });
     });
 
+    root.querySelector<HTMLSelectElement>("[data-filter-estado]")?.addEventListener("change", (e) => {
+      const value = (e.target as HTMLSelectElement).value;
+      state = { ...state, estado: value };
+      writeUrl(state);
+      apply(root, state);
+    });
+
     root.querySelector<HTMLButtonElement>("[data-filter-clear]")?.addEventListener("click", () => {
-      state = { q: "", servicio: new Set(), estado: new Set() };
+      state = { q: "", servicio: new Set(), estado: "" };
       writeUrl(state);
       apply(root, state);
     });
