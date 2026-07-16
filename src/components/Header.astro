@@ -1,38 +1,49 @@
 ---
+/**
+ * Site header: path filter (logo › ubicación › servicio) + quiet nav.
+ */
+import DirectoryPathFilter from "./DirectoryPathFilter.astro";
+
 const pathname = Astro.url.pathname;
 ---
 
 <header class="border-b border-black/10 bg-dm-offblack text-dm-offwhite">
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-    <a href="/" class="text-lg tracking-wide hover:opacity-80">DIMELA.mx</a>
-    <nav class="flex flex-wrap items-center gap-4 text-sm" aria-label="Principal">
+  <div
+    class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6"
+  >
+    <DirectoryPathFilter />
+
+    <nav
+      class="flex shrink-0 flex-wrap items-center gap-3 text-xs text-dm-offwhite/70 sm:justify-end"
+      aria-label="Principal"
+    >
       <a
         href="/directorio/"
-        class:list={["hover:underline", pathname.startsWith("/directorio") && "underline"]}
+        class:list={["hover:text-dm-offwhite", pathname.startsWith("/directorio") && "text-dm-offwhite underline"]}
         aria-current={pathname.startsWith("/directorio") ? "page" : undefined}
       >
         Todo
       </a>
       <a
         href="/estado/"
-        class:list={["hover:underline", pathname.startsWith("/estado") && "underline"]}
+        class:list={["hover:text-dm-offwhite", pathname.startsWith("/estado") && "text-dm-offwhite underline"]}
         aria-current={pathname.startsWith("/estado") ? "page" : undefined}
       >
         Locación
       </a>
       <a
         href="/servicios/"
-        class:list={["hover:underline", pathname.startsWith("/servicios") && "underline"]}
+        class:list={["hover:text-dm-offwhite", pathname.startsWith("/servicios") && "text-dm-offwhite underline"]}
         aria-current={pathname.startsWith("/servicios") ? "page" : undefined}
       >
-        Servicio
+        Servicios
       </a>
       <a
         href="/acerca-de/"
-        class:list={["hover:underline", pathname.startsWith("/acerca-de") && "underline"]}
+        class:list={["hover:text-dm-offwhite", pathname.startsWith("/acerca-de") && "text-dm-offwhite underline"]}
         aria-current={pathname.startsWith("/acerca-de") ? "page" : undefined}
       >
-        Acerca de
+        Acerca
       </a>
     </nav>
   </div>

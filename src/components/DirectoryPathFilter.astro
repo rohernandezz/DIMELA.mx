@@ -1,0 +1,345 @@
+---
+/**
+ * Path-style directory filter in the site header.
+ * DIMELA.mx › Ubicación ▾ › Servicio ▾  [Buscar]
+ */
+import { MEXICO_ESTADOS, SERVICIOS } from "../data/taxonomy";
+
+const estados = [...MEXICO_ESTADOS];
+const servicios = [...SERVICIOS];
+---
+
+<div
+  class="directory-path flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-2 text-sm"
+  data-directory-filter
+  aria-label="Filtrar directorio"
+>
+  <a
+    href="/"
+    data-filter-home
+    class="shrink-0 text-base tracking-wide text-dm-offwhite hover:opacity-80"
+  >
+    DIMELA.mx
+  </a>
+
+  <span class="text-dm-offwhite/35" aria-hidden="true">›</span>
+
+  {/* Ubicación multi */}
+  <div class="relative" data-menu="estado">
+    <button
+      type="button"
+      data-menu-toggle
+      class="flex max-w-[12rem] items-center gap-1 rounded px-1.5 py-0.5 text-dm-offwhite hover:bg-white/10"
+      aria-expanded="false"
+      aria-haspopup="listbox"
+    >
+      <span data-estado-label class="truncate">Todo México</span>
+      <span class="text-dm-offwhite/50" aria-hidden="true">▾</span>
+    </button>
+    <div
+      data-menu-panel
+      hidden
+      class="absolute top-full left-0 z-40 mt-1 max-h-64 w-56 overflow-auto rounded border border-black/20 bg-white py-1 text-dm-offblack shadow-lg"
+      role="listbox"
+      aria-multiselectable="true"
+    >
+      {
+        estados.map((estado) => (
+          <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
+            <input
+              type="checkbox"
+              data-estado-option
+              value={estado}
+              class="rounded border-dm-offblack/30"
+            />
+            <span>{estado}</span>
+          </label>
+        ))
+      }
+    </div>
+  </div>
+
+  <span class="text-dm-offwhite/35" aria-hidden="true">›</span>
+
+  {/* Servicio multi — large chips in panel */}
+  <div class="relative" data-menu="servicio">
+    <button
+      type="button"
+      data-menu-toggle
+      class="flex max-w-[14rem] items-center gap-1 rounded px-1.5 py-0.5 text-dm-offwhite hover:bg-white/10"
+      aria-expanded="false"
+      aria-haspopup="listbox"
+    >
+      <span data-servicio-label class="truncate">Todos los servicios</span>
+      <span class="text-dm-offwhite/50" aria-hidden="true">▾</span>
+    </button>
+    <div
+      data-menu-panel
+      hidden
+      class="absolute top-full left-0 z-40 mt-1 w-[min(100vw-2rem,22rem)] rounded border border-black/20 bg-white p-3 text-dm-offblack shadow-lg"
+      role="listbox"
+      aria-multiselectable="true"
+    >
+      <div class="flex flex-wrap gap-2">
+        {
+          servicios.map((servicio) => (
+            <button
+              type="button"
+              class="filter-chip rounded border border-dm-offblack/25 bg-dm-offwhite px-3 py-1.5 text-sm text-dm-offblack transition hover:border-dm-offblack"
+              data-filter-chip
+              data-value={servicio}
+              aria-pressed="false"
+            >
+              {servicio}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <label class="relative ml-1 w-full max-w-[11rem] sm:ml-2 sm:w-40">
+    <span class="sr-only">Buscar</span>
+    <input
+      type="search"
+      name="q"
+      data-filter-q
+      placeholder="Buscar…"
+      autocomplete="off"
+      class="w-full rounded border border-white/20 bg-white/10 px-2 py-1 text-sm text-dm-offwhite outline-none placeholder:text-dm-offwhite/40 focus:border-white/50 focus:bg-white/15"
+    />
+  </label>
+
+  <p class="text-xs text-dm-offwhite/45" data-filter-count aria-live="polite"></p>
+
+  <button
+    type="button"
+    data-filter-clear
+    class="rounded border border-white/20 px-2 py-0.5 text-xs text-dm-offwhite/70 hover:bg-white/10 disabled:cursor-default disabled:opacity-30"
+    disabled
+  >
+    Limpiar
+  </button>
+</div>
+
+<style>
+  .filter-chip[aria-pressed="true"] {
+    background-color: var(--color-dm-offblack);
+    color: var(--color-dm-offwhite);
+    border-color: var(--color-dm-offblack);
+  }
+</style>
+
+<script>
+  type FilterState = {
+    q: string;
+    servicio: Set<string>;
+    estado: Set<string>;
+  };
+
+  function parseList(param: string | null): string[] {
+    if (!param) return [];
+    return param
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  function readUrl(): FilterState {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      q: (params.get("q") || "").trim(),
+      servicio: new Set(parseList(params.get("servicio"))),
+      estado: new Set(parseList(params.get("estado"))),
+    };
+  }
+
+  function writeUrl(state: FilterState) {
+    const params = new URLSearchParams();
+    if (state.q) params.set("q", state.q);
+    if (state.servicio.size) params.set("servicio", [...state.servicio].join(","));
+    if (state.estado.size) params.set("estado", [...state.estado].join(","));
+    const qs = params.toString();
+    const path = window.location.pathname;
+    // Keep filters on home / directorio; elsewhere jump to home with query
+    const onDirectory = path === "/" || path === "/directorio" || path === "/directorio/";
+    const targetPath = onDirectory ? path : "/";
+    const next = qs ? `${targetPath}?${qs}` : targetPath;
+    if (!onDirectory && qs) {
+      window.location.assign(next);
+      return;
+    }
+    window.history.replaceState({}, "", next);
+  }
+
+  function hasFilters(state: FilterState) {
+    return Boolean(state.q || state.servicio.size || state.estado.size);
+  }
+
+  function shortList(values: string[], empty: string) {
+    if (!values.length) return empty;
+    if (values.length === 1) return values[0];
+    if (values.length === 2) return `${values[0]}, ${values[1]}`;
+    return `${values[0]} +${values.length - 1}`;
+  }
+
+  function matches(card: HTMLElement, state: FilterState) {
+    const name = (card.dataset.name || "").toLowerCase();
+    const description = (card.dataset.description || "").toLowerCase();
+    const estado = card.dataset.estado || "";
+    let servicios: string[] = [];
+    try {
+      servicios = JSON.parse(card.dataset.servicios || "[]");
+    } catch {
+      servicios = [];
+    }
+
+    if (state.q) {
+      const q = state.q.toLowerCase();
+      if (!name.includes(q) && !description.includes(q)) return false;
+    }
+    if (state.servicio.size) {
+      if (![...state.servicio].some((s) => servicios.includes(s))) return false;
+    }
+    if (state.estado.size && !state.estado.has(estado)) return false;
+    return true;
+  }
+
+  function closeMenus(root: HTMLElement) {
+    root.querySelectorAll<HTMLElement>("[data-menu-panel]").forEach((p) => {
+      p.hidden = true;
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-menu-toggle]").forEach((t) => {
+      t.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function apply(root: HTMLElement, state: FilterState) {
+    const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
+    let visible = 0;
+    cards.forEach((card) => {
+      const ok = matches(card, state);
+      card.hidden = !ok;
+      if (ok) visible += 1;
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
+      const value = chip.dataset.value || "";
+      chip.setAttribute("aria-pressed", state.servicio.has(value) ? "true" : "false");
+    });
+
+    root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
+      box.checked = state.estado.has(box.value);
+    });
+
+    const estadoLabel = root.querySelector<HTMLElement>("[data-estado-label]");
+    if (estadoLabel) estadoLabel.textContent = shortList([...state.estado], "Todo México");
+
+    const servicioLabel = root.querySelector<HTMLElement>("[data-servicio-label]");
+    if (servicioLabel)
+      servicioLabel.textContent = shortList([...state.servicio], "Todos los servicios");
+
+    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
+    if (qInput && qInput.value !== state.q) qInput.value = state.q;
+
+    const clearBtn = root.querySelector<HTMLButtonElement>("[data-filter-clear]");
+    if (clearBtn) clearBtn.disabled = !hasFilters(state);
+
+    const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
+    if (countEl) {
+      if (!cards.length) {
+        countEl.textContent = hasFilters(state) ? "Filtros activos" : "";
+      } else {
+        const total = cards.length;
+        countEl.textContent = hasFilters(state)
+          ? `${visible} de ${total}`
+          : `${total}`;
+      }
+    }
+
+    const empty = document.querySelector<HTMLElement>("[data-filter-empty]");
+    if (empty && cards.length) {
+      empty.classList.toggle("hidden", visible > 0);
+    }
+  }
+
+  function init() {
+    const root = document.querySelector<HTMLElement>("[data-directory-filter]");
+    if (!root) return;
+
+    let state = readUrl();
+    apply(root, state);
+    closeMenus(root);
+
+    root.querySelectorAll<HTMLButtonElement>("[data-menu-toggle]").forEach((toggle) => {
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const menu = toggle.closest("[data-menu]");
+        const panel = menu?.querySelector<HTMLElement>("[data-menu-panel]");
+        if (!panel) return;
+        const willOpen = panel.hidden;
+        closeMenus(root);
+        panel.hidden = !willOpen;
+        toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      });
+    });
+
+    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
+    let debounce: number | undefined;
+    qInput?.addEventListener("input", () => {
+      window.clearTimeout(debounce);
+      debounce = window.setTimeout(() => {
+        state = { ...state, q: (qInput.value || "").trim() };
+        writeUrl(state);
+        apply(root, state);
+      }, 150);
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
+      chip.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const value = chip.dataset.value || "";
+        const next = new Set(state.servicio);
+        if (next.has(value)) next.delete(value);
+        else next.add(value);
+        state = { ...state, servicio: next };
+        writeUrl(state);
+        apply(root, state);
+      });
+    });
+
+    root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
+      box.addEventListener("change", () => {
+        const next = new Set(state.estado);
+        if (box.checked) next.add(box.value);
+        else next.delete(box.value);
+        state = { ...state, estado: next };
+        writeUrl(state);
+        apply(root, state);
+      });
+    });
+
+    const clear = () => {
+      state = { q: "", servicio: new Set(), estado: new Set() };
+      writeUrl(state);
+      apply(root, state);
+      closeMenus(root);
+    };
+
+    root.querySelector<HTMLButtonElement>("[data-filter-clear]")?.addEventListener("click", clear);
+
+    root.querySelector<HTMLAnchorElement>("[data-filter-home]")?.addEventListener("click", (e) => {
+      if (!hasFilters(state)) return;
+      e.preventDefault();
+      clear();
+      if (window.location.pathname !== "/") window.location.assign("/");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) closeMenus(root);
+    });
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
