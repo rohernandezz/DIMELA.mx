@@ -68,7 +68,7 @@ const servicios = [...SERVICIOS];
               <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
                 >Ubicación</span
               >
-              <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+              <span data-estado-label class="min-w-0 flex-1 truncate">Sólo México</span>
               <span class="shrink-0 text-dm-offblack/40" aria-hidden="true">▾</span>
             </button>
             <div
@@ -86,6 +86,23 @@ const servicios = [...SERVICIOS];
                 />
               </div>
               <div class="max-h-56 overflow-auto py-1" data-estado-options>
+                <label
+                  data-estado-row
+                  data-estado-scope-row
+                  class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs font-medium hover:bg-dm-offwhite"
+                >
+                  <input type="checkbox" data-estado-scope value="todas" class="rounded" />
+                  <span>Todas las ubicaciones</span>
+                </label>
+                <label
+                  data-estado-row
+                  data-estado-scope-row
+                  class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs font-medium hover:bg-dm-offwhite"
+                >
+                  <input type="checkbox" data-estado-scope value="mexico" class="rounded" />
+                  <span>Sólo México</span>
+                </label>
+                <div class="my-1 border-t border-dm-offblack/10" data-estado-separator></div>
                 <label
                   data-estado-row
                   class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite"
@@ -174,7 +191,7 @@ const servicios = [...SERVICIOS];
               class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
               aria-expanded="false"
             >
-              <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+              <span data-estado-label class="min-w-0 flex-1 truncate">Sólo México</span>
               <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
             </button>
             <div
@@ -192,6 +209,23 @@ const servicios = [...SERVICIOS];
                 />
               </div>
               <div class="max-h-40 overflow-auto py-1" data-estado-options>
+                <label
+                  data-estado-row
+                  data-estado-scope-row
+                  class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm font-medium hover:bg-dm-offwhite"
+                >
+                  <input type="checkbox" data-estado-scope value="todas" class="rounded" />
+                  <span>Todas las ubicaciones</span>
+                </label>
+                <label
+                  data-estado-row
+                  data-estado-scope-row
+                  class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm font-medium hover:bg-dm-offwhite"
+                >
+                  <input type="checkbox" data-estado-scope value="mexico" class="rounded" />
+                  <span>Sólo México</span>
+                </label>
+                <div class="my-1 border-t border-dm-offblack/10" data-estado-separator></div>
                 <label
                   data-estado-row
                   class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite"
@@ -386,6 +420,10 @@ const servicios = [...SERVICIOS];
   import { injectDirectoryThemes } from "../lib/profileTheme";
 
   const OUTSIDE_MEXICO = "Fuera de México";
+  const ALL_LOCATIONS = "todas";
+  const ALL_LOCATIONS_LABEL = "Todas las ubicaciones";
+  const MEXICO_SCOPE = "mexico";
+  const MEXICO_SCOPE_LABEL = "Sólo México";
   const MEXICO_ONLY_ESTADOS = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXICO);
 
   type FilterState = {
@@ -393,6 +431,18 @@ const servicios = [...SERVICIOS];
     servicio: Set<string>;
     estado: Set<string>;
   };
+
+  function isAllLocations(estado: Set<string>) {
+    return estado.has(ALL_LOCATIONS);
+  }
+
+  function isMexicoScope(estado: Set<string>) {
+    return estado.size === 0;
+  }
+
+  function selectedEstados(estado: Set<string>) {
+    return [...estado].filter((value) => value !== ALL_LOCATIONS);
+  }
 
   function parseList(param: string | null): string[] {
     if (!param) return [];
@@ -404,10 +454,17 @@ const servicios = [...SERVICIOS];
 
   function readUrl(): FilterState {
     const params = new URLSearchParams(window.location.search);
+    const rawEstado = parseList(params.get("estado"));
+    const estado = new Set<string>();
+    if (rawEstado.includes(ALL_LOCATIONS) || rawEstado.includes(ALL_LOCATIONS_LABEL)) {
+      estado.add(ALL_LOCATIONS);
+    } else {
+      rawEstado.forEach((value) => estado.add(value));
+    }
     return {
       q: (params.get("q") || "").trim(),
       servicio: new Set(parseList(params.get("servicio"))),
-      estado: new Set(parseList(params.get("estado"))),
+      estado,
     };
   }
 
@@ -415,7 +472,8 @@ const servicios = [...SERVICIOS];
     const params = new URLSearchParams();
     if (state.q) params.set("q", state.q);
     if (state.servicio.size) params.set("servicio", [...state.servicio].join(","));
-    if (state.estado.size) params.set("estado", [...state.estado].join(","));
+    if (isAllLocations(state.estado)) params.set("estado", ALL_LOCATIONS);
+    else if (state.estado.size) params.set("estado", [...state.estado].join(","));
     const qs = params.toString();
     window.history.replaceState(
       {},
@@ -433,17 +491,27 @@ const servicios = [...SERVICIOS];
     return false;
   }
 
+  /** True when results are narrowed below the default México view (not "all locations"). */
+  function hasNarrowingFilters(state: FilterState, root: HTMLElement) {
+    if (isAllLocations(state.estado)) return Boolean(state.q || state.servicio.size);
+    return hasFilters(state, root);
+  }
+
   function facetCount(state: FilterState, root: HTMLElement) {
     const hideEstado = root.dataset.hideEstado === "true";
     const hideServicio = root.dataset.hideServicio === "true";
     let n = 0;
     if (!hideServicio) n += state.servicio.size;
-    if (!hideEstado) n += state.estado.size;
+    if (!hideEstado) {
+      if (isAllLocations(state.estado)) n += 1;
+      else n += state.estado.size;
+    }
     return n;
   }
 
   function estadoListLabel(values: string[], empty: string) {
     if (!values.length) return empty;
+    if (values.includes(ALL_LOCATIONS)) return ALL_LOCATIONS_LABEL;
     return values.join(", ");
   }
 
@@ -452,7 +520,7 @@ const servicios = [...SERVICIOS];
     const full = estadoListLabel(values, empty);
     label.title = values.length ? full : "";
     label.textContent = full;
-    if (values.length <= 1) return;
+    if (values.length <= 1 || values.includes(ALL_LOCATIONS)) return;
     if (label.scrollWidth <= label.clientWidth + 1) return;
 
     let lo = 1;
@@ -476,7 +544,7 @@ const servicios = [...SERVICIOS];
   function syncEstadoLabels(root: HTMLElement, state: FilterState) {
     const values = [...state.estado];
     root.querySelectorAll<HTMLElement>("[data-estado-label]").forEach((label) => {
-      fitEstadoLabel(label, values, "Todo México");
+      fitEstadoLabel(label, values, "Sólo México");
     });
   }
 
@@ -525,6 +593,10 @@ const servicios = [...SERVICIOS];
   ) {
     if (!values.length) return;
     nodes.push(crumbSep(light));
+    if (facet === "estado" && values.includes(ALL_LOCATIONS)) {
+      nodes.push(crumbPill(ALL_LOCATIONS_LABEL, facet, ALL_LOCATIONS, light));
+      return;
+    }
     values.forEach((value, i) => {
       if (i > 0) nodes.push(crumbPipe(light));
       nodes.push(crumbPill(value, facet, value, light));
@@ -595,12 +667,18 @@ const servicios = [...SERVICIOS];
   /** Search query includes taxonomy locks so the grid matches D1/API. */
   function queryState(state: FilterState, root: HTMLElement): FilterState {
     const servicio = new Set(state.servicio);
-    const estado = new Set(state.estado);
+    const estado = new Set(selectedEstados(state.estado));
     const lockServicio = root.dataset.lockServicio;
     const lockEstado = root.dataset.lockEstado;
     if (lockServicio) servicio.add(lockServicio);
     if (lockEstado) estado.add(lockEstado);
-    if (root.dataset.hideEstado !== "true" && !lockEstado && estado.size === 0) {
+    // Default empty = México only. Explicit "todas" = no estado filter (world).
+    if (
+      root.dataset.hideEstado !== "true" &&
+      !lockEstado &&
+      estado.size === 0 &&
+      !isAllLocations(state.estado)
+    ) {
       MEXICO_ONLY_ESTADOS.forEach((mexicoEstado) => estado.add(mexicoEstado));
     }
     return { q: state.q, servicio, estado };
@@ -621,8 +699,14 @@ const servicios = [...SERVICIOS];
         effective.servicio.has(chip.dataset.value || "") ? "true" : "false",
       );
     });
+    const allOn = isAllLocations(effective.estado);
+    const mexicoOn = isMexicoScope(effective.estado);
+    root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((box) => {
+      if (box.value === ALL_LOCATIONS) box.checked = allOn;
+      else if (box.value === MEXICO_SCOPE) box.checked = mexicoOn;
+    });
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
-      box.checked = effective.estado.has(box.value);
+      box.checked = !allOn && !mexicoOn && effective.estado.has(box.value);
     });
     syncEstadoLabels(root, effective);
     requestAnimationFrame(() => syncEstadoLabels(root, effective));
@@ -648,14 +732,13 @@ const servicios = [...SERVICIOS];
   }
 
   function paintCounts(root: HTMLElement, effective: FilterState, visible: number, total: number) {
-    const countText = hasFilters(effective, root) ? `${visible} de ${total}` : `${total}`;
+    const narrowed = hasNarrowingFilters(effective, root);
+    const countText = narrowed ? `${visible} de ${total}` : `${visible}`;
     const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
     const countValue = root.querySelector<HTMLElement>("[data-filter-count-value]");
     if (countValue) countValue.textContent = countText;
     if (countEl) {
-      countEl.title = hasFilters(effective, root)
-        ? `${visible} de ${total} perfiles`
-        : `${total} perfiles`;
+      countEl.title = narrowed ? `${visible} de ${total} perfiles` : `${visible} perfiles`;
     }
     const empty = document.querySelector<HTMLElement>("[data-filter-empty]");
     if (empty) {
@@ -739,8 +822,8 @@ const servicios = [...SERVICIOS];
     try {
       const raw = await loadResults(root, state);
       if (seq !== applySeq) return;
-      const filtered = hasFilters(effective, root);
-      if (!filtered) catalogTotal = raw.length;
+      const narrowed = hasNarrowingFilters(effective, root);
+      if (!narrowed) catalogTotal = raw.length;
       const results = orderForSession(raw, sessionOrder === null);
       paintGrid(results);
       paintCounts(root, effective, results.length, catalogTotal || results.length);
@@ -844,21 +927,30 @@ const servicios = [...SERVICIOS];
       const runSearch = () => {
         const q = normalizeText((search?.value || "").trim());
         let visible = 0;
+        let scopeVisible = false;
         let outsideVisible = false;
         let mexicoVisible = false;
         rows.forEach((row) => {
+          const scopeBox = row.querySelector<HTMLInputElement>("[data-estado-scope]");
           const opt = row.querySelector<HTMLInputElement>("[data-estado-option]");
-          const name = opt?.value || "";
+          const name = scopeBox
+            ? scopeBox.value === ALL_LOCATIONS
+              ? ALL_LOCATIONS_LABEL
+              : MEXICO_SCOPE_LABEL
+            : opt?.value || "";
           const match = !q || normalizeText(name).includes(q);
           row.hidden = !match;
           if (match) {
             visible += 1;
-            if (name === OUTSIDE_MEXICO) outsideVisible = true;
+            if (scopeBox) scopeVisible = true;
+            else if (name === OUTSIDE_MEXICO) outsideVisible = true;
             else mexicoVisible = true;
           }
         });
-        separators.forEach((separator) => {
-          separator.hidden = !(outsideVisible && mexicoVisible);
+        separators.forEach((separator, index) => {
+          // First separator after the scope pair; second between Fuera and states.
+          if (index === 0) separator.hidden = !(scopeVisible && (outsideVisible || mexicoVisible));
+          else separator.hidden = !(outsideVisible && mexicoVisible);
         });
         if (noResults) noResults.hidden = visible > 0;
       };
@@ -910,11 +1002,34 @@ const servicios = [...SERVICIOS];
       });
     });
 
+    root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((box) => {
+      box.addEventListener("change", () => {
+        // Presets are exclusive: picking one turns the other off and clears state checkboxes.
+        const next =
+          box.value === ALL_LOCATIONS
+            ? new Set([ALL_LOCATIONS])
+            : new Set<string>(); // Sólo México = empty (default)
+        // Keep the chosen scope checked even if user tries to uncheck it.
+        root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((other) => {
+          other.checked = other.value === box.value;
+        });
+        root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
+          other.checked = false;
+        });
+        state = { ...state, estado: next };
+        writeUrl(state);
+        apply(root, state);
+      });
+    });
+
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
       box.addEventListener("change", () => {
-        const next = new Set(state.estado);
+        const next = new Set(selectedEstados(state.estado));
         if (box.checked) next.add(box.value);
         else next.delete(box.value);
+        root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((other) => {
+          other.checked = false;
+        });
         root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
           if (other.value === box.value) other.checked = box.checked;
         });
