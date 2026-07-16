@@ -12,43 +12,44 @@ const { servicios, estados } = Astro.props;
 ---
 
 <section
-  class="directory-filter mb-8 rounded-md border-2 border-dm-offblack/15 bg-white p-4 shadow-sm sm:p-5"
+  class="directory-filter mb-6 rounded border border-dm-offblack/15 bg-white px-3 py-2.5"
   data-directory-filter
   aria-label="Filtrar directorio"
 >
-  <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-    <label class="relative min-w-0 flex-1">
+  <div class="flex flex-wrap items-center gap-2">
+    <label class="relative min-w-[12rem] flex-1">
       <span class="sr-only">Buscar</span>
       <input
         type="search"
         name="q"
         data-filter-q
-        placeholder="Buscar por nombre o descripción…"
+        placeholder="Buscar…"
         autocomplete="off"
-        class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2.5 text-sm text-dm-offblack outline-none placeholder:text-dm-offblack/40 focus:border-dm-offblack/50"
+        class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-1.5 text-sm text-dm-offblack outline-none placeholder:text-dm-offblack/40 focus:border-dm-offblack/50"
       />
     </label>
+    <p class="text-xs text-dm-offblack/50" data-filter-count aria-live="polite"></p>
     <button
       type="button"
       data-filter-clear
-      class="shrink-0 rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2.5 text-sm text-dm-offblack/70 hover:bg-dm-offblack hover:text-dm-offwhite disabled:cursor-default disabled:opacity-40"
+      class="shrink-0 rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-dm-offwhite disabled:cursor-default disabled:opacity-40"
       disabled
     >
       Limpiar
     </button>
   </div>
 
-  <div class="mt-4 space-y-3">
-    <div>
-      <p class="mb-2 text-[11px] font-semibold tracking-wide text-dm-offblack/50 uppercase">
+  <div class="mt-2 flex flex-col gap-1.5">
+    <div class="flex flex-wrap items-center gap-1.5">
+      <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
         Servicio
-      </p>
-      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por servicio">
+      </span>
+      <div class="flex flex-wrap gap-1" role="group" aria-label="Filtrar por servicio">
         {
           servicios.map((servicio) => (
             <button
               type="button"
-              class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-xs text-dm-offblack transition hover:border-dm-offblack"
+              class="filter-chip rounded border border-dm-offblack/20 bg-white px-1.5 py-0.5 text-[11px] leading-tight text-dm-offblack transition hover:border-dm-offblack"
               data-filter-chip
               data-facet="servicio"
               data-value={servicio}
@@ -61,16 +62,16 @@ const { servicios, estados } = Astro.props;
       </div>
     </div>
 
-    <div>
-      <p class="mb-2 text-[11px] font-semibold tracking-wide text-dm-offblack/50 uppercase">
+    <div class="flex flex-wrap items-center gap-1.5">
+      <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
         Ubicación
-      </p>
-      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por ubicación">
+      </span>
+      <div class="flex flex-wrap gap-1" role="group" aria-label="Filtrar por ubicación">
         {
           estados.map((estado) => (
             <button
               type="button"
-              class="filter-chip rounded border border-dm-offblack/25 bg-dm-blue px-2.5 py-1 text-xs text-dm-offblack transition hover:border-dm-offblack"
+              class="filter-chip rounded border border-dm-offblack/20 bg-dm-blue/70 px-1.5 py-0.5 text-[11px] leading-tight text-dm-offblack transition hover:border-dm-offblack"
               data-filter-chip
               data-facet="estado"
               data-value={estado}
@@ -83,8 +84,6 @@ const { servicios, estados } = Astro.props;
       </div>
     </div>
   </div>
-
-  <p class="mt-4 text-sm text-dm-offblack/55" data-filter-count aria-live="polite"></p>
 </section>
 
 <style>
