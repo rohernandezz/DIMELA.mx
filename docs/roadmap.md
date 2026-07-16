@@ -13,18 +13,18 @@ Phased delivery on branch `AstroPort`. Commit and push each meaningful step.
 - [x] Single simple card grid (no Destacados section)
 - [x] FilterBar mock (search + servicio/ubicación chips, URL sync)
 - [x] Header path filter (logo › ubicación ▾ › servicio ▾ + search)
+- [x] Compare homes A–D; develop **B (filter bar)** on `filter-bar-mobile`
+- [x] Option B mobile: Filtros bottom sheet + compact header Menú
 
 ## Next
 
-1. **Iterate path header** from visual feedback
-2. **Content migration** — normalize Hugo `content/Directorio` → seed data / D1; preserve URL slugs
-3. **`/api/search`** — real faceted search over published profiles
-4. **Accounts** — magic-link auth, create/edit TipTap, submit for approval, admin queue
-5. **Galleries + Pro** — R2 uploads, multi-gallery, custom CSS sandbox, Stripe
-6. **Cutover** — custom domain, redirects from Netlify, retire Decap/Hugo
+1. **Iterate Option B mobile/desktop** from feedback
+2. **Promote B** to default `/` when locked in
+3. **Content migration** — normalize Hugo `content/Directorio` → seed data / D1
+4. **`/api/search`**, accounts, Pro/billing, cutover
 
-## Notes for implementers
+## Notes
 
-- Keep Hugo trees (`content/`, `layouts/`, `config/`, `themes/`) until migration is verified, then delete.
-- Filters live in the header path bar (`DirectoryPathFilter.astro`); shareable via `?q=&servicio=&estado=`.
-- Homepage Destacados section is deferred; Pro is marked on cards for now.
+- Active UI work: branch `filter-bar-mobile`, review at `/bar/`
+- Compare strip still links A–D on mock homes
+- Shareable filters: `?q=&servicio=&estado=`
