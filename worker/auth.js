@@ -361,11 +361,23 @@ export async function handleAuthMe(request, env) {
   const user = await getSessionUser(env, request);
   if (!user) return json({ ok: false, error: "No autenticado." }, 401);
 
-  const profile = await env.DB.prepare(
-    `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`,
-  )
-    .bind(user.id)
-    .first();
+  let profile;
+  try {
+    profile = await env.DB.prepare(
+      `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`,
+    )
+      .bind(user.id)
+      .first();
+  } catch (err) {
+    console.error("handleAuthMe profile query failed:", err);
+    return json(
+      {
+        ok: false,
+        error: "Base de datos local desactualizada. Ejecuta npm run db:sync:local y reinicia dev:api.",
+      },
+      503,
+    );
+  }
 
   return json({
     ok: true,

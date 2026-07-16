@@ -188,6 +188,55 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           </fieldset>
         </section>
 
+        <section class="space-y-4" aria-labelledby="editor-bio">
+          <div>
+            <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
+            <p class="mt-1 text-sm text-dm-offblack/60">TipTap · HTML sanitizado al guardar.</p>
+            <p class="text-xs text-dm-offblack/45">El primer párrafo es el destacado en la tarjeta del directorio; después puedes ampliar en el perfil.</p>
+          </div>
+          <div class="overflow-hidden rounded border border-dm-offblack/20 bg-white" data-tiptap-shell>
+            <div
+              class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
+              data-bio-toolbar
+            >
+              <button type="button" data-bio-cmd="bold" aria-label="Negritas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-xs font-bold leading-none" aria-hidden="true">B</span>
+                <span>Negritas</span>
+              </button>
+              <button type="button" data-bio-cmd="italic" aria-label="Itálicas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-xs italic leading-none" aria-hidden="true">I</span>
+                <span>Itálicas</span>
+              </button>
+              <button type="button" data-bio-cmd="h2" aria-label="Título" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🏷️</span>
+                <span>Título</span>
+              </button>
+              <button type="button" data-bio-cmd="paragraph" aria-label="Texto" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">¶</span>
+                <span>Texto</span>
+              </button>
+              <button type="button" data-bio-cmd="bullet" aria-label="Lista" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">•</span>
+                <span>Lista</span>
+              </button>
+              <button type="button" data-bio-cmd="blockquote" aria-label="Cita" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">❝</span>
+                <span>Cita</span>
+              </button>
+              <button type="button" data-bio-cmd="link" aria-label="Enlace" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🔗</span>
+                <span>Enlace</span>
+              </button>
+              <button type="button" data-bio-cmd="clear" aria-label="Quitar formato" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px] text-dm-offblack/70">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🧹</span>
+                <span>Quitar formato</span>
+              </button>
+            </div>
+            <div data-bio-editor></div>
+            <input type="hidden" name="description" value="" data-bio-html />
+          </div>
+        </section>
+
         <section class="space-y-4" aria-labelledby="editor-media">
           <div>
             <h2 id="editor-media" class="text-lg tracking-wide">Medios</h2>
@@ -286,55 +335,6 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
             data-gallery-input
             tabindex="-1"
           />
-        </section>
-
-        <section class="space-y-4" aria-labelledby="editor-bio">
-          <div>
-            <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">TipTap · HTML sanitizado al guardar.</p>
-            <p class="text-xs text-dm-offblack/45">El primer párrafo es el destacado en la tarjeta del directorio; después puedes ampliar en el perfil.</p>
-          </div>
-          <div class="overflow-hidden rounded border border-dm-offblack/20 bg-white" data-tiptap-shell>
-            <div
-              class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
-              data-bio-toolbar
-            >
-              <button type="button" data-bio-cmd="bold" aria-label="Negritas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-xs font-bold leading-none" aria-hidden="true">B</span>
-                <span>Negritas</span>
-              </button>
-              <button type="button" data-bio-cmd="italic" aria-label="Itálicas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-xs italic leading-none" aria-hidden="true">I</span>
-                <span>Itálicas</span>
-              </button>
-              <button type="button" data-bio-cmd="h2" aria-label="Título" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🏷️</span>
-                <span>Título</span>
-              </button>
-              <button type="button" data-bio-cmd="paragraph" aria-label="Texto" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">¶</span>
-                <span>Texto</span>
-              </button>
-              <button type="button" data-bio-cmd="bullet" aria-label="Lista" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">•</span>
-                <span>Lista</span>
-              </button>
-              <button type="button" data-bio-cmd="blockquote" aria-label="Cita" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">❝</span>
-                <span>Cita</span>
-              </button>
-              <button type="button" data-bio-cmd="link" aria-label="Enlace" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🔗</span>
-                <span>Enlace</span>
-              </button>
-              <button type="button" data-bio-cmd="clear" aria-label="Quitar formato" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px] text-dm-offblack/70">
-                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🧹</span>
-                <span>Quitar formato</span>
-              </button>
-            </div>
-            <div data-bio-editor></div>
-            <input type="hidden" name="description" value="" data-bio-html />
-          </div>
         </section>
 
         <section class="space-y-4" aria-labelledby="editor-css">
@@ -857,12 +857,20 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   async function loadSession() {
     try {
       const res = await fetch("/api/auth/me", { credentials: "same-origin" });
-      if (res.status === 401 || !res.headers.get("content-type")?.includes("json")) {
+      if (res.status === 401) {
+        showLogin(true);
+        return;
+      }
+      if (!res.headers.get("content-type")?.includes("json")) {
+        if (res.status >= 500) {
+          toast("API con error. Usa npm run dev:all (Astro + wrangler).");
+        }
         showLogin(true);
         return;
       }
       const data = await res.json();
       if (!data.ok) {
+        if (data.error) toast(data.error);
         showLogin(true);
         return;
       }
