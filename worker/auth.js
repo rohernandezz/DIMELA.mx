@@ -234,8 +234,7 @@ export async function handleAuthMe(request, env) {
   if (!user) return json({ ok: false, error: "No autenticado." }, 401);
 
   const profile = await env.DB.prepare(
-    `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
-     FROM profiles WHERE user_id = ? LIMIT 1`,
+    `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`,
   )
     .bind(user.id)
     .first();
@@ -245,6 +244,17 @@ export async function handleAuthMe(request, env) {
     user: { id: user.id, email: user.email, role: user.role },
     profile: profile ? mapProfileRow(profile) : null,
   });
+}
+
+export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id, galleries`;
+
+export function parseGalleries(raw) {
+  try {
+    const parsed = JSON.parse(raw || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 export function mapProfileRow(row) {
@@ -268,6 +278,7 @@ export function mapProfileRow(row) {
     customCss: row.custom_css || "",
     status: row.status,
     userId: row.user_id || undefined,
+    galleries: parseGalleries(row.galleries),
   };
 }
 
@@ -364,8 +375,7 @@ export async function handleMeProfilePut(request, env) {
   }
 
   const profile = await env.DB.prepare(
-    `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
-     FROM profiles WHERE user_id = ? LIMIT 1`,
+    `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`,
   )
     .bind(user.id)
     .first();
@@ -394,8 +404,7 @@ export async function handleMeProfileSubmit(request, env) {
   }
 
   const profile = await env.DB.prepare(
-    `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
-     FROM profiles WHERE user_id = ? LIMIT 1`,
+    `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`,
   )
     .bind(user.id)
     .first();

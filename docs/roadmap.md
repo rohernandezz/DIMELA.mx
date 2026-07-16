@@ -25,6 +25,7 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 - [x] **Unpublished profile preview** — owner/admin via `/api/profile` (`preview: true`); Worker rewrites missing `/directorio/{slug}/` → `/directorio/ver/` shell
 - [x] **R2 cover / avatar** — `POST /api/me/profile/upload`, `GET /media/*`, binding `MEDIA` → `dimela-mx-media`, `/editar/` Medios wired
 - [x] **R2 free-tier quota guard** — D1 tracks storage + Class A ops; uploads blocked at ~60% of free tier; `GET /api/me/media/quota`
+- [x] **Gallery uploads** — Free: 1 galería × 12 imgs; Pro: 5 galerías × 24 imgs; R2 + JSON on `profiles.galleries`
 
 ## UI prototypes (kept for reference)
 
@@ -41,10 +42,9 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 
 ## Next
 
-1. **Gallery uploads** (R2 + schema; Free/Pro caps)
-2. **Email provider** for magic links (stop returning `verifyUrl` in JSON)
-3. **Pro / Stripe** → cutover from Hugo
-4. Homepage **Destacados** (admin-curated among Pro; deferred)
+1. **Email provider** for magic links (stop returning `verifyUrl` in JSON)
+2. **Pro / Stripe** → cutover from Hugo
+3. Homepage **Destacados** (admin-curated among Pro; deferred)
 
 ## Notes
 

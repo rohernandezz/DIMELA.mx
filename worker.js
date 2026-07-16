@@ -11,9 +11,17 @@ import {
   handleMeProfileSubmit,
   json,
   mapProfileRow,
+  PROFILE_COLUMNS,
 } from "./worker/auth.js";
 import { handleAdminDecide, handleAdminQueue } from "./worker/admin.js";
 import { handleMeProfileUpload, handleMediaGet, handleMediaQuotaGet } from "./worker/media.js";
+import {
+  handleGalleryCreate,
+  handleGalleryDelete,
+  handleGalleryImageDelete,
+  handleGalleryUpdate,
+  handleGalleryUpload,
+} from "./worker/gallery.js";
 
 function parseList(param) {
   if (!param) return [];
@@ -59,7 +67,7 @@ async function loadFromD1(env) {
   if (!env.DB) return null;
   try {
     const { results } = await env.DB.prepare(
-      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
+      `SELECT ${PROFILE_COLUMNS}
        FROM profiles
        WHERE status = 'published'
        ORDER BY name COLLATE NOCASE`,
@@ -76,7 +84,7 @@ async function loadProfileFromD1(env, slug, { publishedOnly = true } = {}) {
   if (!env.DB) return null;
   try {
     const row = await env.DB.prepare(
-      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
+      `SELECT ${PROFILE_COLUMNS}
        FROM profiles
        WHERE ${publishedOnly ? "status = 'published' AND " : ""}slug = ?
        LIMIT 1`,
@@ -161,6 +169,14 @@ export default {
     }
     if (path === "/api/me/profile/submit") return handleMeProfileSubmit(request, env);
     if (path === "/api/me/profile/upload") return handleMeProfileUpload(request, env, url);
+    if (path === "/api/me/profile/gallery/upload") return handleGalleryUpload(request, env);
+    if (path === "/api/me/profile/gallery/image") return handleGalleryImageDelete(request, env);
+    if (path === "/api/me/profile/gallery") {
+      if (request.method === "POST") return handleGalleryCreate(request, env);
+      if (request.method === "PUT") return handleGalleryUpdate(request, env);
+      if (request.method === "DELETE") return handleGalleryDelete(request, env);
+      return json({ ok: false, error: "Método no permitido." }, 405);
+    }
     if (path === "/api/me/media/quota") return handleMediaQuotaGet(request, env);
     if (path.startsWith("/media/")) return handleMediaGet(request, env, url);
     if (path === "/api/admin/queue") return handleAdminQueue(request, env);

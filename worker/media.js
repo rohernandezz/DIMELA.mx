@@ -2,7 +2,7 @@
  * Profile image upload (R2) + public media serving + free-tier quota guard.
  */
 
-import { getSessionUser, json, mapProfileRow } from "./auth.js";
+import { getSessionUser, json, mapProfileRow, PROFILE_COLUMNS } from "./auth.js";
 
 const ALLOWED_KINDS = new Set(["cover", "avatar"]);
 const ALLOWED_TYPES = new Map([
@@ -38,7 +38,7 @@ function formatGiB(bytes) {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 }
 
-function mediaPublicUrl(key) {
+export function mediaPublicUrl(key) {
   return `/media/${key.split("/").map(encodeURIComponent).join("/")}`;
 }
 
@@ -57,16 +57,15 @@ function extFromType(type) {
   return ALLOWED_TYPES.get(String(type || "").toLowerCase()) || null;
 }
 
+export { extFromType, ALLOWED_TYPES };
+
 async function loadOwnedProfile(env, userId) {
-  return env.DB.prepare(
-    `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
-     FROM profiles WHERE user_id = ? LIMIT 1`,
-  )
+  return env.DB.prepare(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`)
     .bind(userId)
     .first();
 }
 
-function objectKeyFromUrl(url) {
+export function objectKeyFromUrl(url) {
   if (!url || typeof url !== "string") return null;
   try {
     const u = new URL(url, "https://dimela.mx");
@@ -141,7 +140,7 @@ export async function getMediaQuotaSnapshot(env) {
   };
 }
 
-async function assertUploadQuota(env, { fileSize, oldKey }) {
+export async function assertUploadQuota(env, { fileSize, oldKey }) {
   const oldSize = await getObjectSize(env, oldKey);
   const totalStorage = await getTotalStorageBytes(env);
   const netDelta = fileSize - oldSize;
@@ -167,7 +166,7 @@ async function assertUploadQuota(env, { fileSize, oldKey }) {
   return { ok: true, opsNeeded };
 }
 
-async function recordMediaPut(env, { key, userId, kind, sizeBytes }) {
+export async function recordMediaPut(env, { key, userId, kind, sizeBytes }) {
   await env.DB.batch([
     env.DB.prepare(
       `INSERT INTO media_objects (key, user_id, kind, size_bytes) VALUES (?, ?, ?, ?)
@@ -179,7 +178,7 @@ async function recordMediaPut(env, { key, userId, kind, sizeBytes }) {
   ]);
 }
 
-async function recordMediaDelete(env, key) {
+export async function recordMediaDelete(env, key) {
   const existed = await getObjectSize(env, key);
   if (!existed) {
     await env.DB.prepare(

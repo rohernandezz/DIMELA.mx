@@ -4,7 +4,7 @@
 
 Astro 7 + Tailwind v4 on **Cloudflare Workers** + D1 (same pattern as [sitioCelest](https://github.com/rohernandezz/sitioCelest)). Live preview: [dimela-mx.ro-88c.workers.dev](https://dimela-mx.ro-88c.workers.dev).
 
-> **Status:** Option B filter bar is live. Directory data comes from Worker APIs over D1 (with `profiles.json` fallback). Auth MVP, member editor (`/editar/` including R2 cover/avatar), and admin queue (`/admin/`) are working. Gallery uploads and real email for magic links are next — see [docs/roadmap.md](docs/roadmap.md).
+> **Status:** Option B filter bar is live. Directory data comes from Worker APIs over D1 (with `profiles.json` fallback). Auth MVP, member editor (`/editar/` including R2 cover/avatar/gallery), and admin queue (`/admin/`) are working. Real email for magic links is next — see [docs/roadmap.md](docs/roadmap.md).
 
 ## Stack
 

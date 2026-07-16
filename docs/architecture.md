@@ -14,6 +14,9 @@ Browser → Cloudflare Worker (worker.js)
               ├─ PUT  /api/me/profile             → save draft to D1
               ├─ POST /api/me/profile/submit      → pending_review
               ├─ POST /api/me/profile/upload      → R2 cover|avatar + D1 URL
+              ├─ POST /api/me/profile/gallery/upload   → R2 gallery image
+              ├─ POST|PUT|DELETE /api/me/profile/gallery → manage galleries
+              ├─ DELETE /api/me/profile/gallery/image
               ├─ GET  /api/me/media/quota         → storage + Class A usage vs cap
               ├─ GET  /media/*                    → serve R2 objects
               ├─ GET  /api/admin/queue
@@ -38,7 +41,8 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 | `worker.js` | Fetch router + search/profile + asset rewrite |
 | `worker/auth.js` | Magic link, session, member profile put/submit |
 | `worker/admin.js` | Admin queue / approve / reject |
-| `worker/media.js` | R2 upload + quota guard + `/media/*` serve |
+| `worker/media.js` | Cover/avatar upload + quota guard + `/media/*` serve |
+| `worker/gallery.js` | Gallery upload + CRUD (Free/Pro caps) |
 | `db/schema.sql` | D1 users, sessions, magic_links, profiles, media quota |
 | `db/migrations/004_media_quota.sql` | `media_objects` + `media_quota` tables |
 | `db/seed.sql` / `seed-auth.sql` | Mock profiles + demo member/admin |
@@ -82,7 +86,7 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - `GET /media/profiles/...` serves public bytes (relative URLs in D1)
 - **Quota guard:** D1 `media_objects` tracks bytes per key; `media_quota` tracks monthly Class A ops. Uploads rejected at ~60% of R2 free tier (6 GB storage, 600k ops/month).
 - Local `wrangler dev` simulates R2; remote deploy needs R2 enabled + bucket created
-- Gallery: not implemented (no schema column yet)
+- Gallery: JSON on `profiles.galleries` — Free 1×12 imgs (3 MB); Pro 5×24 (5 MB); shown on profile detail
 
 ### D1
 
@@ -93,7 +97,8 @@ npm run db:migrate:auth:local     # users / magic_links / sessions (+ owner colu
 npm run db:migrate:auth:remote
 npm run db:migrate:media:local    # media_objects + media_quota
 npm run db:migrate:media:remote
-npm run db:seed:local             # profiles + auth demo
+npm run db:migrate:gallery:local    # profiles.galleries + gallery media kind
+npm run db:migrate:gallery:remote
 npm run db:seed:remote
 npm run db:seed:auth:local        # auth demo only
 npm run db:seed:auth:remote

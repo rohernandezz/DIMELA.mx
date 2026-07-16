@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   cover TEXT,
   avatar TEXT,
   custom_css TEXT,
+  galleries TEXT NOT NULL DEFAULT '[]',
   user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
   status TEXT NOT NULL DEFAULT 'published'
     CHECK (status IN ('draft', 'pending_review', 'published', 'rejected')),
@@ -50,7 +51,7 @@ CREATE INDEX IF NOT EXISTS idx_magic_email ON magic_links (email);
 CREATE TABLE IF NOT EXISTS media_objects (
   key TEXT PRIMARY KEY NOT NULL,
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  kind TEXT NOT NULL CHECK (kind IN ('cover', 'avatar')),
+  kind TEXT NOT NULL CHECK (kind IN ('cover', 'avatar', 'gallery')),
   size_bytes INTEGER NOT NULL CHECK (size_bytes > 0),
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

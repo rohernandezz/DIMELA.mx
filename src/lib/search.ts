@@ -8,6 +8,18 @@ export type SearchQuery = {
   estado: string[];
 };
 
+export type GalleryImage = {
+  id: string;
+  url: string;
+  caption?: string;
+};
+
+export type ProfileGallery = {
+  id: string;
+  title: string;
+  images: GalleryImage[];
+};
+
 export type SearchableProfile = {
   slug: string;
   name: string;
@@ -21,6 +33,7 @@ export type SearchableProfile = {
   featured?: boolean;
   /** Present for owner/admin preview of unpublished profiles. */
   status?: string;
+  galleries?: ProfileGallery[];
 };
 
 export function parseSearchParams(params: URLSearchParams): SearchQuery {

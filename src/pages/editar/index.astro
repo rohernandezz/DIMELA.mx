@@ -269,6 +269,32 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           </div>
         </section>
 
+        <section class="space-y-4" aria-labelledby="editor-gallery">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h2 id="editor-gallery" class="text-lg tracking-wide">Galería</h2>
+              <p class="mt-1 text-sm text-dm-offblack/60" data-gallery-hint>
+                Free: 1 galería, hasta 12 imágenes (3 MB c/u). Pro: hasta 5 galerías, 24 imágenes c/u (5 MB).
+              </p>
+            </div>
+            <button
+              type="button"
+              class="hidden rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80 disabled:opacity-50"
+              data-action="gallery-create"
+            >
+              + Nueva galería
+            </button>
+          </div>
+          <div class="space-y-4" data-gallery-root></div>
+          <input
+            type="file"
+            class="sr-only"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            data-gallery-input
+            tabindex="-1"
+          />
+        </section>
+
         <section class="space-y-4" aria-labelledby="editor-bio">
           <div>
             <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
@@ -330,6 +356,9 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
 <script>
   import { bindBioToolbar, mountBioEditor, type BioEditor } from "../../lib/bioEditor";
 
+  type GalleryImage = { id: string; url: string; caption?: string };
+  type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
+
   type Profile = {
     slug: string;
     name: string;
@@ -342,6 +371,12 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     avatar: string | null;
     customCss?: string;
     status: string;
+    galleries?: ProfileGallery[];
+  };
+
+  const GALLERY_LIMITS = {
+    free: { maxGalleries: 1, maxImages: 12, maxMb: 3 },
+    pro: { maxGalleries: 5, maxImages: 24, maxMb: 5 },
   };
 
   const STATUS_LABEL: Record<string, string> = {
@@ -436,6 +471,10 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       }
     }
 
+    currentTier = profile?.tier || "free";
+    currentGalleries = profile?.galleries || [];
+    renderGalleries(currentGalleries, currentTier);
+
     const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
     const mount = form.querySelector<HTMLElement>("[data-bio-editor]");
     const toolbar = form.querySelector<HTMLElement>("[data-bio-toolbar]");
@@ -511,7 +550,10 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   }
 
   let pendingUploadKind: "cover" | "avatar" | null = null;
+  let pendingGalleryId: string | null = null;
   let uploadsBlocked = false;
+  let currentTier = "free";
+  let currentGalleries: ProfileGallery[] = [];
 
   function formatBytes(bytes: number) {
     if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
@@ -545,11 +587,177 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     }
     uploadsBlocked = Boolean(quota.uploadsBlocked);
     if (blockedEl) blockedEl.classList.toggle("hidden", !uploadsBlocked);
-    document.querySelectorAll<HTMLButtonElement>("[data-action='upload-cover'], [data-action='upload-avatar']").forEach(
-      (btn) => {
-        if (!btn.disabled) btn.disabled = uploadsBlocked;
-      },
-    );
+    document
+      .querySelectorAll<HTMLButtonElement>(
+        "[data-action='upload-cover'], [data-action='upload-avatar'], [data-action='gallery-upload'], [data-action='gallery-create']",
+      )
+      .forEach((btn) => {
+        btn.disabled = uploadsBlocked || btn.dataset.busy === "1";
+      });
+    renderGalleries(currentGalleries, currentTier);
+  }
+
+  function galleryLimitsFor(tier: string) {
+    return tier === "pro" ? GALLERY_LIMITS.pro : GALLERY_LIMITS.free;
+  }
+
+  function renderGalleries(galleries: ProfileGallery[], tier: string) {
+    const root = document.querySelector<HTMLElement>("[data-gallery-root]");
+    const createBtn = document.querySelector<HTMLButtonElement>("[data-action='gallery-create']");
+    const limits = galleryLimitsFor(tier);
+    if (!root) return;
+
+    const list =
+      galleries.length > 0
+        ? galleries
+        : [{ id: "", title: "Galería", images: [] as GalleryImage[] }];
+
+    if (createBtn) {
+      createBtn.classList.toggle("hidden", tier !== "pro");
+      createBtn.disabled = uploadsBlocked || galleries.length >= limits.maxGalleries;
+    }
+
+    root.innerHTML = list
+      .map((gallery) => {
+        const gid = gallery.id || "pending";
+        const count = gallery.images?.length || 0;
+        const atLimit = count >= limits.maxImages;
+        const titleEsc = gallery.title.replace(/"/g, "&quot;");
+        const imgs = (gallery.images || [])
+          .map(
+            (img) =>
+              `<div class="group relative aspect-square overflow-hidden rounded border border-dm-offblack/15 bg-dm-blue">
+              <img src="${img.url}" alt="" class="h-full w-full object-cover" loading="lazy" />
+              <button type="button" class="absolute top-1 right-1 rounded bg-dm-offblack/70 px-1.5 py-0.5 text-[10px] text-white opacity-0 transition group-hover:opacity-100" data-action="gallery-delete-image" data-gallery-id="${gid}" data-image-id="${img.id}">×</button>
+            </div>`,
+          )
+          .join("");
+
+        const canDeleteGallery = tier === "pro" && galleries.length > 1 && gallery.id;
+        const titleReadonly = !(tier === "pro" && gallery.id);
+        return `<div class="rounded border border-dm-offblack/15 bg-white/80 p-3" data-gallery-panel="${gid}">
+          <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <input type="text" value="${titleEsc}" class="min-w-[8rem] flex-1 rounded border border-dm-offblack/15 px-2 py-1 text-sm ${titleReadonly ? "pointer-events-none opacity-70" : ""}" data-gallery-title="${gid}" ${titleReadonly ? "readonly" : ""} />
+            <span class="text-[11px] text-dm-offblack/50">${count}/${limits.maxImages}</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">${imgs || `<p class="col-span-full text-xs text-dm-offblack/45">Sin imágenes aún.</p>`}</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button type="button" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs disabled:opacity-50" data-action="gallery-upload" data-gallery-id="${gid}" ${atLimit || uploadsBlocked ? "disabled" : ""}>Subir imagen</button>
+            ${canDeleteGallery ? `<button type="button" class="rounded border border-dm-offblack/15 px-2.5 py-1 text-xs text-dm-offblack/60" data-action="gallery-delete" data-gallery-id="${gid}">Eliminar galería</button>` : ""}
+          </div>
+        </div>`;
+      })
+      .join("");
+  }
+
+  async function saveGalleryTitle(galleryId: string, title: string) {
+    const res = await fetch("/api/me/profile/gallery", {
+      method: "PUT",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ galleryId, title }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo renombrar la galería.");
+      return;
+    }
+    fillProfile(data.profile);
+    if (data.quota) applyMediaQuota(data.quota);
+  }
+
+  async function createGallery() {
+    const title = window.prompt("Nombre de la galería", "Portfolio")?.trim();
+    if (!title) return;
+    const res = await fetch("/api/me/profile/gallery", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo crear la galería.");
+      return;
+    }
+    fillProfile(data.profile);
+    toast("Galería creada.");
+  }
+
+  async function deleteGallery(galleryId: string) {
+    if (!window.confirm("¿Eliminar esta galería y todas sus imágenes?")) return;
+    const res = await fetch("/api/me/profile/gallery", {
+      method: "DELETE",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ galleryId }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo eliminar.");
+      return;
+    }
+    fillProfile(data.profile);
+    if (data.quota) applyMediaQuota(data.quota);
+    toast("Galería eliminada.");
+  }
+
+  async function deleteGalleryImage(galleryId: string, imageId: string) {
+    const res = await fetch("/api/me/profile/gallery/image", {
+      method: "DELETE",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ galleryId, imageId }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo eliminar la imagen.");
+      return;
+    }
+    fillProfile(data.profile);
+    if (data.quota) applyMediaQuota(data.quota);
+  }
+
+  function pickGalleryUpload(galleryId: string) {
+    if (uploadsBlocked) {
+      toast("Límite de almacenamiento alcanzado.");
+      return;
+    }
+    pendingGalleryId = galleryId && galleryId !== "pending" ? galleryId : "";
+    const input = document.querySelector<HTMLInputElement>("[data-gallery-input]");
+    if (!input) return;
+    input.value = "";
+    input.click();
+  }
+
+  async function uploadGalleryFile(file: File) {
+    const galleryId = pendingGalleryId;
+    pendingGalleryId = null;
+
+    setUploadBusy(true);
+    toast("Subiendo imagen…");
+    try {
+      const body = new FormData();
+      if (galleryId) body.set("galleryId", galleryId);
+      body.set("file", file, file.name || "gallery.jpg");
+      const res = await fetch("/api/me/profile/gallery/upload", {
+        method: "POST",
+        credentials: "same-origin",
+        body,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        toast(data.error || "No se pudo subir.");
+        return;
+      }
+      fillProfile(data.profile);
+      if (data.quota) applyMediaQuota(data.quota);
+      toast("Imagen agregada a la galería.");
+    } catch {
+      toast("API no disponible.");
+    } finally {
+      setUploadBusy(false);
+    }
   }
 
   async function loadMediaQuota() {
@@ -564,11 +772,15 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   }
 
   function setUploadBusy(busy: boolean) {
-    document.querySelectorAll<HTMLButtonElement>("[data-action='upload-cover'], [data-action='upload-avatar']").forEach(
-      (btn) => {
+    document
+      .querySelectorAll<HTMLButtonElement>(
+        "[data-action='upload-cover'], [data-action='upload-avatar'], [data-action='gallery-upload']",
+      )
+      .forEach((btn) => {
         btn.disabled = busy || uploadsBlocked;
-      },
-    );
+        if (busy) btn.dataset.busy = "1";
+        else delete btn.dataset.busy;
+      });
   }
 
   function pickUpload(kind: "cover" | "avatar") {
@@ -690,14 +902,51 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           if (action === "logout") void logout();
           if (action === "upload-cover") pickUpload("cover");
           if (action === "upload-avatar") pickUpload("avatar");
+          if (action === "gallery-create") void createGallery();
         });
       });
+
+      const galleryRoot = document.querySelector<HTMLElement>("[data-gallery-root]");
+      if (galleryRoot && !galleryRoot.dataset.ready) {
+        galleryRoot.dataset.ready = "1";
+        galleryRoot.addEventListener("click", (e) => {
+          const t = e.target as HTMLElement;
+          const btn = t.closest<HTMLElement>("[data-action]");
+          if (!btn) return;
+          const action = btn.dataset.action;
+          const galleryId = btn.dataset.galleryId || "";
+          const imageId = btn.dataset.imageId || "";
+          if (action === "gallery-upload") pickGalleryUpload(galleryId);
+          if (action === "gallery-delete") void deleteGallery(galleryId);
+          if (action === "gallery-delete-image") void deleteGalleryImage(galleryId, imageId);
+        });
+        galleryRoot.addEventListener(
+          "blur",
+          (e) => {
+            const input = e.target as HTMLInputElement;
+            if (!input.matches("[data-gallery-title]")) return;
+            const galleryId = input.dataset.galleryTitle || "";
+            const title = input.value.trim();
+            if (galleryId && title) void saveGalleryTitle(galleryId, title);
+          },
+          true,
+        );
+      }
+
       const uploadInput = document.querySelector<HTMLInputElement>("[data-upload-input]");
       if (uploadInput && !uploadInput.dataset.ready) {
         uploadInput.dataset.ready = "1";
         uploadInput.addEventListener("change", () => {
           const file = uploadInput.files?.[0];
           if (file) void uploadSelectedFile(file);
+        });
+      }
+      const galleryInput = document.querySelector<HTMLInputElement>("[data-gallery-input]");
+      if (galleryInput && !galleryInput.dataset.ready) {
+        galleryInput.dataset.ready = "1";
+        galleryInput.addEventListener("change", () => {
+          const file = galleryInput.files?.[0];
+          if (file) void uploadGalleryFile(file);
         });
       }
     }

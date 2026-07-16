@@ -48,6 +48,32 @@ export function renderProfileDetailHtml(
     ? `<p class="mb-8"><a href="${website}" class="text-dm-offblack underline underline-offset-2 hover:opacity-70" rel="noopener noreferrer" target="_blank">${websiteLabel}</a></p>`
     : "";
 
+  const galleries = (profile.galleries || []).filter((g) => g.images?.length);
+  const galleryHtml = galleries.length
+    ? `<section class="mb-10 space-y-8" aria-label="Galería">
+        ${galleries
+          .map((gallery) => {
+            const title = escapeHtml(gallery.title || "Galería");
+            const items = (gallery.images || [])
+              .map((img) => {
+                const src = escapeHtml(img.url);
+                const cap = img.caption ? escapeHtml(img.caption) : "";
+                return `<figure class="overflow-hidden rounded-md border border-dm-offblack/10 bg-white">
+                  <img src="${src}" alt="${cap}" class="aspect-square w-full object-cover" loading="lazy" decoding="async" />
+                  ${cap ? `<figcaption class="px-2 py-1.5 text-xs text-dm-offblack/60">${cap}</figcaption>` : ""}
+                </figure>`;
+              })
+              .join("");
+            const showTitle = galleries.length > 1 || title !== "Galería";
+            return `<div>
+              ${showTitle ? `<h2 class="mb-3 text-lg tracking-wide">${title}</h2>` : ""}
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">${items}</div>
+            </div>`;
+          })
+          .join("")}
+      </section>`
+    : "";
+
   const statusKey = profile.status || "";
   const previewBanner =
     opts.preview && statusKey && statusKey !== "published"
@@ -74,6 +100,7 @@ export function renderProfileDetailHtml(
     </header>
     <p class="mb-6 text-base leading-relaxed text-dm-offblack/80">${description}</p>
     <div class="mb-8 flex flex-wrap gap-2">${chips}</div>
+    ${galleryHtml}
     ${site}
     <p class="text-sm text-dm-offblack/45">
       <a href="/directorio/" class="hover:underline">← Volver al directorio</a>
