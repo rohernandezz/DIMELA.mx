@@ -2,10 +2,16 @@
  * Client-side profile card HTML (matches ProfileCard.astro).
  * Used when the directory grid is filled from /api/search.
  */
-import { estadoSlug } from "./slugs";
+import { estadoSlug, toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { bioLeadPlainText, bioPlainText } from "./bio";
-import { websiteHref, websiteLabel, websiteCapsuleHtml, profileTagPillClass } from "./website";
+import {
+  websiteHref,
+  websiteLabel,
+  websiteCapsuleHtml,
+  profileServicePillClass,
+  profileTagPillClass,
+} from "./website";
 
 export function escapeHtml(value: string): string {
   return value
@@ -43,10 +49,10 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
     : `<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white" aria-hidden="true"><svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"></circle><path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path></svg></div>`;
 
   const chips = (profile.servicios || [])
-    .map(
-      (servicio) =>
-        `<span class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80">${escapeHtml(servicio)}</span>`,
-    )
+    .map((servicio) => {
+      const href = `/servicios/${toSlug(servicio)}/`;
+      return `<a href="${href}" class="${profileServicePillClass}">${escapeHtml(servicio)}</a>`;
+    })
     .join("");
 
   const tagPills = (profile.tags || [])

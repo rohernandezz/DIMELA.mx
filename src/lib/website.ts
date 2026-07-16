@@ -6,6 +6,10 @@ export const websiteCapsuleClass =
 export const websiteCapsuleClassLg =
   "inline-flex max-w-full items-center gap-1.5 rounded-full border border-dm-offblack/20 bg-dm-offwhite px-3 py-1 text-xs text-dm-offblack/80 transition hover:border-dm-offblack/35 hover:bg-white";
 
+/** Profile service chips — detail + card share the same size/color/hover. */
+export const profileServicePillClass =
+  "relative z-10 rounded border border-dm-offblack/20 bg-white px-2.5 py-1 text-sm text-dm-offblack/80 hover:border-dm-offblack/40";
+
 /** Profile extra tags — same pill chrome as website links, slightly smaller type. */
 export const profileTagPillClass =
   "relative z-10 inline-flex items-center rounded-full border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[10px] text-dm-offblack/75 transition hover:border-dm-offblack/35 hover:bg-white";

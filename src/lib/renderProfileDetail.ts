@@ -5,7 +5,13 @@ import { estadoSlug, toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 import { renderBioHtml } from "./bio";
-import { websiteHref, websiteLabel, websiteCapsuleHtml, profileTagPillClassLg } from "./website";
+import {
+  websiteHref,
+  websiteLabel,
+  websiteCapsuleHtml,
+  profileServicePillClass,
+  profileTagPillClassLg,
+} from "./website";
 
 const STATUS_PREVIEW_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -40,7 +46,7 @@ export function renderProfileDetailHtml(
   const chips = (profile.servicios || [])
     .map((servicio) => {
       const href = `/servicios/${toSlug(servicio)}/`;
-      return `<a href="${href}" class="rounded border border-dm-offblack/20 bg-white px-2.5 py-1 text-sm text-dm-offblack/80 hover:border-dm-offblack/40">${escapeHtml(servicio)}</a>`;
+      return `<a href="${href}" class="${profileServicePillClass}">${escapeHtml(servicio)}</a>`;
     })
     .join("");
 
