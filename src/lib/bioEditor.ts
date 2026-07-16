@@ -60,7 +60,10 @@ export function bindBioToolbar(toolbar: HTMLElement, editor: Editor) {
       if (cmd === "bold") chain.toggleBold().run();
       if (cmd === "italic") chain.toggleItalic().run();
       if (cmd === "h2") chain.toggleHeading({ level: 2 }).run();
+      if (cmd === "paragraph") chain.setParagraph().run();
       if (cmd === "bullet") chain.toggleBulletList().run();
+      if (cmd === "blockquote") chain.toggleBlockquote().run();
+      if (cmd === "clear") chain.clearNodes().unsetAllMarks().run();
       if (cmd === "link") {
         const prev = editor.getAttributes("link").href as string | undefined;
         const url = window.prompt("URL del enlace", prev || "https://");

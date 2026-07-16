@@ -42,7 +42,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Ciudad de México",
     servicios: ["Diseño de Tipografía", "Lettering", "Ingeniería de Fuentes"],
     description:
-      "Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.",
+      "<p>Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.</p><p>Trabajo con estudios, marcas y editoriales que buscan una voz tipográfica clara y con raíz mexicana — desde logotipos hasta familias completas para texto corrido.</p><p>Talleres, charlas y colaboraciones con el Colegio de Diseñadores y eventos como TMX. Si tienes un proyecto, escríbeme.</p>",
     website: "https://tortilla.studio",
     tier: "pro",
     cover: "/mock/cover-warm.svg",
@@ -54,7 +54,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Ciudad de México",
     servicios: ["Diseño de Tipografía", "Diseño Editorial"],
     description:
-      "Diseñador tipográfico y editorial. Fuentes para prensa, libros e identidad cultural mexicana.",
+      "<p>Diseñador tipográfico y editorial. Fuentes para prensa, libros e identidad cultural mexicana.</p><p>He diseñado tipos para periódicos, museos y sellos independientes. Me interesa la legibilidad, el detalle y la historia detrás de cada letra.</p>",
     website: "https://henestrosatype.com",
     tier: "pro",
     cover: "/mock/cover-cool.svg",
@@ -66,7 +66,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Puebla",
     servicios: ["Lettering", "Branding", "Diseño de Tipografía", "Caligrafía"],
     description:
-      "Lettering, caligrafía y tipografía para marcas. Proyectos de identidad con trazo propio.",
+      "<p>Lettering, caligrafía y tipografía para marcas. Proyectos de identidad con trazo propio.</p><p>Desde Puebla trabajo con restaurantes, cervecerías y proyectos culturales que necesitan letras con carácter — mural, empaque o sistema completo.</p><p>Disponible para colaboraciones en México y remoto.</p>",
     website: "https://miglconts.com",
     tier: "pro",
     cover: "/mock/cover-green.svg",
@@ -78,7 +78,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Fuera de México",
     servicios: ["Diseño de Tipografía", "Caligrafía"],
     description:
-      "Mexican type designer & calligrapher. Fuentes y caligrafía para editorial e identidad.",
+      "<p>Mexican type designer &amp; calligrapher. Fuentes y caligrafía para editorial e identidad.</p><p>Vivo entre proyectos editoriales y encargos de caligrafía para invitaciones, libros de artista y piezas de colección.</p>",
     website: "https://www.instagram.com/ceci_dcd",
     tier: "free",
     cover: "/mock/cecilia-featured.png",
@@ -90,7 +90,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Querétaro",
     servicios: ["Diseño Editorial"],
     description:
-      "Diseño editorial y tipografía aplicada a libros, revistas y publicaciones independientes.",
+      "<p>Diseño editorial y tipografía aplicada a libros, revistas y publicaciones independientes.</p><p>En Cuatro Ojos armamos publicaciones con ritmo, jerarquía y cuidado en cada página. Nos gusta el papel, la encuadernación y el detalle que se nota al hojear.</p>",
     website: "https://cuatroojos.com.mx",
     tier: "free",
     cover: null,
@@ -102,7 +102,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Oaxaca",
     servicios: ["Rotulación Manual", "Lettering"],
     description:
-      "Rotulación a mano y lettering para comercio local, fachadas y espacios públicos en Oaxaca.",
+      "<p>Rotulación a mano y lettering para comercio local, fachadas y espacios públicos en Oaxaca.</p><p>Pintura, pincel y color para negocios de barrio, mercados y festivales. Cada letrero cuenta la historia del lugar.</p>",
     tier: "free",
     cover: "/mock/mara-featured.png",
     avatar: null,
@@ -113,7 +113,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Ciudad de México",
     servicios: ["Branding", "Diseño de Tipografía", "Lettering", "Caligrafía"],
     description:
-      "Identidad tipográfica, lettering y caligrafía para marcas culturales y editoriales.",
+      "<p>Identidad tipográfica, lettering y caligrafía para marcas culturales y editoriales.</p><p>Combino investigación, boceto y sistema para que la voz de una marca se sienta coherente en impreso y pantalla.</p><p>Proyectos recientes: festivales, sellos discográficos y identidad para espacios culturales en CDMX.</p>",
     tier: "pro",
     cover: "/mock/cover-cool.svg",
     avatar: null,
@@ -124,7 +124,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     estado: "Puebla",
     servicios: ["Rotulación Manual"],
     description:
-      "Rotulación manual para negocios, letreros y piezas de señalética con carácter local.",
+      "<p>Rotulación manual para negocios, letreros y piezas de señalética con carácter local.</p><p>Trabajo con comercios de Puebla que quieren verse auténticos — sin plantillas, con letra hecha a mano.</p>",
     tier: "free",
     cover: "/mock/cover-green.svg",
     avatar: null,
@@ -235,6 +235,37 @@ function pickServicios(i: number): Servicio[] {
   return [primary];
 }
 
+const BLURB_MORE: Record<Servicio, string[]> = {
+  Lettering: [
+    "Colaboro con estudios de diseño y marcas que buscan letras con personalidad.",
+    "Boceto, refinamiento y entrega para impreso y pantalla.",
+  ],
+  Branding: [
+    "Investigo la voz de cada marca antes de dibujar la primera letra.",
+    "Sistemas tipográficos para identidad en todos los puntos de contacto.",
+  ],
+  "Diseño de Tipografía": [
+    "Familias a medida y ajustes finos para editorial y UI.",
+    "Desde el concepto hasta los archivos listos para producción.",
+  ],
+  "Diseño Editorial": [
+    "Maquetación, elección tipográfica y ritmo de lectura.",
+    "Libros, revistas y catálogos con cuidado en cada página.",
+  ],
+  Caligrafía: [
+    "Piezas únicas para invitaciones, logotipos y proyectos especiales.",
+    "Tinta, pincel y digital para encargos editoriales y de marca.",
+  ],
+  "Ingeniería de Fuentes": [
+    "Kerning, hinting y exportación para equipos de diseño.",
+    "Soporte técnico para lanzar fuentes sin sorpresas.",
+  ],
+  "Rotulación Manual": [
+    "Color, proporción y legibilidad para fachadas y señalética.",
+    "Letreros pintados a mano para comercio y espacios públicos.",
+  ],
+};
+
 function makePlaceholder(
   estado: MexicoEstado,
   index: number,
@@ -243,15 +274,16 @@ function makePlaceholder(
   const name = `${FIRST_NAMES[index % FIRST_NAMES.length]} ${LAST_NAMES[(index * 3) % LAST_NAMES.length]}`;
   const servicios = pickServicios(index);
   const primary = servicios[0];
-  const blurb =
+  const lead =
     BLURBS[primary][index % BLURBS[primary].length] +
     ` Basada en ${estado}.`;
+  const more = BLURB_MORE[primary][index % BLURB_MORE[primary].length];
   return {
     slug: `${slugify(name)}-${slugify(estado)}-${suffix}`,
     name,
     estado,
     servicios,
-    description: blurb,
+    description: `<p>${lead}</p><p>${more}</p>`,
     tier: index % 7 === 0 ? "pro" : "free",
     cover: coverFor(index),
     avatar: index % 11 === 0 ? "/mock/miguel-avatar.png" : null,

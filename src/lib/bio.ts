@@ -30,6 +30,28 @@ export function bioPlainText(html: string): string {
     .trim();
 }
 
+/** First paragraph/block — used as the card lead / highlight. */
+export function bioLeadHtml(html: string): string {
+  const raw = String(html || "").trim();
+  if (!raw) return "";
+
+  const sanitized = sanitizeBioHtml(raw);
+  const paragraph = sanitized.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+  if (paragraph) return `<p>${paragraph[1]}</p>`;
+
+  const heading = sanitized.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i);
+  if (heading) return `<h2>${heading[1]}</h2>`;
+
+  if (/<[a-z][\s\S]*>/i.test(sanitized)) return sanitized;
+
+  const first = raw.split(/\n\s*\n/).find((part) => part.trim())?.trim() || raw;
+  return `<p>${escapeHtml(first)}</p>`;
+}
+
+export function bioLeadPlainText(html: string): string {
+  return bioPlainText(bioLeadHtml(html));
+}
+
 /** Safe HTML block for profile detail (legacy plain-text bios still work). */
 export function renderBioHtml(html: string): string {
   const raw = String(html || "").trim();

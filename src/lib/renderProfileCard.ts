@@ -4,7 +4,7 @@
  */
 import { toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
-import { bioPlainText } from "./bio";
+import { bioLeadPlainText, bioPlainText } from "./bio";
 import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
 
 export function escapeHtml(value: string): string {
@@ -22,6 +22,8 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const name = escapeHtml(profile.name);
   const estado = escapeHtml(profile.estado);
   const descriptionPlain = bioPlainText(profile.description || "");
+  const leadPlain = bioLeadPlainText(profile.description || "");
+  const lead = escapeHtml(leadPlain);
   const description = escapeHtml(descriptionPlain);
   const serviciosJson = escapeHtml(JSON.stringify(profile.servicios || []));
   const shell = isPro
@@ -65,7 +67,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
         </div>
       </div>
     </header>
-    <p class="line-clamp-2 shrink-0 text-sm leading-relaxed text-dm-offblack/75">${description}</p>
+    <p class="bio-lead line-clamp-3 shrink-0 text-sm font-medium leading-relaxed text-dm-offblack/85">${lead}</p>
     <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">${chips}</div>
   </div>
   <a href="${href}" class="absolute inset-0 z-0" aria-hidden="true" tabindex="-1"></a>

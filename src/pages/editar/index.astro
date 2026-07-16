@@ -292,17 +292,45 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           <div>
             <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
             <p class="mt-1 text-sm text-dm-offblack/60">TipTap · HTML sanitizado al guardar.</p>
+            <p class="text-xs text-dm-offblack/45">El primer párrafo es el destacado en la tarjeta del directorio; después puedes ampliar en el perfil.</p>
           </div>
           <div class="overflow-hidden rounded border border-dm-offblack/20 bg-white" data-tiptap-shell>
             <div
               class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
               data-bio-toolbar
             >
-              <button type="button" data-bio-cmd="bold" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] font-bold">B</button>
-              <button type="button" data-bio-cmd="italic" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] italic">I</button>
-              <button type="button" data-bio-cmd="h2" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px]">H2</button>
-              <button type="button" data-bio-cmd="bullet" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px]">Lista</button>
-              <button type="button" data-bio-cmd="link" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px]">Enlace</button>
+              <button type="button" data-bio-cmd="bold" aria-label="Negritas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-xs font-bold leading-none" aria-hidden="true">B</span>
+                <span>Negritas</span>
+              </button>
+              <button type="button" data-bio-cmd="italic" aria-label="Itálicas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-xs italic leading-none" aria-hidden="true">I</span>
+                <span>Itálicas</span>
+              </button>
+              <button type="button" data-bio-cmd="h2" aria-label="Título" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🏷️</span>
+                <span>Título</span>
+              </button>
+              <button type="button" data-bio-cmd="paragraph" aria-label="Texto" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">¶</span>
+                <span>Texto</span>
+              </button>
+              <button type="button" data-bio-cmd="bullet" aria-label="Lista" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">•</span>
+                <span>Lista</span>
+              </button>
+              <button type="button" data-bio-cmd="blockquote" aria-label="Cita" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">❝</span>
+                <span>Cita</span>
+              </button>
+              <button type="button" data-bio-cmd="link" aria-label="Enlace" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🔗</span>
+                <span>Enlace</span>
+              </button>
+              <button type="button" data-bio-cmd="clear" aria-label="Quitar formato" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px] text-dm-offblack/70">
+                <span class="w-4 shrink-0 text-center text-sm leading-none" aria-hidden="true">🧹</span>
+                <span>Quitar formato</span>
+              </button>
             </div>
             <div data-bio-editor></div>
             <input type="hidden" name="description" value="" data-bio-html />
@@ -993,6 +1021,13 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     list-style: disc;
     padding-left: 1.25rem;
     margin: 0.35rem 0;
+  }
+  .tiptap blockquote {
+    margin: 0.35rem 0;
+    padding-left: 0.85rem;
+    border-left: 3px solid color-mix(in oklab, var(--color-dm-offblack) 22%, transparent);
+    color: color-mix(in oklab, var(--color-dm-offblack) 72%, transparent);
+    font-style: italic;
   }
   .tiptap p {
     margin: 0.35rem 0;

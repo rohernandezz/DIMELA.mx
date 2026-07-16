@@ -8,7 +8,7 @@
       "Lettering",
       "Ingeniería de Fuentes"
     ],
-    "description": "Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.",
+    "description": "<p>Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.</p><p>Trabajo con estudios, marcas y editoriales que buscan una voz tipográfica clara y con raíz mexicana — desde logotipos hasta familias completas para texto corrido.</p><p>Talleres, charlas y colaboraciones con el Colegio de Diseñadores y eventos como TMX. Si tienes un proyecto, escríbeme.</p>",
     "website": "https://tortilla.studio",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
@@ -22,7 +22,7 @@
       "Diseño de Tipografía",
       "Diseño Editorial"
     ],
-    "description": "Diseñador tipográfico y editorial. Fuentes para prensa, libros e identidad cultural mexicana.",
+    "description": "<p>Diseñador tipográfico y editorial. Fuentes para prensa, libros e identidad cultural mexicana.</p><p>He diseñado tipos para periódicos, museos y sellos independientes. Me interesa la legibilidad, el detalle y la historia detrás de cada letra.</p>",
     "website": "https://henestrosatype.com",
     "tier": "pro",
     "cover": "/mock/cover-cool.svg",
@@ -38,7 +38,7 @@
       "Diseño de Tipografía",
       "Caligrafía"
     ],
-    "description": "Lettering, caligrafía y tipografía para marcas. Proyectos de identidad con trazo propio.",
+    "description": "<p>Lettering, caligrafía y tipografía para marcas. Proyectos de identidad con trazo propio.</p><p>Desde Puebla trabajo con restaurantes, cervecerías y proyectos culturales que necesitan letras con carácter — mural, empaque o sistema completo.</p><p>Disponible para colaboraciones en México y remoto.</p>",
     "website": "https://miglconts.com",
     "tier": "pro",
     "cover": "/mock/cover-green.svg",
@@ -52,7 +52,7 @@
       "Diseño de Tipografía",
       "Caligrafía"
     ],
-    "description": "Mexican type designer & calligrapher. Fuentes y caligrafía para editorial e identidad.",
+    "description": "<p>Mexican type designer &amp; calligrapher. Fuentes y caligrafía para editorial e identidad.</p><p>Vivo entre proyectos editoriales y encargos de caligrafía para invitaciones, libros de artista y piezas de colección.</p>",
     "website": "https://www.instagram.com/ceci_dcd",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
@@ -65,7 +65,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Diseño editorial y tipografía aplicada a libros, revistas y publicaciones independientes.",
+    "description": "<p>Diseño editorial y tipografía aplicada a libros, revistas y publicaciones independientes.</p><p>En Cuatro Ojos armamos publicaciones con ritmo, jerarquía y cuidado en cada página. Nos gusta el papel, la encuadernación y el detalle que se nota al hojear.</p>",
     "website": "https://cuatroojos.com.mx",
     "tier": "free",
     "cover": null,
@@ -79,7 +79,7 @@
       "Rotulación Manual",
       "Lettering"
     ],
-    "description": "Rotulación a mano y lettering para comercio local, fachadas y espacios públicos en Oaxaca.",
+    "description": "<p>Rotulación a mano y lettering para comercio local, fachadas y espacios públicos en Oaxaca.</p><p>Pintura, pincel y color para negocios de barrio, mercados y festivales. Cada letrero cuenta la historia del lugar.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -94,7 +94,7 @@
       "Lettering",
       "Caligrafía"
     ],
-    "description": "Identidad tipográfica, lettering y caligrafía para marcas culturales y editoriales.",
+    "description": "<p>Identidad tipográfica, lettering y caligrafía para marcas culturales y editoriales.</p><p>Combino investigación, boceto y sistema para que la voz de una marca se sienta coherente en impreso y pantalla.</p><p>Proyectos recientes: festivales, sellos discográficos y identidad para espacios culturales en CDMX.</p>",
     "tier": "pro",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -106,7 +106,7 @@
     "servicios": [
       "Rotulación Manual"
     ],
-    "description": "Rotulación manual para negocios, letreros y piezas de señalética con carácter local.",
+    "description": "<p>Rotulación manual para negocios, letreros y piezas de señalética con carácter local.</p><p>Trabajo con comercios de Puebla que quieren verse auténticos — sin plantillas, con letra hecha a mano.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -119,7 +119,7 @@
       "Lettering",
       "Diseño de Tipografía"
     ],
-    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Aguascalientes.",
+    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en Aguascalientes.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": "/mock/miguel-avatar.png"
@@ -131,7 +131,7 @@
     "servicios": [
       "Branding"
     ],
-    "description": "Branding con foco en tipografía y voz visual. Basada en Baja California.",
+    "description": "<p>Branding con foco en tipografía y voz visual. Basada en Baja California.</p><p>Sistemas tipográficos para identidad en todos los puntos de contacto.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -143,7 +143,7 @@
     "servicios": [
       "Diseño de Tipografía"
     ],
-    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Baja California Sur.",
+    "description": "<p>Diseño de fuentes para editorial, marca y pantalla. Basada en Baja California Sur.</p><p>Familias a medida y ajustes finos para editorial y UI.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -156,7 +156,7 @@
       "Diseño Editorial",
       "Ingeniería de Fuentes"
     ],
-    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Campeche.",
+    "description": "<p>Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Campeche.</p><p>Libros, revistas y catálogos con cuidado en cada página.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -168,7 +168,7 @@
     "servicios": [
       "Caligrafía"
     ],
-    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Chiapas.",
+    "description": "<p>Caligrafía contemporánea para marca y piezas únicas. Basada en Chiapas.</p><p>Piezas únicas para invitaciones, logotipos y proyectos especiales.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -180,7 +180,7 @@
     "servicios": [
       "Ingeniería de Fuentes"
     ],
-    "description": "Soporte técnico para diseñadores de fuentes. Basada en Chihuahua.",
+    "description": "<p>Soporte técnico para diseñadores de fuentes. Basada en Chihuahua.</p><p>Soporte técnico para lanzar fuentes sin sorpresas.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -193,7 +193,7 @@
       "Rotulación Manual",
       "Branding"
     ],
-    "description": "Rotulación a mano para fachadas y comercio local. Basada en Ciudad de México.",
+    "description": "<p>Rotulación a mano para fachadas y comercio local. Basada en Ciudad de México.</p><p>Color, proporción y legibilidad para fachadas y señalética.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -205,7 +205,7 @@
     "servicios": [
       "Lettering"
     ],
-    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Coahuila.",
+    "description": "<p>Letras dibujadas a mano para identidad y campaña. Basada en Coahuila.</p><p>Boceto, refinamiento y entrega para impreso y pantalla.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -217,7 +217,7 @@
     "servicios": [
       "Branding"
     ],
-    "description": "Identidad tipográfica y sistemas de marca. Basada en Colima.",
+    "description": "<p>Identidad tipográfica y sistemas de marca. Basada en Colima.</p><p>Investigo la voz de cada marca antes de dibujar la primera letra.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -230,7 +230,7 @@
       "Diseño de Tipografía",
       "Caligrafía"
     ],
-    "description": "Familias tipográficas a la medida y retail. Basada en Durango.",
+    "description": "<p>Familias tipográficas a la medida y retail. Basada en Durango.</p><p>Desde el concepto hasta los archivos listos para producción.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -242,7 +242,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Guanajuato.",
+    "description": "<p>Diseño editorial y tipografía aplicada a publicaciones. Basada en Guanajuato.</p><p>Maquetación, elección tipográfica y ritmo de lectura.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -254,7 +254,7 @@
     "servicios": [
       "Caligrafía"
     ],
-    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Guerrero.",
+    "description": "<p>Trazo caligráfico para invitaciones, logos y arte. Basada en Guerrero.</p><p>Tinta, pincel y digital para encargos editoriales y de marca.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": "/mock/miguel-avatar.png"
@@ -267,7 +267,7 @@
       "Ingeniería de Fuentes",
       "Lettering"
     ],
-    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Hidalgo.",
+    "description": "<p>Ingeniería tipográfica: producción, kerning y exportación. Basada en Hidalgo.</p><p>Kerning, hinting y exportación para equipos de diseño.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -279,7 +279,7 @@
     "servicios": [
       "Rotulación Manual"
     ],
-    "description": "Letreros y señalética con trazo manual. Basada en Jalisco.",
+    "description": "<p>Letreros y señalética con trazo manual. Basada en Jalisco.</p><p>Letreros pintados a mano para comercio y espacios públicos.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -291,7 +291,7 @@
     "servicios": [
       "Lettering"
     ],
-    "description": "Lettering para marca, empaques y piezas editoriales. Basada en México.",
+    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en México.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -304,7 +304,7 @@
       "Branding",
       "Diseño Editorial"
     ],
-    "description": "Branding con foco en tipografía y voz visual. Basada en Michoacán.",
+    "description": "<p>Branding con foco en tipografía y voz visual. Basada en Michoacán.</p><p>Sistemas tipográficos para identidad en todos los puntos de contacto.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -316,7 +316,7 @@
     "servicios": [
       "Diseño de Tipografía"
     ],
-    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Morelos.",
+    "description": "<p>Diseño de fuentes para editorial, marca y pantalla. Basada en Morelos.</p><p>Familias a medida y ajustes finos para editorial y UI.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -328,7 +328,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Nayarit.",
+    "description": "<p>Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Nayarit.</p><p>Libros, revistas y catálogos con cuidado en cada página.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -341,7 +341,7 @@
       "Caligrafía",
       "Rotulación Manual"
     ],
-    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Nuevo León.",
+    "description": "<p>Caligrafía contemporánea para marca y piezas únicas. Basada en Nuevo León.</p><p>Piezas únicas para invitaciones, logotipos y proyectos especiales.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -353,7 +353,7 @@
     "servicios": [
       "Ingeniería de Fuentes"
     ],
-    "description": "Soporte técnico para diseñadores de fuentes. Basada en Oaxaca.",
+    "description": "<p>Soporte técnico para diseñadores de fuentes. Basada en Oaxaca.</p><p>Soporte técnico para lanzar fuentes sin sorpresas.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -365,7 +365,7 @@
     "servicios": [
       "Rotulación Manual"
     ],
-    "description": "Rotulación a mano para fachadas y comercio local. Basada en Puebla.",
+    "description": "<p>Rotulación a mano para fachadas y comercio local. Basada en Puebla.</p><p>Color, proporción y legibilidad para fachadas y señalética.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -378,7 +378,7 @@
       "Lettering",
       "Diseño de Tipografía"
     ],
-    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Querétaro.",
+    "description": "<p>Letras dibujadas a mano para identidad y campaña. Basada en Querétaro.</p><p>Boceto, refinamiento y entrega para impreso y pantalla.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -390,7 +390,7 @@
     "servicios": [
       "Branding"
     ],
-    "description": "Identidad tipográfica y sistemas de marca. Basada en Quintana Roo.",
+    "description": "<p>Identidad tipográfica y sistemas de marca. Basada en Quintana Roo.</p><p>Investigo la voz de cada marca antes de dibujar la primera letra.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": "/mock/miguel-avatar.png"
@@ -402,7 +402,7 @@
     "servicios": [
       "Diseño de Tipografía"
     ],
-    "description": "Familias tipográficas a la medida y retail. Basada en San Luis Potosí.",
+    "description": "<p>Familias tipográficas a la medida y retail. Basada en San Luis Potosí.</p><p>Desde el concepto hasta los archivos listos para producción.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -415,7 +415,7 @@
       "Diseño Editorial",
       "Ingeniería de Fuentes"
     ],
-    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Sinaloa.",
+    "description": "<p>Diseño editorial y tipografía aplicada a publicaciones. Basada en Sinaloa.</p><p>Maquetación, elección tipográfica y ritmo de lectura.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -427,7 +427,7 @@
     "servicios": [
       "Caligrafía"
     ],
-    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Sonora.",
+    "description": "<p>Trazo caligráfico para invitaciones, logos y arte. Basada en Sonora.</p><p>Tinta, pincel y digital para encargos editoriales y de marca.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -439,7 +439,7 @@
     "servicios": [
       "Ingeniería de Fuentes"
     ],
-    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Tabasco.",
+    "description": "<p>Ingeniería tipográfica: producción, kerning y exportación. Basada en Tabasco.</p><p>Kerning, hinting y exportación para equipos de diseño.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -452,7 +452,7 @@
       "Rotulación Manual",
       "Branding"
     ],
-    "description": "Letreros y señalética con trazo manual. Basada en Tamaulipas.",
+    "description": "<p>Letreros y señalética con trazo manual. Basada en Tamaulipas.</p><p>Letreros pintados a mano para comercio y espacios públicos.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -464,7 +464,7 @@
     "servicios": [
       "Lettering"
     ],
-    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Tlaxcala.",
+    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en Tlaxcala.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -476,7 +476,7 @@
     "servicios": [
       "Branding"
     ],
-    "description": "Branding con foco en tipografía y voz visual. Basada en Veracruz.",
+    "description": "<p>Branding con foco en tipografía y voz visual. Basada en Veracruz.</p><p>Sistemas tipográficos para identidad en todos los puntos de contacto.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -489,7 +489,7 @@
       "Diseño de Tipografía",
       "Caligrafía"
     ],
-    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Yucatán.",
+    "description": "<p>Diseño de fuentes para editorial, marca y pantalla. Basada en Yucatán.</p><p>Familias a medida y ajustes finos para editorial y UI.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -501,7 +501,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Zacatecas.",
+    "description": "<p>Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Zacatecas.</p><p>Libros, revistas y catálogos con cuidado en cada página.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -513,7 +513,7 @@
     "servicios": [
       "Caligrafía"
     ],
-    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Fuera de México.",
+    "description": "<p>Caligrafía contemporánea para marca y piezas únicas. Basada en Fuera de México.</p><p>Piezas únicas para invitaciones, logotipos y proyectos especiales.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -526,7 +526,7 @@
       "Ingeniería de Fuentes",
       "Lettering"
     ],
-    "description": "Soporte técnico para diseñadores de fuentes. Basada en Ciudad de México.",
+    "description": "<p>Soporte técnico para diseñadores de fuentes. Basada en Ciudad de México.</p><p>Soporte técnico para lanzar fuentes sin sorpresas.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": "/mock/miguel-avatar.png"
@@ -538,7 +538,7 @@
     "servicios": [
       "Rotulación Manual"
     ],
-    "description": "Rotulación a mano para fachadas y comercio local. Basada en Ciudad de México.",
+    "description": "<p>Rotulación a mano para fachadas y comercio local. Basada en Ciudad de México.</p><p>Color, proporción y legibilidad para fachadas y señalética.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -550,7 +550,7 @@
     "servicios": [
       "Lettering"
     ],
-    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Ciudad de México.",
+    "description": "<p>Letras dibujadas a mano para identidad y campaña. Basada en Ciudad de México.</p><p>Boceto, refinamiento y entrega para impreso y pantalla.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -563,7 +563,7 @@
       "Branding",
       "Diseño Editorial"
     ],
-    "description": "Identidad tipográfica y sistemas de marca. Basada en Ciudad de México.",
+    "description": "<p>Identidad tipográfica y sistemas de marca. Basada en Ciudad de México.</p><p>Investigo la voz de cada marca antes de dibujar la primera letra.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -575,7 +575,7 @@
     "servicios": [
       "Diseño de Tipografía"
     ],
-    "description": "Familias tipográficas a la medida y retail. Basada en Ciudad de México.",
+    "description": "<p>Familias tipográficas a la medida y retail. Basada en Ciudad de México.</p><p>Desde el concepto hasta los archivos listos para producción.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -587,7 +587,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Ciudad de México.",
+    "description": "<p>Diseño editorial y tipografía aplicada a publicaciones. Basada en Ciudad de México.</p><p>Maquetación, elección tipográfica y ritmo de lectura.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -600,7 +600,7 @@
       "Caligrafía",
       "Rotulación Manual"
     ],
-    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Ciudad de México.",
+    "description": "<p>Trazo caligráfico para invitaciones, logos y arte. Basada en Ciudad de México.</p><p>Tinta, pincel y digital para encargos editoriales y de marca.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -612,7 +612,7 @@
     "servicios": [
       "Ingeniería de Fuentes"
     ],
-    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Ciudad de México.",
+    "description": "<p>Ingeniería tipográfica: producción, kerning y exportación. Basada en Ciudad de México.</p><p>Kerning, hinting y exportación para equipos de diseño.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -624,7 +624,7 @@
     "servicios": [
       "Rotulación Manual"
     ],
-    "description": "Letreros y señalética con trazo manual. Basada en Puebla.",
+    "description": "<p>Letreros y señalética con trazo manual. Basada en Puebla.</p><p>Letreros pintados a mano para comercio y espacios públicos.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -637,7 +637,7 @@
       "Lettering",
       "Diseño de Tipografía"
     ],
-    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Puebla.",
+    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en Puebla.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -649,7 +649,7 @@
     "servicios": [
       "Branding"
     ],
-    "description": "Branding con foco en tipografía y voz visual. Basada en Puebla.",
+    "description": "<p>Branding con foco en tipografía y voz visual. Basada en Puebla.</p><p>Sistemas tipográficos para identidad en todos los puntos de contacto.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -661,7 +661,7 @@
     "servicios": [
       "Diseño de Tipografía"
     ],
-    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Puebla.",
+    "description": "<p>Diseño de fuentes para editorial, marca y pantalla. Basada en Puebla.</p><p>Familias a medida y ajustes finos para editorial y UI.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": "/mock/miguel-avatar.png"
@@ -674,7 +674,7 @@
       "Diseño Editorial",
       "Ingeniería de Fuentes"
     ],
-    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Puebla.",
+    "description": "<p>Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Puebla.</p><p>Libros, revistas y catálogos con cuidado en cada página.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -686,7 +686,7 @@
     "servicios": [
       "Caligrafía"
     ],
-    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Jalisco.",
+    "description": "<p>Caligrafía contemporánea para marca y piezas únicas. Basada en Jalisco.</p><p>Piezas únicas para invitaciones, logotipos y proyectos especiales.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -698,7 +698,7 @@
     "servicios": [
       "Ingeniería de Fuentes"
     ],
-    "description": "Soporte técnico para diseñadores de fuentes. Basada en Jalisco.",
+    "description": "<p>Soporte técnico para diseñadores de fuentes. Basada en Jalisco.</p><p>Soporte técnico para lanzar fuentes sin sorpresas.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -711,7 +711,7 @@
       "Rotulación Manual",
       "Branding"
     ],
-    "description": "Rotulación a mano para fachadas y comercio local. Basada en Jalisco.",
+    "description": "<p>Rotulación a mano para fachadas y comercio local. Basada en Jalisco.</p><p>Color, proporción y legibilidad para fachadas y señalética.</p>",
     "tier": "free",
     "cover": null,
     "avatar": null
@@ -723,7 +723,7 @@
     "servicios": [
       "Lettering"
     ],
-    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Jalisco.",
+    "description": "<p>Letras dibujadas a mano para identidad y campaña. Basada en Jalisco.</p><p>Boceto, refinamiento y entrega para impreso y pantalla.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -735,7 +735,7 @@
     "servicios": [
       "Branding"
     ],
-    "description": "Identidad tipográfica y sistemas de marca. Basada en Nuevo León.",
+    "description": "<p>Identidad tipográfica y sistemas de marca. Basada en Nuevo León.</p><p>Investigo la voz de cada marca antes de dibujar la primera letra.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -748,7 +748,7 @@
       "Diseño de Tipografía",
       "Caligrafía"
     ],
-    "description": "Familias tipográficas a la medida y retail. Basada en Nuevo León.",
+    "description": "<p>Familias tipográficas a la medida y retail. Basada en Nuevo León.</p><p>Desde el concepto hasta los archivos listos para producción.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -760,7 +760,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Nuevo León.",
+    "description": "<p>Diseño editorial y tipografía aplicada a publicaciones. Basada en Nuevo León.</p><p>Maquetación, elección tipográfica y ritmo de lectura.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -772,7 +772,7 @@
     "servicios": [
       "Caligrafía"
     ],
-    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Oaxaca.",
+    "description": "<p>Trazo caligráfico para invitaciones, logos y arte. Basada en Oaxaca.</p><p>Tinta, pincel y digital para encargos editoriales y de marca.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -785,7 +785,7 @@
       "Ingeniería de Fuentes",
       "Lettering"
     ],
-    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Oaxaca.",
+    "description": "<p>Ingeniería tipográfica: producción, kerning y exportación. Basada en Oaxaca.</p><p>Kerning, hinting y exportación para equipos de diseño.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null
@@ -797,7 +797,7 @@
     "servicios": [
       "Rotulación Manual"
     ],
-    "description": "Letreros y señalética con trazo manual. Basada en Oaxaca.",
+    "description": "<p>Letreros y señalética con trazo manual. Basada en Oaxaca.</p><p>Letreros pintados a mano para comercio y espacios públicos.</p>",
     "tier": "free",
     "cover": null,
     "avatar": "/mock/miguel-avatar.png"
@@ -809,7 +809,7 @@
     "servicios": [
       "Lettering"
     ],
-    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Querétaro.",
+    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en Querétaro.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null
@@ -822,7 +822,7 @@
       "Branding",
       "Diseño Editorial"
     ],
-    "description": "Branding con foco en tipografía y voz visual. Basada en Querétaro.",
+    "description": "<p>Branding con foco en tipografía y voz visual. Basada en Querétaro.</p><p>Sistemas tipográficos para identidad en todos los puntos de contacto.</p>",
     "tier": "free",
     "cover": "/mock/cover-cool.svg",
     "avatar": null
@@ -834,7 +834,7 @@
     "servicios": [
       "Diseño de Tipografía"
     ],
-    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Yucatán.",
+    "description": "<p>Diseño de fuentes para editorial, marca y pantalla. Basada en Yucatán.</p><p>Familias a medida y ajustes finos para editorial y UI.</p>",
     "tier": "free",
     "cover": "/mock/cover-pink.svg",
     "avatar": null
@@ -846,7 +846,7 @@
     "servicios": [
       "Diseño Editorial"
     ],
-    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Yucatán.",
+    "description": "<p>Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Yucatán.</p><p>Libros, revistas y catálogos con cuidado en cada página.</p>",
     "tier": "free",
     "cover": "/mock/cover-green.svg",
     "avatar": null
@@ -859,7 +859,7 @@
       "Caligrafía",
       "Rotulación Manual"
     ],
-    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Veracruz.",
+    "description": "<p>Caligrafía contemporánea para marca y piezas únicas. Basada en Veracruz.</p><p>Piezas únicas para invitaciones, logotipos y proyectos especiales.</p>",
     "tier": "free",
     "cover": "/mock/cecilia-featured.png",
     "avatar": null
@@ -871,7 +871,7 @@
     "servicios": [
       "Ingeniería de Fuentes"
     ],
-    "description": "Soporte técnico para diseñadores de fuentes. Basada en Veracruz.",
+    "description": "<p>Soporte técnico para diseñadores de fuentes. Basada en Veracruz.</p><p>Soporte técnico para lanzar fuentes sin sorpresas.</p>",
     "tier": "free",
     "cover": "/mock/mara-featured.png",
     "avatar": null

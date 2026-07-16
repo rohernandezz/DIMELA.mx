@@ -5,7 +5,7 @@
  */
 import type { MockProfile } from "../data/mockProfiles";
 import { estadoSlug } from "../lib/slugs";
-import { bioPlainText } from "../lib/bio";
+import { bioLeadPlainText, bioPlainText } from "../lib/bio";
 import { websiteHref, websiteLabel, websiteCapsuleClass } from "../lib/website";
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
 
 const { profile } = Astro.props;
 const descriptionPlain = bioPlainText(profile.description);
+const leadPlain = bioLeadPlainText(profile.description);
 const siteHref = profile.website ? websiteHref(profile.website) : "";
 const siteLabel = profile.website ? websiteLabel(profile.website) : "";
 const isPro = profile.tier === "pro";
@@ -120,8 +121,8 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
       </div>
     </header>
 
-    <p class="line-clamp-2 shrink-0 text-sm leading-relaxed text-dm-offblack/75">
-      {descriptionPlain}
+    <p class="bio-lead line-clamp-3 shrink-0 text-sm font-medium leading-relaxed text-dm-offblack/85">
+      {leadPlain}
     </p>
 
     <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">
