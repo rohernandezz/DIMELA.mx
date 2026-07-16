@@ -49,7 +49,7 @@ export function renderProfileDetailHtml(
     : "";
 
   const servicesBlock = chips
-    ? `<div class="mb-8 flex flex-wrap gap-2">${chips}</div>`
+    ? `<div class="mb-6 flex flex-wrap gap-2">${chips}</div>`
     : "";
 
   const galleries = (profile.galleries || []).filter((g) => g.images?.length);
@@ -106,8 +106,8 @@ export function renderProfileDetailHtml(
         </div>
       </div>
     </header>
-    ${descriptionHtml ? `<div class="profile-bio mb-6 text-base leading-relaxed text-dm-offblack/80">${descriptionHtml}</div>` : ""}
     ${servicesBlock}
+    ${descriptionHtml ? `<div class="profile-bio mb-6 text-base leading-relaxed text-dm-offblack/80">${descriptionHtml}</div>` : ""}
     ${galleryHtml}
     <p class="text-sm text-dm-offblack/45">
       <a href="/directorio/" class="hover:underline">← Volver al directorio</a>
