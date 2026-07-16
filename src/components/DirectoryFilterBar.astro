@@ -15,7 +15,7 @@ const servicios = [...SERVICIOS];
 >
   <div class="overflow-visible rounded border border-dm-offblack/15 bg-white">
     {/* Top row — always visible */}
-    <div class="flex flex-wrap items-center gap-2 px-3 py-2.5">
+    <div class="flex items-center gap-2 px-3 py-2.5 md:flex-nowrap">
       <label class="relative min-w-0 flex-1 md:max-w-xs md:flex-none md:w-56">
         <span class="sr-only">Buscar</span>
         <input
@@ -28,24 +28,24 @@ const servicios = [...SERVICIOS];
         />
       </label>
 
-      {/* Desktop ubicación */}
-      <div class="relative hidden md:block" data-estado-multi data-estado-desktop>
+      {/* Desktop ubicación — fills remaining width */}
+      <div class="relative hidden min-w-0 flex-1 md:block" data-estado-multi data-estado-desktop>
         <button
           type="button"
           data-estado-toggle
-          class="flex max-w-[14rem] items-center gap-1 rounded border border-dm-offblack/20 bg-dm-blue/50 px-2 py-1.5 text-left text-sm text-dm-offblack"
+          class="flex w-full min-w-0 items-center gap-2 rounded border border-dm-offblack/20 bg-dm-blue/50 px-3 py-1.5 text-left text-sm text-dm-offblack"
           aria-expanded="false"
         >
-          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
             >Ubicación</span
           >
-          <span data-estado-label class="truncate">Todo México</span>
-          <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
+          <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+          <span class="shrink-0 text-dm-offblack/40" aria-hidden="true">▾</span>
         </button>
         <div
           data-estado-panel
           hidden
-          class="absolute top-full left-0 z-30 mt-1 max-h-64 w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+          class="absolute top-full left-0 z-30 mt-1 max-h-64 w-full min-w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
         >
           {
             estados.map((estado) => (
@@ -58,10 +58,18 @@ const servicios = [...SERVICIOS];
         </div>
       </div>
 
+      {/* Count: end of bar, before Limpiar / Filtros */}
+      <p
+        class="shrink-0 text-xs text-dm-offblack/50 tabular-nums md:ml-1"
+        data-filter-count
+        aria-live="polite"
+      >
+      </p>
+
       <button
         type="button"
         data-filter-clear
-        class="hidden rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-white disabled:opacity-40 md:inline"
+        class="hidden shrink-0 rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-white disabled:opacity-40 md:inline"
         disabled
       >
         Limpiar
@@ -176,13 +184,6 @@ const servicios = [...SERVICIOS];
       </div>
     </div>
   </div>
-
-  <p
-    class="mt-2 text-sm text-dm-offblack/55"
-    data-filter-count
-    aria-live="polite"
-  >
-  </p>
 </section>
 
 <style>
@@ -303,10 +304,15 @@ const servicios = [...SERVICIOS];
     });
 
     const countText = hasFilters(state)
-      ? `${visible} de ${cards.length} perfiles`
-      : `${cards.length} perfiles`;
+      ? `${visible}/${cards.length}`
+      : `${cards.length}`;
     const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
-    if (countEl) countEl.textContent = countText;
+    if (countEl) {
+      countEl.textContent = countText;
+      countEl.title = hasFilters(state)
+        ? `${visible} de ${cards.length} perfiles`
+        : `${cards.length} perfiles`;
+    }
 
     const badge = root.querySelector<HTMLElement>("[data-sheet-badge]");
     if (badge) {
