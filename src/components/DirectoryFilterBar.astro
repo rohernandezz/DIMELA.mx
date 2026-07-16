@@ -877,22 +877,35 @@ const servicios = [...SERVICIOS];
       }
     };
 
+    /**
+     * Stick/unstick from live geometry — not a one-shot IntersectionObserver rootMargin.
+     * A fixed rootMargin captured at init uses the *expanded* header height; after
+     * data-compact shrinks the bar, that margin stays too large and the sentinel can
+     * never re-intersect when scrolling back to the top (header stays compact).
+     */
+    const syncCollapsedFromScroll = () => {
+      if (!sentinel) return;
+      const headerBottom = siteHeader
+        ? Math.floor(siteHeader.getBoundingClientRect().bottom)
+        : 52;
+      const sentinelTop = sentinel.getBoundingClientRect().top;
+      // Collapse once the sentinel scrolls up under (or past) the sticky header.
+      setCollapsed(sentinelTop < headerBottom - 1);
+    };
+
     syncSiteHeaderHeight();
     if (siteHeader && typeof ResizeObserver !== "undefined") {
-      const headerRo = new ResizeObserver(() => syncSiteHeaderHeight());
+      const headerRo = new ResizeObserver(() => {
+        syncSiteHeaderHeight();
+        // Compact height changes shift the threshold; re-evaluate stick state.
+        syncCollapsedFromScroll();
+      });
       headerRo.observe(siteHeader);
     }
 
     if (sentinel) {
-      const collapsedObserver = new IntersectionObserver(
-        ([entry]) => setCollapsed(!entry.isIntersecting),
-        {
-          // Unstick only once the sentinel is back under the sticky site header.
-          rootMargin: `-${Math.max(1, Math.round((siteHeader?.getBoundingClientRect().height ?? 52) - 1))}px 0px 0px 0px`,
-          threshold: 0,
-        },
-      );
-      collapsedObserver.observe(sentinel);
+      syncCollapsedFromScroll();
+      window.addEventListener("scroll", syncCollapsedFromScroll, { passive: true });
     }
 
     let state = readUrl();
@@ -906,6 +919,7 @@ const servicios = [...SERVICIOS];
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
         syncSiteHeaderHeight();
+        syncCollapsedFromScroll();
         syncEstadoLabels(root, state);
         syncSiteTaglineFromCrumbs();
       }, 100);
