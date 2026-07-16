@@ -71,8 +71,9 @@ Realistic ceiling for years: **~200 profiles**. Design for API filtering; soft p
 
 - Magic-link / email OTP (no passwords); link returned in API JSON until email is wired
 - Session cookie `dm_session`; one profile per member (admin can edit any via queue)
+- **Beta testers:** `/entrar/` — one-click login as seeded demo accounts (no email)
 - Claim flow for existing Hugo-seeded entries — still TBD
-- Demo member: `romina@tortilla.studio` · Demo admin: `hola@dimela.mx`
+- Demo member: `romina@tortilla.studio` + featured cards (`demo.*@dimela.mx`) · Demo admin: `hola@dimela.mx`
 
 ## Out of scope (for now)
 

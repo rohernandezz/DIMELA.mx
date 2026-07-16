@@ -18,7 +18,12 @@ const navLinks = [
   { href: "/directorio/", label: "Todo" },
   { href: "/estado/", label: "Locación" },
   { href: "/servicios/", label: "Servicios" },
-  { href: "/acerca-de/", label: "Acerca" },
+  { href: "/acerca-de/", label: "Acerca de…" },
+] as const;
+
+const betaLinks = [
+  { href: "/brand/", label: "Brand" },
+  { href: "/entrar/", label: "Entrar" },
 ] as const;
 ---
 
@@ -136,13 +141,26 @@ const navLinks = [
             >
               Admin
             </a>
-            <a
-              href="/brand/"
-              class="block px-3 py-2 text-sm hover:bg-dm-offwhite"
-              role="menuitem"
+            <div
+              class="mx-1.5 my-1.5 rounded border border-dm-offblack/10 bg-dm-offwhite py-1"
+              role="group"
+              aria-label="Beta"
             >
-              Brand
-            </a>
+              <p class="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+                Beta
+              </p>
+              {
+                betaLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="block px-3 py-1.5 text-sm text-dm-offblack/80 hover:bg-dm-offblack/5"
+                    role="menuitem"
+                  >
+                    {link.label}
+                  </a>
+                ))
+              }
+            </div>
             <a
               href="https://tortilla.studio"
               class="block border-t border-dm-offblack/10 px-3 py-2 text-sm hover:bg-dm-offwhite"

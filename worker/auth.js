@@ -3,10 +3,37 @@
  */
 
 import { slugFromName, uniqueProfileSlug } from "./slugs.js";
+import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
+
+export { DEMO_ACCOUNTS };
 
 const SESSION_COOKIE = "dm_session";
 const SESSION_DAYS = 14;
 const MAGIC_MINUTES = 30;
+
+function isLocalDevHost(url) {
+  const h = url.hostname;
+  return h === "localhost" || h === "127.0.0.1" || h === "[::1]" || h.endsWith(".localhost");
+}
+
+/** Beta one-click login: localhost always; remote needs BETA_LOGIN (+ optional BETA_LOGIN_SECRET). */
+export function betaLoginAllowed(env, url, secret) {
+  if (isLocalDevHost(url)) return true;
+  const enabled = env.BETA_LOGIN === "true" || env.BETA_LOGIN === "1";
+  if (!enabled) return false;
+  const expected = env.BETA_LOGIN_SECRET;
+  if (!expected) return true;
+  return String(secret || "") === expected;
+}
+
+async function createSessionForUser(env, user) {
+  const sessionToken = randomToken();
+  await env.DB.prepare(`INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)`)
+    .bind(sessionToken, user.id, isoInDays(SESSION_DAYS))
+    .run();
+  return sessionToken;
+}
+
 
 export function json(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
@@ -201,12 +228,7 @@ export async function handleAuthVerify(request, env, url) {
     .bind(token)
     .run();
 
-  const sessionToken = randomToken();
-  await env.DB.prepare(
-    `INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)`,
-  )
-    .bind(sessionToken, user.id, isoInDays(SESSION_DAYS))
-    .run();
+  const sessionToken = await createSessionForUser(env, user);
 
   const publicOrigin = requestPublicOrigin(request, url);
   const redirectTo = new URL(next, publicOrigin);
@@ -224,6 +246,95 @@ export async function handleAuthVerify(request, env, url) {
     },
   });
 }
+
+function resolveDemoAccount(demoKey) {
+  const key = String(demoKey || "")
+    .trim()
+    .toLowerCase();
+  return DEMO_ACCOUNTS[key] || null;
+}
+
+export async function handleAuthBeta(request, env, url) {
+  if (request.method !== "GET" && request.method !== "POST") {
+    return json({ ok: false, error: "Método no permitido." }, 405);
+  }
+  if (!env.DB) return json({ ok: false, error: "D1 no configurado." }, 503);
+
+  let demoKey;
+  let secret;
+  let nextOverride;
+
+  if (request.method === "GET") {
+    demoKey = url.searchParams.get("demo");
+    secret = url.searchParams.get("secret") || url.searchParams.get("key");
+    nextOverride = url.searchParams.get("next");
+  } else {
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return json({ ok: false, error: "JSON inválido." }, 400);
+    }
+    demoKey = body.demo;
+    secret = body.secret || body.key;
+    nextOverride = body.next;
+  }
+
+  if (!betaLoginAllowed(env, url, secret)) {
+    return json({ ok: false, error: "Acceso beta no habilitado." }, 403);
+  }
+
+  const account = resolveDemoAccount(demoKey);
+  if (!account) {
+    return json({ ok: false, error: "Cuenta demo desconocida." }, 400);
+  }
+
+  const email = normalizeEmail(account.email);
+  const user = await env.DB.prepare(`SELECT id, email, role FROM users WHERE email = ? LIMIT 1`)
+    .bind(email)
+    .first();
+
+  if (!user) {
+    return json(
+      {
+        ok: false,
+        error: "Usuario demo no encontrado. Ejecuta db:seed:auth en D1.",
+      },
+      404,
+    );
+  }
+
+  const sessionToken = await createSessionForUser(env, user);
+  const publicOrigin = requestPublicOrigin(request, url);
+  const next = nextOverride || account.next;
+  const redirectTo = new URL(next, publicOrigin);
+  if (redirectTo.origin !== publicOrigin) {
+    redirectTo.href = new URL(account.next, publicOrigin).href;
+  }
+
+  const cookieUrl = new URL(publicOrigin);
+
+  if (request.method === "GET") {
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: redirectTo.pathname + redirectTo.search,
+        "Set-Cookie": sessionCookie(sessionToken, cookieUrl),
+      },
+    });
+  }
+
+  return json(
+    {
+      ok: true,
+      user: { id: user.id, email: user.email, role: user.role },
+      redirect: redirectTo.pathname + redirectTo.search,
+    },
+    200,
+    { "Set-Cookie": sessionCookie(sessionToken, cookieUrl) },
+  );
+}
+
 
 export async function handleAuthLogout(request, env, url) {
   if (request.method !== "POST") {

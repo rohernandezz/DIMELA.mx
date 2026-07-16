@@ -69,6 +69,7 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 ### Auth + editor (MVP)
 
 - Magic link: `POST /api/auth/request` `{ email }` → D1 token, returns `verifyUrl` (email provider later)
+- **Beta demo login:** `GET /api/auth/beta?demo=<key>` → session cookie, redirect (`/entrar/` UI). Keys: featured profile demos + `admin` (see `shared/demoAccounts.js`). Localhost always; remote needs `BETA_LOGIN=true` (+ optional `BETA_LOGIN_SECRET`, pass as `?key=` on `/entrar/`)
 - `GET /api/auth/verify?token=` → sets `dm_session` HttpOnly cookie, redirects to `/editar/`
 - `GET /api/auth/me` → session user + owned profile (any status)
 - `PUT /api/me/profile` → create/update owned profile in D1

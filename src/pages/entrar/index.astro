@@ -1,0 +1,94 @@
+---
+/**
+ * Beta / demo login — one-click session for seeded example accounts.
+ * API: GET /api/auth/beta?demo=<key> (&secret= when BETA_LOGIN_SECRET is set).
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { DEMO_ACCOUNTS } from "../../../shared/demoAccounts.js";
+
+const memberDemos = Object.entries(DEMO_ACCOUNTS)
+  .filter(([, account]) => account.role === "member")
+  .map(([key, account]) => ({
+    key,
+    label: account.label,
+    blurb: account.blurb,
+    cta: `Entrar como ${account.label.split(" ")[0]}`,
+  }));
+
+const adminDemo = DEMO_ACCOUNTS.admin;
+const adminEntry = {
+  key: "admin",
+  label: adminDemo.label,
+  blurb: adminDemo.blurb,
+  cta: "Entrar como admin",
+};
+
+const demos = [...memberDemos, adminEntry];
+---
+
+<BaseLayout
+  title="Entrar (beta) — DIMELA.mx"
+  description="Acceso rápido a cuentas demo para pruebas."
+  headerVariant="simple"
+  homeHref="/"
+>
+  <div class="mx-auto max-w-lg pb-16">
+    <header class="mb-8 space-y-2">
+      <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Beta</p>
+      <h1 class="text-3xl tracking-wide">Entrar como ejemplo</h1>
+      <p class="text-sm leading-relaxed text-dm-offblack/65">
+        Para testers: inicia sesión al instante con una cuenta demo (sin correo). En local funciona
+        directo; en staging o producción el equipo DIMELA debe habilitar
+        <code class="text-xs">BETA_LOGIN</code>.
+      </p>
+    </header>
+
+    <ul class="space-y-3" data-beta-list>
+      {
+        demos.map((demo) => (
+          <li>
+            <a
+              href={`/api/auth/beta?demo=${demo.key}`}
+              data-beta-link
+              data-demo={demo.key}
+              class="group block rounded border border-dm-offblack/15 bg-white p-4 transition hover:border-dm-offblack/35 hover:bg-dm-offwhite"
+            >
+              <span class="block text-lg tracking-wide group-hover:text-dm-offblack">
+                {demo.cta}
+              </span>
+              <span class="mt-1 block text-sm text-dm-offblack/60">{demo.blurb}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-6 text-sm text-dm-offblack/55" data-beta-hint hidden></p>
+
+    <p class="mt-8 text-xs text-dm-offblack/45">
+      ¿Cuenta propia? Usa el
+      <a href="/editar/" class="underline hover:text-dm-offblack">editor con enlace mágico</a>.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  function initBetaLinks() {
+    const params = new URLSearchParams(window.location.search);
+    const secret = params.get("key") || params.get("secret");
+    const hint = document.querySelector<HTMLElement>("[data-beta-hint]");
+
+    document.querySelectorAll<HTMLAnchorElement>("[data-beta-link]").forEach((link) => {
+      const url = new URL(link.href, window.location.origin);
+      if (secret) url.searchParams.set("secret", secret);
+      link.href = `${url.pathname}${url.search}`;
+    });
+
+    if (secret && hint) {
+      hint.textContent = "Clave beta en la URL — los enlaces la incluyen automáticamente.";
+      hint.classList.remove("hidden");
+    }
+  }
+
+  initBetaLinks();
+</script>

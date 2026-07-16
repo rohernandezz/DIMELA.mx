@@ -3,6 +3,7 @@
  */
 import {
   getSessionUser,
+  handleAuthBeta,
   handleAuthLogout,
   handleAuthMe,
   handleAuthRequest,
@@ -159,6 +160,7 @@ export default {
     const path = url.pathname;
 
     if (path === "/api/auth/request") return handleAuthRequest(request, env, url);
+    if (path === "/api/auth/beta") return handleAuthBeta(request, env, url);
     if (path === "/api/auth/verify") return handleAuthVerify(request, env, url);
     if (path === "/api/auth/logout") return handleAuthLogout(request, env, url);
     if (path === "/api/auth/me") return handleAuthMe(request, env);
