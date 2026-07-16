@@ -4,11 +4,12 @@
  */
 interface Props {
   variant?: "path" | "simple";
+  homeHref?: string;
 }
 
 import DirectoryPathFilter from "./DirectoryPathFilter.astro";
 
-const { variant = "path" } = Astro.props;
+const { variant = "path", homeHref = "/" } = Astro.props;
 const pathname = Astro.url.pathname;
 ---
 
@@ -61,7 +62,7 @@ const pathname = Astro.url.pathname;
       </div>
     ) : (
       <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <a href="/bar/" class="text-lg tracking-wide hover:opacity-80">
+        <a href={homeHref} class="text-lg tracking-wide hover:opacity-80">
           DIMELA.mx
         </a>
         <nav class="flex flex-wrap items-center gap-4 text-sm text-dm-offwhite/80" aria-label="Principal">

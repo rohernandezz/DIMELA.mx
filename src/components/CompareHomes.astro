@@ -3,7 +3,7 @@
  * Tiny strip to flip between homepage filter mocks.
  */
 interface Props {
-  current: "path" | "bar";
+  current: "path" | "bar" | "hybrid";
 }
 
 const { current } = Astro.props;
@@ -20,7 +20,7 @@ const { current } = Astro.props;
       current === "path" && "font-bold text-dm-offblack underline",
     ]}
   >
-    A · Path / breadcrumbs
+    A · Path in header
   </a>
   <a
     href="/bar/"
@@ -30,5 +30,14 @@ const { current } = Astro.props;
     ]}
   >
     B · Filter bar
+  </a>
+  <a
+    href="/v3/"
+    class:list={[
+      "underline-offset-2 hover:underline",
+      current === "hybrid" && "font-bold text-dm-offblack underline",
+    ]}
+  >
+    C · Hybrid breadcrumbs
   </a>
 </p>
