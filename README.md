@@ -84,7 +84,9 @@ To add an alias, edit `LOCATION_ALIASES` with `alias: "Canonical estado"`, using
 
 ### Profile tags (searchable)
 
-Curated subespecialidades live in `src/data/tags.ts` (keep `worker/tags.js` in sync). They are editable in `/editar/`, shown as dashed pills on cards/detail, and matched by directory search `q` — they are **not** filter chips. Cap is 8 per profile. Local migrate: `npm run db:migrate:tags:local` (also included in `db:sync:local`).
+**Trial / not final:** Profile tags (subespecialidades under services) are in trial — searchable, not filter chips; UI may change or be removed.
+
+Curated subespecialidades live in `src/data/tags.ts` (keep `worker/tags.js` in sync). They are editable in `/editar/`, shown as sub-pills under services on cards/detail, and matched by directory search `q` — they are **not** filter chips. Cap is 8 per profile. Local migrate: `npm run db:migrate:tags:local` (also included in `db:sync:local`).
 
 ## Docs
 

@@ -66,7 +66,7 @@ export function renderProfileDetailHtml(
     : "";
   const servicesAndTags =
     chips || tagPills
-      ? `<div class="mb-6 border-t border-dm-offblack/10 pt-4"><div class="flex flex-wrap gap-2">${chips}</div>${tagsRow}</div>`
+      ? `<div class="mb-6"><div class="flex flex-wrap gap-2">${chips}</div>${tagsRow}</div>`
       : "";
 
   const galleries = (profile.galleries || []).filter((g) => g.images?.length);

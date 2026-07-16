@@ -59,6 +59,10 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 - [ ] Netlify dashboard: disable test site if still running — [cutover.md](cutover.md)
 - [ ] Public launch: disable Dev/beta toggles — [beta-launch.md](beta-launch.md)
 
+## WIP / open questions
+
+- **Profile tags** (subespecialidades under services) — in trial: searchable via `q`, not filter chips; UI may change or be removed. See README “Profile tags”.
+
 ## Notes
 
 - Filters: `?q=&servicio=&estado=` (FilterBar → `/api/search`; falls back to `/data/profiles.json` when API unavailable)
