@@ -501,10 +501,21 @@ const servicios = [...SERVICIOS];
     });
   }
 
+  /** True only when a header crumb trail is rendered and visible (mobile only; desktop uses md:hidden). */
+  function hasVisibleHeaderCrumbs(): boolean {
+    return [...document.querySelectorAll<HTMLElement>("[data-active-crumbs]")].some((host) => {
+      if (host.hidden || host.childElementCount === 0) return false;
+      return host.getClientRects().length > 0;
+    });
+  }
+
+  function syncSiteTaglineFromCrumbs() {
+    syncSiteTagline(!hasVisibleHeaderCrumbs());
+  }
+
   function renderActiveCrumbs(state: FilterState, root: HTMLElement) {
     const hideEstado = root.dataset.hideEstado === "true";
     const hideServicio = root.dataset.hideServicio === "true";
-    let anyVisible = false;
     document.querySelectorAll<HTMLElement>("[data-active-crumbs]").forEach((host) => {
       const light = host.dataset.crumbsTheme === "light";
       const crumbState: FilterState = {
@@ -517,7 +528,6 @@ const servicios = [...SERVICIOS];
         host.replaceChildren();
         return;
       }
-      anyVisible = true;
       host.hidden = false;
       const nodes: Node[] = [];
       appendCrumbGroup(nodes, [...crumbState.estado], "estado", light);
@@ -527,7 +537,7 @@ const servicios = [...SERVICIOS];
       }
       host.replaceChildren(...nodes);
     });
-    syncSiteTagline(!anyVisible);
+    syncSiteTaglineFromCrumbs();
   }
 
   function setMobileFiltersOpen(root: HTMLElement, open: boolean) {
@@ -755,7 +765,10 @@ const servicios = [...SERVICIOS];
     let resizeTimer: number | undefined;
     window.addEventListener("resize", () => {
       window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => syncEstadoLabels(root, state), 100);
+      resizeTimer = window.setTimeout(() => {
+        syncEstadoLabels(root, state);
+        syncSiteTaglineFromCrumbs();
+      }, 100);
     });
 
     root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {

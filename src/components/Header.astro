@@ -220,7 +220,7 @@ const betaLinks = [
     opacity: 1;
   }
 
-  /* Compact hamburger when grey bar is collapsed sticky on desktop */
+  /* Compact header chrome when grey bar is collapsed sticky on desktop */
   @media (min-width: 768px) {
     .directory-filter[data-collapsed] .site-menu-toggle {
       height: 1.5rem;
@@ -229,6 +229,19 @@ const betaLinks = [
     .directory-filter[data-collapsed] .site-menu-toggle svg {
       height: 0.875rem;
       width: 0.875rem;
+    }
+    .directory-filter[data-collapsed] [data-site-tagline] {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @media (min-width: 768px) {
+      [data-site-tagline] {
+        transition:
+          font-size 0.2s ease,
+          line-height 0.2s ease;
+      }
     }
   }
 </style>
