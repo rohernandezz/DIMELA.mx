@@ -122,11 +122,11 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
       </div>
     </header>
 
-    <p class="bio-lead line-clamp-3 shrink-0 text-sm font-medium leading-relaxed text-dm-offblack/85">
+    <p class="bio-lead line-clamp-3 min-h-0 text-sm font-medium leading-relaxed text-dm-offblack/85">
       {leadPlain}
     </p>
 
-    <div class="mt-auto min-h-12 shrink-0 overflow-hidden pt-1">
+    <div class="mt-auto min-h-12 shrink-0 pt-1">
       <div class="flex flex-wrap content-start gap-1.5">
         {
           profile.servicios.map((servicio) => (
@@ -136,18 +136,20 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
           ))
         }
       </div>
-      <div class="mt-1.5 flex flex-wrap content-start gap-1.5">
-        {
-          (profile.tags || []).map((tag) => (
-            <a
-              href={`/directorio/?q=${encodeURIComponent(tag)}`}
-              class="relative z-10 rounded border border-dashed border-dm-offblack/25 bg-white px-2 py-0.5 text-[11px] text-dm-offblack/65 hover:border-dm-offblack/45 hover:text-dm-offblack"
-            >
-              {tag}
-            </a>
-          ))
-        }
-      </div>
+      {
+        (profile.tags || []).length > 0 && (
+          <div class="mt-1.5 flex flex-wrap content-start gap-1.5">
+            {(profile.tags || []).map((tag) => (
+              <a
+                href={`/directorio/?q=${encodeURIComponent(tag)}`}
+                class="relative z-10 rounded border border-dashed border-dm-offblack/25 bg-white px-2 py-0.5 text-[11px] text-dm-offblack/65 hover:border-dm-offblack/45 hover:text-dm-offblack"
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
     </div>
   </div>
 

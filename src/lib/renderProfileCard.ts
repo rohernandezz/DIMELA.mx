@@ -60,8 +60,11 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
   const site = siteHref ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel) : "";
 
+  const tagsRow = tagPills
+    ? `<div class="mt-1.5 flex flex-wrap content-start gap-1.5">${tagPills}</div>`
+    : "";
   const facetRow = chips || tagPills
-    ? `<div class="mt-auto min-h-12 shrink-0 overflow-hidden pt-1"><div class="flex flex-wrap content-start gap-1.5">${chips}</div><div class="mt-1.5 flex flex-wrap content-start gap-1.5">${tagPills}</div></div>`
+    ? `<div class="mt-auto min-h-12 shrink-0 pt-1"><div class="flex flex-wrap content-start gap-1.5">${chips}</div>${tagsRow}</div>`
     : `<div class="mt-auto h-12 shrink-0"></div>`;
 
   return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-profile-theme="${escapeHtml(profile.slug)}" data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
@@ -78,7 +81,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
         </div>
       </div>
     </header>
-    <p class="bio-lead line-clamp-3 shrink-0 text-sm font-medium leading-relaxed text-dm-offblack/85">${lead}</p>
+    <p class="bio-lead line-clamp-3 min-h-0 text-sm font-medium leading-relaxed text-dm-offblack/85">${lead}</p>
     ${facetRow}
   </div>
   <a href="${href}" class="absolute inset-0 z-0" aria-hidden="true" tabindex="-1"></a>
