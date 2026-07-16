@@ -3,6 +3,7 @@
  */
 
 import { slugFromName, uniqueProfileSlug } from "./slugs.js";
+import { sanitizeCustomCss } from "./customCss.js";
 import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
 
 export { DEMO_ACCOUNTS };
@@ -33,7 +34,6 @@ async function createSessionForUser(env, user) {
     .run();
   return sessionToken;
 }
-
 
 export function json(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
@@ -335,7 +335,6 @@ export async function handleAuthBeta(request, env, url) {
   );
 }
 
-
 export async function handleAuthLogout(request, env, url) {
   if (request.method !== "POST") {
     return json({ ok: false, error: "Método no permitido." }, 405);
@@ -386,7 +385,24 @@ export async function handleAuthMe(request, env) {
   });
 }
 
-export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id, galleries`;
+export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status, user_id, galleries`;
+
+export function parseCustomFonts(raw) {
+  try {
+    const parsed = JSON.parse(raw || "[]");
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((f) => f && typeof f === "object" && f.id && f.family && f.url)
+      .map((f) => ({
+        id: String(f.id),
+        family: String(f.family),
+        url: String(f.url),
+        format: String(f.format || "woff2"),
+      }));
+  } catch {
+    return [];
+  }
+}
 
 export function parseGalleries(raw) {
   try {
@@ -416,6 +432,7 @@ export function mapProfileRow(row) {
     cover: row.cover,
     avatar: row.avatar,
     customCss: row.custom_css || "",
+    customFonts: parseCustomFonts(row.custom_fonts),
     status: row.status,
     userId: row.user_id || undefined,
     galleries: parseGalleries(row.galleries),
@@ -460,7 +477,6 @@ export async function handleMeProfilePut(request, env) {
   const estado = String(body.estado || "").trim();
   const website = body.website ? String(body.website).trim() : null;
   const description = sanitizeBio(body.description || "");
-  const customCss = body.customCss != null ? String(body.customCss) : null;
   const servicios = Array.isArray(body.servicios)
     ? body.servicios.map(String)
     : [];
@@ -469,11 +485,18 @@ export async function handleMeProfilePut(request, env) {
     return json({ ok: false, error: "Nombre y ubicación son obligatorios." }, 400);
   }
 
-  const existing = await env.DB.prepare(
-    `SELECT slug FROM profiles WHERE user_id = ? LIMIT 1`,
+  const owned = await env.DB.prepare(
+    `SELECT slug, tier FROM profiles WHERE user_id = ? LIMIT 1`,
   )
     .bind(user.id)
     .first();
+
+  let customCss = null;
+  if (body.customCss != null && owned?.tier === "pro") {
+    customCss = sanitizeCustomCss(body.customCss);
+  }
+
+  const existing = owned;
 
   let slug;
   if (existing) {
@@ -502,10 +525,10 @@ export async function handleMeProfilePut(request, env) {
     await env.DB.prepare(
       `INSERT INTO profiles (
         slug, name, estado, servicios, description, website, tier, featured,
-        cover, avatar, custom_css, user_id, status
-      ) VALUES (?, ?, ?, ?, ?, ?, 'free', 0, NULL, NULL, ?, ?, 'draft')`,
+        cover, avatar, custom_css, custom_fonts, user_id, status
+      ) VALUES (?, ?, ?, ?, ?, ?, 'free', 0, NULL, NULL, ?, '[]', ?, 'draft')`,
     )
-      .bind(slug, name, estado, serviciosJson, description, website, customCss, user.id)
+      .bind(slug, name, estado, serviciosJson, description, website, customCss || "", user.id)
       .run();
   }
 

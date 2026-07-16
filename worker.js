@@ -17,6 +17,7 @@ import {
 } from "./worker/auth.js";
 import { handleAdminDecide, handleAdminQueue, handleAdminProfilePatch } from "./worker/admin.js";
 import { handleMeProfileUpload, handleMediaGet, handleMediaQuotaGet } from "./worker/media.js";
+import { handleFontDelete, handleFontUpload } from "./worker/fonts.js";
 import {
   handleGalleryCreate,
   handleGalleryDelete,
@@ -172,6 +173,11 @@ export default {
     }
     if (path === "/api/me/profile/submit") return handleMeProfileSubmit(request, env);
     if (path === "/api/me/profile/upload") return handleMeProfileUpload(request, env, url);
+    if (path === "/api/me/profile/font") {
+      if (request.method === "POST") return handleFontUpload(request, env);
+      if (request.method === "DELETE") return handleFontDelete(request, env);
+      return json({ ok: false, error: "Método no permitido." }, 405);
+    }
     if (path === "/api/me/profile/gallery/upload") return handleGalleryUpload(request, env);
     if (path === "/api/me/profile/gallery/image") return handleGalleryImageDelete(request, env);
     if (path === "/api/me/profile/gallery") {
