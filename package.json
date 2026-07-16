@@ -9,6 +9,11 @@
     "dev": "npm run emit:profiles && astro dev",
     "build": "npm run emit:profiles && astro build",
     "emit:profiles": "npx --yes tsx scripts/emit-mock-profiles.ts",
+    "emit:seed": "npx --yes tsx scripts/emit-d1-seed.ts",
+    "db:migrate:local": "wrangler d1 execute dimela-mx --local --file=./db/schema.sql",
+    "db:migrate:remote": "wrangler d1 execute dimela-mx --remote --file=./db/schema.sql",
+    "db:seed:local": "npm run emit:seed && wrangler d1 execute dimela-mx --local --file=./db/seed.sql",
+    "db:seed:remote": "npm run emit:seed && wrangler d1 execute dimela-mx --remote --file=./db/seed.sql",
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "npm run build && wrangler deploy"

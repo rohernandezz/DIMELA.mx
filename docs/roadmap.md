@@ -13,6 +13,8 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 - [x] Decision: keep `src/data/mockProfiles.ts` (better than old Blowfish dummy set); skip Hugo content import for now
 - [x] Taxonomy browse — `/estado/`, `/servicios/` (+ `[slug]` detail) over mock data
 - [x] Mock-first `/api/search` on the Worker (reads `public/data/profiles.json`)
+- [x] Wire FilterBar to `GET /api/search` (client fallback when API unavailable)
+- [x] D1 `profiles` table + seed from mocks; `/api/search` prefers D1 (`source: "d1"`)
 
 ## UI prototypes (kept for reference)
 
@@ -23,17 +25,19 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 | `/labeled/` | C · Labeled path |
 | `/trail/` | D · Crumb trail |
 | `/bar/` | Redirects → `/` |
+| `/brand/` | Design playground (colors, type, UI samples) |
 
 ## Next (build)
 
-1. **Wire homepage filters to `/api/search`** (optional; client mock still works)
-2. **D1** — persist published profiles; point `/api/search` at SQL (`source: "d1"`)
-3. Auth → approval → Pro/Stripe → cutover
+1. **Auth** — magic-link / email OTP
+2. **Approval** — draft → pending_review → published
+3. **Pro / Stripe** → cutover from Hugo
 
-Profile cards link to `/directorio/[slug]/` (mock detail pages).
+Profile cards still SSR from mocks; search visibility is D1 (seeded). SSR pages can switch to D1/API later.
 
 ## Notes
 
-- Filters: `?q=&servicio=&estado=` (client-side on mocks; same shape on `/api/search`)
+- Filters: `?q=&servicio=&estado=` (FilterBar → `/api/search`; client filter fallback in `astro dev`)
 - Destacados deferred
 - Hugo `content/` remains in-repo as legacy reference only
+- D1 scripts: `npm run db:migrate:remote` / `db:seed:remote` (see [architecture.md](architecture.md))

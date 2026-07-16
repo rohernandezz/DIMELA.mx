@@ -535,23 +535,15 @@ const servicios = [...SERVICIOS];
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
   }
 
-  function apply(root: HTMLElement, state: FilterState) {
-    const hideEstado = root.dataset.hideEstado === "true";
-    const hideServicio = root.dataset.hideServicio === "true";
-    const effective: FilterState = {
-      q: state.q,
-      servicio: hideServicio ? new Set() : state.servicio,
-      estado: hideEstado ? new Set() : state.estado,
-    };
+  function buildSearchParams(state: FilterState) {
+    const params = new URLSearchParams();
+    if (state.q) params.set("q", state.q);
+    if (state.servicio.size) params.set("servicio", [...state.servicio].join(","));
+    if (state.estado.size) params.set("estado", [...state.estado].join(","));
+    return params;
+  }
 
-    const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
-    let visible = 0;
-    cards.forEach((card) => {
-      const ok = matches(card, effective);
-      card.hidden = !ok;
-      if (ok) visible += 1;
-    });
-
+  function paintChrome(root: HTMLElement, state: FilterState, effective: FilterState) {
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
       chip.setAttribute(
         "aria-pressed",
@@ -562,7 +554,6 @@ const servicios = [...SERVICIOS];
       box.checked = effective.estado.has(box.value);
     });
     syncEstadoLabels(root, effective);
-    // Remeasure after layout so we only abbreviate when the full list overflows.
     requestAnimationFrame(() => syncEstadoLabels(root, effective));
     renderActiveCrumbs(effective, root);
 
@@ -572,18 +563,6 @@ const servicios = [...SERVICIOS];
     root.querySelectorAll<HTMLButtonElement>("[data-filter-clear]").forEach((btn) => {
       btn.disabled = !hasFilters(effective, root);
     });
-
-    const countText = hasFilters(effective, root)
-      ? `${visible} de ${cards.length}`
-      : `${cards.length}`;
-    const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
-    const countValue = root.querySelector<HTMLElement>("[data-filter-count-value]");
-    if (countValue) countValue.textContent = countText;
-    if (countEl) {
-      countEl.title = hasFilters(effective, root)
-        ? `${visible} de ${cards.length} perfiles`
-        : `${cards.length} perfiles`;
-    }
 
     const badge = root.querySelector<HTMLElement>("[data-sheet-badge]");
     if (badge) {
@@ -595,9 +574,69 @@ const servicios = [...SERVICIOS];
         badge.hidden = true;
       }
     }
+  }
 
+  function paintCounts(root: HTMLElement, effective: FilterState, visible: number, total: number) {
+    const countText = hasFilters(effective, root) ? `${visible} de ${total}` : `${total}`;
+    const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
+    const countValue = root.querySelector<HTMLElement>("[data-filter-count-value]");
+    if (countValue) countValue.textContent = countText;
+    if (countEl) {
+      countEl.title = hasFilters(effective, root)
+        ? `${visible} de ${total} perfiles`
+        : `${total} perfiles`;
+    }
     const empty = document.querySelector<HTMLElement>("[data-filter-empty]");
-    if (empty) empty.classList.toggle("hidden", visible > 0 || !cards.length);
+    if (empty) empty.classList.toggle("hidden", visible > 0 || !total);
+  }
+
+  let applySeq = 0;
+
+  async function apply(root: HTMLElement, state: FilterState) {
+    const hideEstado = root.dataset.hideEstado === "true";
+    const hideServicio = root.dataset.hideServicio === "true";
+    const effective: FilterState = {
+      q: state.q,
+      servicio: hideServicio ? new Set() : state.servicio,
+      estado: hideEstado ? new Set() : state.estado,
+    };
+
+    const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
+    paintChrome(root, state, effective);
+
+    const seq = ++applySeq;
+    let visible = 0;
+
+    // Prefer Worker /api/search; fall back to client filter (e.g. `astro dev` without wrangler).
+    try {
+      const res = await fetch(`/api/search?${buildSearchParams(effective)}`);
+      if (!res.ok) throw new Error(`search ${res.status}`);
+      const data = (await res.json()) as {
+        ok?: boolean;
+        results?: { slug?: string }[];
+      };
+      if (!data.ok || !Array.isArray(data.results)) throw new Error("bad search payload");
+      if (seq !== applySeq) return;
+
+      const slugs = new Set(
+        data.results.map((r) => r.slug).filter((s): s is string => Boolean(s)),
+      );
+      cards.forEach((card) => {
+        const ok = slugs.has(card.dataset.slug || "");
+        card.hidden = !ok;
+        if (ok) visible += 1;
+      });
+    } catch {
+      if (seq !== applySeq) return;
+      cards.forEach((card) => {
+        const ok = matches(card, effective);
+        card.hidden = !ok;
+        if (ok) visible += 1;
+      });
+    }
+
+    if (seq !== applySeq) return;
+    paintCounts(root, effective, visible, cards.length);
   }
 
   function init() {

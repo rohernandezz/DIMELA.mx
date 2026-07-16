@@ -11,3 +11,8 @@ binding = "ASSETS"
 not_found_handling = "404-page"
 # Run Worker first so /api/* hits the Worker before static files
 run_worker_first = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dimela-mx"
+database_id = "4b237d4d-ca9f-4304-b1f8-6c8353cb1b53"
