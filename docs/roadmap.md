@@ -28,12 +28,14 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 | `/trail/` | D · Crumb trail |
 | `/bar/` | Redirects → `/` |
 | `/brand/` | Design playground (colors, type, UI samples) |
+| `/editar/` | Draft member profile editor (no auth/save yet) |
 
 ## Next (build)
 
 1. **Auth** — magic-link / email OTP
-2. **Approval** — draft → pending_review → published
-3. **Pro / Stripe** → cutover from Hugo
+2. **Wire `/editar/`** — TipTap bio ✅ (draft); R2 uploads, D1 save, approval next
+3. **Approval** — draft → pending_review → published
+4. **Pro / Stripe** → cutover from Hugo
 
 Profile **detail** pages and taxonomy **indexes** load from `/api/profile` and `/api/search` (D1). Static paths for details are generated from emitted `profiles.json` at build time.
 

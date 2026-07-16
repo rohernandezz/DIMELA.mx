@@ -19,6 +19,11 @@
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "@tiptap/core": "^3.28.0",
+    "@tiptap/extension-link": "^3.28.0",
+    "@tiptap/extension-placeholder": "^3.28.0",
+    "@tiptap/pm": "^3.28.0",
+    "@tiptap/starter-kit": "^3.28.0",
     "astro": "^7.0.9"
   },
   "devDependencies": {
