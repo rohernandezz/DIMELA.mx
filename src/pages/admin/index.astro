@@ -127,6 +127,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       .replaceAll('"', "&quot;");
   }
 
+  // Placeholder demo owners (demo.*@dimela.mx) can be released for real invites.
+  function isDemoOwner(email?: string | null) {
+    return Boolean(email && email.toLowerCase().endsWith("@dimela.mx"));
+  }
+
   function showLogin(show: boolean) {
     const auth = document.querySelector<HTMLElement>("[data-auth-panel]");
     const root = document.querySelector<HTMLElement>("[data-admin-root]");
@@ -171,7 +176,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           </div>
           ${
             p.ownerEmail
-              ? `<p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail)} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>`
+              ? `<p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail)} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>${
+                  isDemoOwner(p.ownerEmail)
+                    ? `<div class="mt-1"><button type="button" data-release-invite="${escapeHtml(p.slug)}" data-owner="${escapeHtml(p.ownerEmail)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/70 hover:border-dm-offblack/40">Liberar demo → pendiente de invitar</button></div>`
+                    : ""
+                }`
               : `<div class="mt-2 flex flex-wrap items-end gap-2">
                   <label class="block min-w-0 flex-1 space-y-1">
                     <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Invitar (email)</span>
@@ -269,6 +278,31 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     await loadQueue();
   }
 
+  async function releaseForInvite(btn: HTMLElement) {
+    const slug = btn.dataset.releaseInvite || "";
+    const owner = btn.dataset.owner || "";
+    if (
+      !window.confirm(
+        `¿Liberar a ${owner} y marcar «${slug}» como pendiente de invitar? El perfil quedará sin dueño hasta que alguien lo reclame.`,
+      )
+    ) {
+      return;
+    }
+    const res = await fetch(`/api/admin/profiles/${encodeURIComponent(slug)}`, {
+      method: "PATCH",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ releaseOwner: true, inviteEmail: owner }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo liberar.");
+      return;
+    }
+    toast("Liberado — pendiente de invitar. Edita el correo cuando lo tengas.");
+    await loadQueue();
+  }
+
   async function decide(slug: string, action: "approve" | "reject") {
     const res = await fetch(`/api/admin/profiles/${encodeURIComponent(slug)}/${action}`, {
       method: "POST",
@@ -355,10 +389,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         const reject = t.closest<HTMLElement>("[data-reject]");
         const saveSlugBtn = t.closest<HTMLElement>("[data-save-slug]");
         const saveInviteBtn = t.closest<HTMLElement>("[data-save-invite]");
+        const releaseBtn = t.closest<HTMLElement>("[data-release-invite]");
         if (approve?.dataset.approve) void decide(approve.dataset.approve, "approve");
         if (reject?.dataset.reject) void decide(reject.dataset.reject, "reject");
         if (saveSlugBtn?.dataset.saveSlug) void saveSlug(saveSlugBtn);
         if (saveInviteBtn?.dataset.saveInvite) void saveInvite(saveInviteBtn);
+        if (releaseBtn?.dataset.releaseInvite) void releaseForInvite(releaseBtn);
       });
       document.querySelector("[data-action='refresh']")?.addEventListener("click", () => void loadQueue());
       document.querySelector("[data-action='logout']")?.addEventListener("click", async () => {

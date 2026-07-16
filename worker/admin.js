@@ -144,6 +144,8 @@ export async function handleAdminProfilePatch(request, env, url) {
     }
   }
 
+  const releaseOwner = body.releaseOwner === true;
+
   let inviteEmail = undefined;
   if (body.inviteEmail != null) {
     const raw = String(body.inviteEmail).trim();
@@ -155,7 +157,7 @@ export async function handleAdminProfilePatch(request, env, url) {
         return json({ ok: false, error: "inviteEmail inválido." }, 400);
       }
     }
-    if (existing.user_id) {
+    if (existing.user_id && !releaseOwner) {
       return json({ ok: false, error: "No se puede invitar: el perfil ya tiene dueño." }, 400);
     }
   }
@@ -171,6 +173,14 @@ export async function handleAdminProfilePatch(request, env, url) {
       `UPDATE profiles SET slug = ?, updated_at = datetime('now') WHERE slug = ?`,
     )
       .bind(newSlug, oldSlug)
+      .run();
+  }
+
+  if (releaseOwner) {
+    await env.DB.prepare(
+      `UPDATE profiles SET user_id = NULL, updated_at = datetime('now') WHERE slug = ?`,
+    )
+      .bind(newSlug)
       .run();
   }
 
