@@ -11,7 +11,10 @@ import { MOCK_PROFILES } from "../data/mockProfiles";
 
 <BaseLayout title="DIMELA.mx — Labeled path" headerVariant="labeled">
   <section aria-label="Directorio">
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-profile-grid>
+    <div
+      class="grid grid-cols-1 auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3"
+      data-profile-grid
+    >
       {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
     </div>
     <p class="mt-8 hidden text-center text-sm text-dm-offblack/55" data-filter-empty>

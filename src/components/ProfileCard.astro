@@ -1,7 +1,7 @@
 ---
 /**
- * Profile card — uniform grid size for Free and Pro.
- * Pro fills the cell; Free is slightly inset. Same content dimensions.
+ * Profile card — fixed size in the directory grid (Free and Pro).
+ * Pro keeps badge + stronger border; outer dimensions match Free.
  */
 import type { MockProfile } from "../data/mockProfiles";
 
@@ -16,10 +16,8 @@ const href = `/directorio/${profile.slug}/`;
 
 <article
   class:list={[
-    "profile-card group relative flex h-full w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
-    isPro
-      ? "profile-card--pro border-dm-offblack/35 shadow-lg"
-      : "m-1.5 border-dm-offblack/15 sm:m-2",
+    "profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
+    isPro ? "border-dm-offblack/35 shadow-lg" : "border-dm-offblack/15",
   ]}
   data-profile-card
   data-name={profile.name}
@@ -56,14 +54,14 @@ const href = `/directorio/${profile.slug}/`;
     }
   </div>
 
-  <div class="flex flex-1 flex-col gap-3 p-4">
-    <header class="flex items-center gap-3">
+  <div class="flex min-h-0 flex-1 flex-col gap-3 p-4">
+    <header class="flex shrink-0 items-center gap-3">
       {
         profile.avatar ? (
           <img
             src={profile.avatar}
             alt=""
-            class="h-12 w-12 rounded-full object-cover shadow-md ring-2 ring-white"
+            class="h-12 w-12 shrink-0 rounded-full object-cover shadow-md ring-2 ring-white"
             width="48"
             height="48"
             loading="lazy"
@@ -71,7 +69,7 @@ const href = `/directorio/${profile.slug}/`;
           />
         ) : (
           <div
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
             aria-hidden="true"
           >
             <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
@@ -90,18 +88,18 @@ const href = `/directorio/${profile.slug}/`;
         </a>
         <a
           href={`/estado/#${profile.estado}`}
-          class="relative z-10 text-sm text-dm-offblack/60 hover:underline"
+          class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline"
         >
           {profile.estado}
         </a>
       </div>
     </header>
 
-    <p class="line-clamp-2 text-sm leading-relaxed text-dm-offblack/75">
+    <p class="line-clamp-2 shrink-0 text-sm leading-relaxed text-dm-offblack/75">
       {profile.description}
     </p>
 
-    <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
+    <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">
       {
         profile.servicios.map((servicio) => (
           <span class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80">
