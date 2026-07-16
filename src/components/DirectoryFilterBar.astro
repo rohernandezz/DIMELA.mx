@@ -649,12 +649,29 @@ const servicios = [...SERVICIOS];
     syncSiteTaglineFromCrumbs();
   }
 
-  function setMobileFiltersOpen(root: HTMLElement, open: boolean) {
+  /** User wants the mobile filters panel open (survives scroll-down auto-hide). */
+  let mobileFiltersWanted = false;
+  /** Ignore scroll hide/restore briefly after panel open/close (layout shift). */
+  let ignoreMobileFiltersScrollUntil = 0;
+  let filterBarCleanup: AbortController | null = null;
+  let filterBarHeaderRo: ResizeObserver | null = null;
+
+  function setMobileFiltersOpen(
+    root: HTMLElement,
+    open: boolean,
+    opts?: { fromUser?: boolean },
+  ) {
     const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
     const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
     if (!panel || !toggle) return;
-    panel.hidden = !open;
+    const nextHidden = !open;
+    if (panel.hidden !== nextHidden) {
+      // Opening/closing changes sticky height and can synthesize scroll events.
+      ignoreMobileFiltersScrollUntil = performance.now() + 450;
+    }
+    panel.hidden = nextHidden;
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (opts?.fromUser) mobileFiltersWanted = open;
   }
 
   function uiState(state: FilterState, root: HTMLElement): FilterState {
@@ -839,6 +856,13 @@ const servicios = [...SERVICIOS];
     const root = document.querySelector<HTMLElement>(".directory-filter[data-directory-filter]");
     if (!root) return;
 
+    // astro:page-load also fires on first load — drop prior listeners so clicks don't multi-toggle.
+    filterBarCleanup?.abort();
+    filterBarCleanup = new AbortController();
+    const { signal } = filterBarCleanup;
+    filterBarHeaderRo?.disconnect();
+    filterBarHeaderRo = null;
+
     const stack = root.querySelector<HTMLElement>("[data-sticky-stack]");
     const siteHeader = document.querySelector<HTMLElement>("[data-site-header]");
     const sentinel = document.querySelector("[data-filter-sentinel]");
@@ -877,39 +901,98 @@ const servicios = [...SERVICIOS];
       }
     };
 
+    /**
+     * Stick/unstick from live geometry — not a one-shot IntersectionObserver rootMargin.
+     * A fixed rootMargin captured at init uses the *expanded* header height; after
+     * data-compact shrinks the bar, that margin stays too large and the sentinel can
+     * never re-intersect when scrolling back to the top (header stays compact).
+     */
+    const syncCollapsedFromScroll = () => {
+      if (!sentinel) return;
+      const headerBottom = siteHeader
+        ? Math.floor(siteHeader.getBoundingClientRect().bottom)
+        : 52;
+      const sentinelTop = sentinel.getBoundingClientRect().top;
+      // Collapse once the sentinel scrolls up under (or past) the sticky header.
+      setCollapsed(sentinelTop < headerBottom - 1);
+    };
+
+    /** Hide open mobile filters on scroll-down; restore on scroll-up if still wanted. */
+    const SCROLL_DIR_THRESHOLD = 40;
+    let lastScrollY = window.scrollY;
+    let scrollAccum = 0;
+    const isMobileFiltersViewport = () => window.matchMedia("(max-width: 767px)").matches;
+
+    const syncMobileFiltersFromScroll = () => {
+      if (performance.now() < ignoreMobileFiltersScrollUntil) {
+        lastScrollY = window.scrollY;
+        scrollAccum = 0;
+        return;
+      }
+      if (!isMobileFiltersViewport() || !mobileFiltersWanted) {
+        lastScrollY = window.scrollY;
+        scrollAccum = 0;
+        return;
+      }
+      const y = window.scrollY;
+      const dy = y - lastScrollY;
+      lastScrollY = y;
+      if (dy === 0) return;
+      if ((scrollAccum > 0 && dy < 0) || (scrollAccum < 0 && dy > 0)) {
+        scrollAccum = 0;
+      }
+      scrollAccum += dy;
+      if (scrollAccum >= SCROLL_DIR_THRESHOLD) {
+        scrollAccum = 0;
+        const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+        if (panel && !panel.hidden) setMobileFiltersOpen(root, false);
+      } else if (scrollAccum <= -SCROLL_DIR_THRESHOLD) {
+        scrollAccum = 0;
+        const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+        if (panel && panel.hidden) setMobileFiltersOpen(root, true);
+      }
+    };
+
+    const onScroll = () => {
+      syncCollapsedFromScroll();
+      syncMobileFiltersFromScroll();
+    };
+
     syncSiteHeaderHeight();
     if (siteHeader && typeof ResizeObserver !== "undefined") {
-      const headerRo = new ResizeObserver(() => syncSiteHeaderHeight());
+      const headerRo = new ResizeObserver(() => {
+        syncSiteHeaderHeight();
+        // Compact height changes shift the threshold; re-evaluate stick state.
+        syncCollapsedFromScroll();
+      });
       headerRo.observe(siteHeader);
+      filterBarHeaderRo = headerRo;
+      signal.addEventListener("abort", () => headerRo.disconnect());
     }
 
-    if (sentinel) {
-      const collapsedObserver = new IntersectionObserver(
-        ([entry]) => setCollapsed(!entry.isIntersecting),
-        {
-          // Unstick only once the sentinel is back under the sticky site header.
-          rootMargin: `-${Math.max(1, Math.round((siteHeader?.getBoundingClientRect().height ?? 52) - 1))}px 0px 0px 0px`,
-          threshold: 0,
-        },
-      );
-      collapsedObserver.observe(sentinel);
-    }
+    if (sentinel) syncCollapsedFromScroll();
+    window.addEventListener("scroll", onScroll, { passive: true, signal });
 
     let state = readUrl();
     if (root.dataset.hideEstado === "true") state = { ...state, estado: new Set() };
     if (root.dataset.hideServicio === "true") state = { ...state, servicio: new Set() };
     apply(root, state);
-    setMobileFiltersOpen(root, false);
+    setMobileFiltersOpen(root, false, { fromUser: true });
 
     let resizeTimer: number | undefined;
-    window.addEventListener("resize", () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => {
-        syncSiteHeaderHeight();
-        syncEstadoLabels(root, state);
-        syncSiteTaglineFromCrumbs();
-      }, 100);
-    });
+    window.addEventListener(
+      "resize",
+      () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          syncSiteHeaderHeight();
+          syncCollapsedFromScroll();
+          syncEstadoLabels(root, state);
+          syncSiteTaglineFromCrumbs();
+        }, 100);
+      },
+      { signal },
+    );
 
     const normalizeText = (s: string) =>
       s
@@ -968,148 +1051,188 @@ const servicios = [...SERVICIOS];
         if (noResults) noResults.hidden = visible > 0;
       };
 
-      search?.addEventListener("input", runSearch);
+      search?.addEventListener("input", runSearch, { signal });
 
-      toggle?.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (!panel || !toggle) return;
-        const willOpen = panel.hidden;
-        root.querySelectorAll<HTMLElement>("[data-estado-panel]").forEach((p) => {
-          p.hidden = true;
-        });
-        root.querySelectorAll("[data-estado-toggle]").forEach((t) => {
-          t.setAttribute("aria-expanded", "false");
-        });
-        panel.hidden = !willOpen;
-        toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
-        if (willOpen && search) {
-          if (search.value) {
-            search.value = "";
-            runSearch();
+      toggle?.addEventListener(
+        "click",
+        (e) => {
+          e.stopPropagation();
+          if (!panel || !toggle) return;
+          const willOpen = panel.hidden;
+          root.querySelectorAll<HTMLElement>("[data-estado-panel]").forEach((p) => {
+            p.hidden = true;
+          });
+          root.querySelectorAll("[data-estado-toggle]").forEach((t) => {
+            t.setAttribute("aria-expanded", "false");
+          });
+          panel.hidden = !willOpen;
+          toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+          if (willOpen && search) {
+            if (search.value) {
+              search.value = "";
+              runSearch();
+            }
+            requestAnimationFrame(() => search.focus());
           }
-          requestAnimationFrame(() => search.focus());
-        }
-      });
+        },
+        { signal },
+      );
     });
 
     const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
     let debounce: number | undefined;
-    qInput?.addEventListener("input", () => {
-      window.clearTimeout(debounce);
-      debounce = window.setTimeout(() => {
-        state = { ...state, q: (qInput.value || "").trim() };
-        writeUrl(state);
-        apply(root, state);
-      }, 150);
-    });
+    qInput?.addEventListener(
+      "input",
+      () => {
+        window.clearTimeout(debounce);
+        debounce = window.setTimeout(() => {
+          state = { ...state, q: (qInput.value || "").trim() };
+          writeUrl(state);
+          apply(root, state);
+        }, 150);
+      },
+      { signal },
+    );
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        const value = chip.dataset.value || "";
-        const next = new Set(state.servicio);
-        if (next.has(value)) next.delete(value);
-        else next.add(value);
-        state = { ...state, servicio: next };
-        writeUrl(state);
-        apply(root, state);
-      });
+      chip.addEventListener(
+        "click",
+        () => {
+          const value = chip.dataset.value || "";
+          const next = new Set(state.servicio);
+          if (next.has(value)) next.delete(value);
+          else next.add(value);
+          state = { ...state, servicio: next };
+          writeUrl(state);
+          apply(root, state);
+        },
+        { signal },
+      );
     });
 
     root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((box) => {
-      box.addEventListener("change", () => {
-        // Presets are exclusive: picking one turns the other off and clears state checkboxes.
-        const next =
-          box.value === ALL_LOCATIONS
-            ? new Set([ALL_LOCATIONS])
-            : new Set<string>(); // Sólo México = empty (default)
-        // Keep the chosen scope checked even if user tries to uncheck it.
-        root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((other) => {
-          other.checked = other.value === box.value;
-        });
-        root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
-          other.checked = false;
-        });
-        state = { ...state, estado: next };
-        writeUrl(state);
-        apply(root, state);
-      });
+      box.addEventListener(
+        "change",
+        () => {
+          // Presets are exclusive: picking one turns the other off and clears state checkboxes.
+          const next =
+            box.value === ALL_LOCATIONS
+              ? new Set([ALL_LOCATIONS])
+              : new Set<string>(); // Sólo México = empty (default)
+          // Keep the chosen scope checked even if user tries to uncheck it.
+          root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((other) => {
+            other.checked = other.value === box.value;
+          });
+          root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
+            other.checked = false;
+          });
+          state = { ...state, estado: next };
+          writeUrl(state);
+          apply(root, state);
+        },
+        { signal },
+      );
     });
 
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
-      box.addEventListener("change", () => {
-        const next = new Set(selectedEstados(state.estado));
-        if (box.checked) next.add(box.value);
-        else next.delete(box.value);
-        root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((other) => {
-          other.checked = false;
-        });
-        root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
-          if (other.value === box.value) other.checked = box.checked;
-        });
-        state = { ...state, estado: next };
-        writeUrl(state);
-        apply(root, state);
-      });
+      box.addEventListener(
+        "change",
+        () => {
+          const next = new Set(selectedEstados(state.estado));
+          if (box.checked) next.add(box.value);
+          else next.delete(box.value);
+          root.querySelectorAll<HTMLInputElement>("[data-estado-scope]").forEach((other) => {
+            other.checked = false;
+          });
+          root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
+            if (other.value === box.value) other.checked = box.checked;
+          });
+          state = { ...state, estado: next };
+          writeUrl(state);
+          apply(root, state);
+        },
+        { signal },
+      );
     });
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-clear]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        state = { q: "", servicio: new Set(), estado: new Set() };
-        writeUrl(state);
-        apply(root, state);
-        root.querySelectorAll<HTMLElement>("[data-estado-panel]").forEach((p) => {
-          p.hidden = true;
-        });
-      });
+      btn.addEventListener(
+        "click",
+        () => {
+          state = { q: "", servicio: new Set(), estado: new Set() };
+          writeUrl(state);
+          apply(root, state);
+          root.querySelectorAll<HTMLElement>("[data-estado-panel]").forEach((p) => {
+            p.hidden = true;
+          });
+        },
+        { signal },
+      );
     });
 
     document.querySelectorAll<HTMLElement>("[data-active-crumbs]").forEach((host) => {
-      host.addEventListener("click", (e) => {
-        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
-        if (!btn) return;
-        e.stopPropagation();
-        const facet = btn.dataset.removeFacet as "estado" | "servicio" | "q";
-        const value = btn.dataset.removeValue || "";
-        if (facet === "q") {
-          state = { ...state, q: "" };
-        } else {
-          const next = new Set(state[facet]);
-          next.delete(value);
-          state = { ...state, [facet]: next };
-        }
-        writeUrl(state);
-        apply(root, state);
-      });
+      host.addEventListener(
+        "click",
+        (e) => {
+          const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
+          if (!btn) return;
+          e.stopPropagation();
+          const facet = btn.dataset.removeFacet as "estado" | "servicio" | "q";
+          const value = btn.dataset.removeValue || "";
+          if (facet === "q") {
+            state = { ...state, q: "" };
+          } else {
+            const next = new Set(state[facet]);
+            next.delete(value);
+            state = { ...state, [facet]: next };
+          }
+          writeUrl(state);
+          apply(root, state);
+        },
+        { signal },
+      );
     });
 
     document.querySelectorAll<HTMLAnchorElement>("[data-filter-home]").forEach((home) => {
-      home.addEventListener("click", (e) => {
-        if (!hasFilters(state, root)) return;
-        e.preventDefault();
-        state = { q: "", servicio: new Set(), estado: new Set() };
-        writeUrl(state);
-        apply(root, state);
-      });
+      home.addEventListener(
+        "click",
+        (e) => {
+          if (!hasFilters(state, root)) return;
+          e.preventDefault();
+          state = { q: "", servicio: new Set(), estado: new Set() };
+          writeUrl(state);
+          apply(root, state);
+        },
+        { signal },
+      );
     });
 
     const mobileToggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
-    mobileToggle?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
-      const open = panel?.hidden ?? true;
-      setMobileFiltersOpen(root, open);
-    });
+    mobileToggle?.addEventListener(
+      "click",
+      (e) => {
+        e.stopPropagation();
+        const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+        const willOpen = panel?.hidden ?? true;
+        setMobileFiltersOpen(root, willOpen, { fromUser: true });
+      },
+      { signal },
+    );
 
-    document.addEventListener("click", (e) => {
-      const target = e.target as Node;
-      if (!root.contains(target)) {
-        setMobileFiltersOpen(root, false);
-      }
-      root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
-        const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
-        if (panel && !wrap.contains(target)) panel.hidden = true;
-      });
-    });
+    document.addEventListener(
+      "click",
+      (e) => {
+        const target = e.target as Node;
+        if (!root.contains(target)) {
+          setMobileFiltersOpen(root, false, { fromUser: true });
+        }
+        root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
+          const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
+          if (panel && !wrap.contains(target)) panel.hidden = true;
+        });
+      },
+      { signal },
+    );
   }
 
   init();

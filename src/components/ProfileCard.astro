@@ -4,7 +4,7 @@
  * (visual margin inside the same cell). Pro keeps badge + stronger border.
  */
 import type { MockProfile } from "../data/mockProfiles";
-import { estadoSlug, toSlug } from "../lib/slugs";
+import { estadoSlug, servicioSlug } from "../lib/slugs";
 import { bioLeadPlainText, bioPlainText } from "../lib/bio";
 import {
   websiteHref,
@@ -136,7 +136,7 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
       <div class="flex flex-wrap content-start gap-1.5">
         {
           profile.servicios.map((servicio) => (
-            <a href={`/servicios/${toSlug(servicio)}/`} class={profileServicePillClass}>
+            <a href={`/servicios/${servicioSlug(servicio)}/`} class={profileServicePillClass}>
               {servicio}
             </a>
           ))

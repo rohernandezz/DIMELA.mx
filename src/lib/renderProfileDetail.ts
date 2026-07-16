@@ -1,7 +1,7 @@
 /**
  * Client-side profile detail HTML (matches directorio/[slug] layout).
  */
-import { estadoSlug, toSlug } from "./slugs";
+import { estadoSlug, servicioSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 import { renderBioHtml } from "./bio";
@@ -45,7 +45,7 @@ export function renderProfileDetailHtml(
 
   const chips = (profile.servicios || [])
     .map((servicio) => {
-      const href = `/servicios/${toSlug(servicio)}/`;
+      const href = `/servicios/${servicioSlug(servicio)}/`;
       return `<a href="${href}" class="${profileServicePillClass}">${escapeHtml(servicio)}</a>`;
     })
     .join("");

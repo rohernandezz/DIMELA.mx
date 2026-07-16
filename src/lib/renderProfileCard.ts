@@ -2,7 +2,7 @@
  * Client-side profile card HTML (matches ProfileCard.astro).
  * Used when the directory grid is filled from /api/search.
  */
-import { estadoSlug, toSlug } from "./slugs";
+import { estadoSlug, servicioSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { bioLeadPlainText, bioPlainText } from "./bio";
 import {
@@ -50,7 +50,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
 
   const chips = (profile.servicios || [])
     .map((servicio) => {
-      const href = `/servicios/${toSlug(servicio)}/`;
+      const href = `/servicios/${servicioSlug(servicio)}/`;
       return `<a href="${href}" class="${profileServicePillClass}">${escapeHtml(servicio)}</a>`;
     })
     .join("");
