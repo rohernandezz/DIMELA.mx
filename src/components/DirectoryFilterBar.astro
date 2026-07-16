@@ -1,7 +1,7 @@
 ---
 /**
  * Option B filter bar — desktop chips; mobile dropdown under search.
- * Taxonomy pages can hide a locked facet (estado or servicio).
+ * Taxonomy pages can lock a facet; grid is filled from /api/search (D1).
  */
 import { MEXICO_ESTADOS, SERVICIOS } from "../data/taxonomy";
 
@@ -10,9 +10,18 @@ interface Props {
   hideEstado?: boolean;
   /** Hide servicio chips (e.g. on `/servicios/[slug]/`). */
   hideServicio?: boolean;
+  /** Always include this estado in search (taxonomy lock). */
+  lockEstado?: string;
+  /** Always include this servicio in search (taxonomy lock). */
+  lockServicio?: string;
 }
 
-const { hideEstado = false, hideServicio = false } = Astro.props;
+const {
+  hideEstado = false,
+  hideServicio = false,
+  lockEstado,
+  lockServicio,
+} = Astro.props;
 
 const estados = [...MEXICO_ESTADOS];
 const servicios = [...SERVICIOS];
@@ -24,6 +33,8 @@ const servicios = [...SERVICIOS];
   data-directory-filter
   data-hide-estado={hideEstado ? "true" : undefined}
   data-hide-servicio={hideServicio ? "true" : undefined}
+  data-lock-estado={lockEstado}
+  data-lock-servicio={lockServicio}
   aria-label="Filtrar directorio"
 >
   {/* Header moves here when collapsed so grey bar + search stick as one unit */}
@@ -338,6 +349,9 @@ const servicios = [...SERVICIOS];
 </style>
 
 <script>
+  import { filterProfiles, type SearchableProfile } from "../lib/search";
+  import { renderProfileCardHtml } from "../lib/renderProfileCard";
+
   type FilterState = {
     q: string;
     servicio: Set<string>;
@@ -507,32 +521,31 @@ const servicios = [...SERVICIOS];
     });
   }
 
-  function matches(card: HTMLElement, state: FilterState) {
-    const name = (card.dataset.name || "").toLowerCase();
-    const description = (card.dataset.description || "").toLowerCase();
-    const estado = card.dataset.estado || "";
-    let servicios: string[] = [];
-    try {
-      servicios = JSON.parse(card.dataset.servicios || "[]");
-    } catch {
-      servicios = [];
-    }
-    if (state.q) {
-      const q = state.q.toLowerCase();
-      if (!name.includes(q) && !description.includes(q)) return false;
-    }
-    if (state.servicio.size && ![...state.servicio].some((s) => servicios.includes(s)))
-      return false;
-    if (state.estado.size && !state.estado.has(estado)) return false;
-    return true;
-  }
-
   function setMobileFiltersOpen(root: HTMLElement, open: boolean) {
     const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
     const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
     if (!panel || !toggle) return;
     panel.hidden = !open;
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  function uiState(state: FilterState, root: HTMLElement): FilterState {
+    return {
+      q: state.q,
+      servicio: root.dataset.hideServicio === "true" ? new Set() : state.servicio,
+      estado: root.dataset.hideEstado === "true" ? new Set() : state.estado,
+    };
+  }
+
+  /** Search query includes taxonomy locks so the grid matches D1/API. */
+  function queryState(state: FilterState, root: HTMLElement): FilterState {
+    const servicio = new Set(state.servicio);
+    const estado = new Set(state.estado);
+    const lockServicio = root.dataset.lockServicio;
+    const lockEstado = root.dataset.lockEstado;
+    if (lockServicio) servicio.add(lockServicio);
+    if (lockEstado) estado.add(lockEstado);
+    return { q: state.q, servicio, estado };
   }
 
   function buildSearchParams(state: FilterState) {
@@ -587,56 +600,71 @@ const servicios = [...SERVICIOS];
         : `${total} perfiles`;
     }
     const empty = document.querySelector<HTMLElement>("[data-filter-empty]");
-    if (empty) empty.classList.toggle("hidden", visible > 0 || !total);
+    if (empty) {
+      const showEmpty = visible === 0;
+      empty.classList.toggle("hidden", !showEmpty);
+      if (showEmpty) {
+        empty.textContent = hasFilters(effective, root)
+          ? "No hay perfiles con esos filtros."
+          : "No hay perfiles en el directorio.";
+      }
+    }
+
+    document.querySelectorAll<HTMLElement>("[data-taxonomy-count]").forEach((el) => {
+      if (!hasFilters(effective, root)) el.textContent = String(visible);
+    });
   }
 
-  let applySeq = 0;
+  function paintGrid(results: SearchableProfile[]) {
+    const grid = document.querySelector<HTMLElement>("[data-profile-grid]");
+    if (!grid) return;
+    grid.innerHTML = results.map((profile) => renderProfileCardHtml(profile)).join("");
+  }
 
-  async function apply(root: HTMLElement, state: FilterState) {
-    const hideEstado = root.dataset.hideEstado === "true";
-    const hideServicio = root.dataset.hideServicio === "true";
-    const effective: FilterState = {
-      q: state.q,
-      servicio: hideServicio ? new Set() : state.servicio,
-      estado: hideEstado ? new Set() : state.estado,
+  async function loadResults(root: HTMLElement, state: FilterState): Promise<SearchableProfile[]> {
+    const q = queryState(state, root);
+    const searchQuery = {
+      q: q.q,
+      servicio: [...q.servicio],
+      estado: [...q.estado],
     };
 
-    const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
-    paintChrome(root, state, effective);
-
-    const seq = ++applySeq;
-    let visible = 0;
-
-    // Prefer Worker /api/search; fall back to client filter (e.g. `astro dev` without wrangler).
     try {
-      const res = await fetch(`/api/search?${buildSearchParams(effective)}`);
+      const res = await fetch(`/api/search?${buildSearchParams(q)}`);
       if (!res.ok) throw new Error(`search ${res.status}`);
       const data = (await res.json()) as {
         ok?: boolean;
-        results?: { slug?: string }[];
+        results?: SearchableProfile[];
       };
       if (!data.ok || !Array.isArray(data.results)) throw new Error("bad search payload");
-      if (seq !== applySeq) return;
+      return data.results;
+    } catch {
+      const res = await fetch("/data/profiles.json");
+      if (!res.ok) throw new Error("profiles.json unavailable");
+      const profiles = (await res.json()) as SearchableProfile[];
+      return filterProfiles(profiles, searchQuery);
+    }
+  }
 
-      const slugs = new Set(
-        data.results.map((r) => r.slug).filter((s): s is string => Boolean(s)),
-      );
-      cards.forEach((card) => {
-        const ok = slugs.has(card.dataset.slug || "");
-        card.hidden = !ok;
-        if (ok) visible += 1;
-      });
+  let applySeq = 0;
+  let catalogTotal = 0;
+
+  async function apply(root: HTMLElement, state: FilterState) {
+    const effective = uiState(state, root);
+    paintChrome(root, state, effective);
+
+    const seq = ++applySeq;
+    try {
+      const results = await loadResults(root, state);
+      if (seq !== applySeq) return;
+      if (!hasFilters(effective, root)) catalogTotal = results.length;
+      paintGrid(results);
+      paintCounts(root, effective, results.length, catalogTotal || results.length);
     } catch {
       if (seq !== applySeq) return;
-      cards.forEach((card) => {
-        const ok = matches(card, effective);
-        card.hidden = !ok;
-        if (ok) visible += 1;
-      });
+      paintGrid([]);
+      paintCounts(root, effective, 0, catalogTotal);
     }
-
-    if (seq !== applySeq) return;
-    paintCounts(root, effective, visible, cards.length);
   }
 
   function init() {

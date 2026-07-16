@@ -45,7 +45,7 @@ Two ways to find people (both stay):
 **Facet rule:** OR within a facet, AND across facets  
 (e.g. Lettering *or* Branding, *and* CDMX if selected).
 
-**Data today:** FilterBar calls `GET /api/search` (D1 published rows, mock JSON fallback). Cards still SSR from `src/data/mockProfiles.ts` until pages go live off D1.
+**Data today:** Live grids and filters use `GET /api/search` (D1 published rows; `profiles.json` fallback). Profile detail pages and taxonomy indexes still build from `src/data/mockProfiles.ts`.
 
 Other filter UI experiments (A/C/D) are archived as routes — see [ui-prototypes.md](ui-prototypes.md).
 

@@ -1,11 +1,9 @@
 ---
 /**
- * Full directory — same FilterBar + mock grid as home.
+ * Full directory — FilterBar + grid from /api/search (D1).
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProfileCard from "../../components/ProfileCard.astro";
 import DirectoryFilterBar from "../../components/DirectoryFilterBar.astro";
-import { MOCK_PROFILES } from "../../data/mockProfiles";
 ---
 
 <BaseLayout title="Directorio — DIMELA.mx" headerVariant="simple" homeHref="/">
@@ -14,11 +12,9 @@ import { MOCK_PROFILES } from "../../data/mockProfiles";
     <div
       class="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(min(100%,18.5rem),1fr))] gap-4 sm:gap-5"
       data-profile-grid
-    >
-      {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
-    </div>
-    <p class="mt-8 hidden text-center text-sm text-dm-offblack/55" data-filter-empty>
-      No hay perfiles con esos filtros.
+    ></div>
+    <p class="mt-8 text-center text-sm text-dm-offblack/55" data-filter-empty>
+      Cargando directorio…
     </p>
   </section>
 </BaseLayout>

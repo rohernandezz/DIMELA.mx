@@ -13,7 +13,7 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 - [x] Decision: keep `src/data/mockProfiles.ts` (better than old Blowfish dummy set); skip Hugo content import for now
 - [x] Taxonomy browse — `/estado/`, `/servicios/` (+ `[slug]` detail) over mock data
 - [x] Mock-first `/api/search` on the Worker (reads `public/data/profiles.json`)
-- [x] Wire FilterBar to `GET /api/search` (client fallback when API unavailable)
+- [x] Directory grid filled from `/api/search` (D1); same source as filters
 - [x] D1 `profiles` table + seed from mocks; `/api/search` prefers D1 (`source: "d1"`)
 
 ## UI prototypes (kept for reference)
@@ -33,11 +33,11 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 2. **Approval** — draft → pending_review → published
 3. **Pro / Stripe** → cutover from Hugo
 
-Profile cards still SSR from mocks; search visibility is D1 (seeded). SSR pages can switch to D1/API later.
+Profile **detail** pages (`/directorio/[slug]/`) and taxonomy **indexes** still use mock data at build time. Live grids (`/`, `/directorio/`, `/estado/[slug]/`, `/servicios/[slug]/`) render from `/api/search`.
 
 ## Notes
 
-- Filters: `?q=&servicio=&estado=` (FilterBar → `/api/search`; client filter fallback in `astro dev`)
+- Filters: `?q=&servicio=&estado=` (FilterBar → `/api/search`; falls back to `/data/profiles.json` in `astro dev`)
 - Destacados deferred
 - Hugo `content/` remains in-repo as legacy reference only
 - D1 scripts: `npm run db:migrate:remote` / `db:seed:remote` (see [architecture.md](architecture.md))

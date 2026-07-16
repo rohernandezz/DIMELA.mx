@@ -39,7 +39,8 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 
 - `GET /api/search?q=&servicio=&estado=`
 - Prefers **D1** published rows (`source: "d1"`); falls back to `public/data/profiles.json` (`source: "mock"`)
-- FilterBar on `/`, `/directorio/`, taxonomy detail pages calls this endpoint; client-side filter is the offline/`astro dev` fallback
+- Live directory grids (`/`, `/directorio/`, taxonomy detail) are empty in HTML and filled client-side from this endpoint (one source of truth with filters)
+- FilterBar falls back to filtering `/data/profiles.json` when the Worker API is unavailable (`astro dev`)
 - Response: `{ ok, source, total, query, results }`
 
 ### D1

@@ -1,11 +1,9 @@
 ---
 /**
- * Profiles locked to one estado; FilterBar still filters by servicio + text.
+ * Profiles locked to one estado; grid from /api/search with estado lock.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProfileCard from "../../components/ProfileCard.astro";
 import DirectoryFilterBar from "../../components/DirectoryFilterBar.astro";
-import { MOCK_PROFILES } from "../../data/mockProfiles";
 import { MEXICO_ESTADOS } from "../../data/taxonomy";
 import { estadoFromSlug, estadoSlug } from "../../lib/slugs";
 
@@ -20,8 +18,6 @@ const estado = estadoFromSlug(slug!);
 if (!estado) {
   return Astro.redirect("/404");
 }
-
-const profiles = MOCK_PROFILES.filter((p) => p.estado === estado);
 ---
 
 <BaseLayout title={`${estado} — DIMELA.mx`} headerVariant="simple" homeHref="/">
@@ -35,20 +31,18 @@ const profiles = MOCK_PROFILES.filter((p) => p.estado === estado);
     </p>
     <h1 class="text-2xl tracking-wide">{estado}</h1>
     <p class="mt-1 text-sm text-dm-offblack/65">
-      {profiles.length} {profiles.length === 1 ? "perfil" : "perfiles"}
+      <span data-taxonomy-count>…</span> perfiles
     </p>
   </header>
 
-  <DirectoryFilterBar hideEstado />
+  <DirectoryFilterBar hideEstado lockEstado={estado} />
   <section aria-label={`Directorio en ${estado}`}>
     <div
       class="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(min(100%,18.5rem),1fr))] gap-4 sm:gap-5"
       data-profile-grid
-    >
-      {profiles.map((profile) => <ProfileCard profile={profile} />)}
-    </div>
-    <p class="mt-8 hidden text-center text-sm text-dm-offblack/55" data-filter-empty>
-      No hay perfiles con esos filtros.
+    ></div>
+    <p class="mt-8 text-center text-sm text-dm-offblack/55" data-filter-empty>
+      Cargando directorio…
     </p>
   </section>
 </BaseLayout>
