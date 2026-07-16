@@ -65,7 +65,11 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
   }
   {
     variant === "simple" && (
-      <div class="mx-auto flex max-w-7xl items-center px-4 py-3 sm:px-6">
+      <div
+        class="mx-auto flex w-full max-w-7xl items-center py-3"
+        style="padding-left: var(--dm-page-px); padding-right: var(--dm-page-px)"
+        data-header-inner
+      >
         <div class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
           <a
             href={homeHref}
@@ -86,7 +90,7 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
   }
 </header>
 
-<style>
+<style is:global>
   .active-crumb {
     display: inline-flex;
     align-items: center;

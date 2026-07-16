@@ -19,6 +19,13 @@
 
 html {
   font-family: var(--font-sans);
+  --dm-page-px: 1rem;
+}
+
+@media (min-width: 640px) {
+  html {
+    --dm-page-px: 1.5rem;
+  }
 }
 
 body {

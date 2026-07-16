@@ -9,24 +9,26 @@ const servicios = [...SERVICIOS];
 ---
 
 <section
-  class="directory-filter relative mb-6"
+  class="directory-filter mb-6 md:relative"
   data-directory-filter
   aria-label="Filtrar directorio"
 >
-  <div class="overflow-visible rounded border border-dm-offblack/15 bg-white">
-    {/* Top row — always visible */}
-    <div class="flex items-center gap-2 px-3 py-2.5 md:flex-nowrap">
-      <label class="relative min-w-0 flex-1 md:max-w-xs md:flex-none md:w-56">
-        <span class="sr-only">Buscar</span>
-        <input
-          type="search"
-          name="q"
-          data-filter-q
-          placeholder="Buscar…"
-          autocomplete="off"
-          class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-2 text-sm outline-none focus:border-dm-offblack/50 md:py-1.5"
-        />
-      </label>
+  {/* On mobile, the real <header> is moved here so grey bar + search stick as one unit */}
+  <div data-sticky-stack class="md:contents">
+    <div class="filter-shell overflow-visible rounded border border-dm-offblack/15 bg-white md:rounded md:border">
+      {/* Top row — always visible */}
+      <div class="filter-top flex items-center gap-2 px-3 py-2.5 md:flex-nowrap">
+        <label class="filter-search relative min-w-0 flex-1 md:max-w-xs md:flex-none md:w-56">
+          <span class="sr-only">Buscar</span>
+          <input
+            type="search"
+            name="q"
+            data-filter-q
+            placeholder="Buscar…"
+            autocomplete="off"
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-2 text-sm outline-none focus:border-dm-offblack/50 md:py-1.5"
+          />
+        </label>
 
       {/* Desktop ubicación — fills remaining width */}
       <div class="relative hidden min-w-0 flex-1 md:block" data-estado-multi data-estado-desktop>
@@ -188,6 +190,7 @@ const servicios = [...SERVICIOS];
       </div>
     </div>
   </div>
+  </div>
 </section>
 
 <style>
@@ -195,6 +198,80 @@ const servicios = [...SERVICIOS];
     background-color: var(--color-dm-offblack);
     color: var(--color-dm-offwhite);
     border-color: var(--color-dm-offblack);
+  }
+
+  :global(.active-crumb) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    max-width: 11rem;
+    font-weight: 500;
+  }
+  :global(.active-crumb span) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.active-crumb button) {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 9999px;
+    line-height: 1;
+    font-size: 0.65rem;
+    opacity: 0.85;
+  }
+
+  /*
+   * Mobile: grey header + search are one sticky stack (same header element).
+   * Break out of main padding only (not 100vw) so logo aligns with cards.
+   */
+  @media (max-width: 767px) {
+    .directory-filter[data-mobile-stack] {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      margin-left: calc(-1 * var(--dm-page-px));
+      margin-right: calc(-1 * var(--dm-page-px));
+      margin-top: -1.5rem; /* cancel main py-6 top */
+      margin-bottom: 1.5rem;
+      background-color: var(--color-dm-offwhite);
+    }
+    .directory-filter[data-mobile-stack] [data-sticky-stack] {
+      display: flex;
+      flex-direction: column;
+    }
+    .directory-filter[data-mobile-stack] header [data-header-inner] {
+      max-width: none;
+      margin-inline: 0;
+      padding-left: var(--dm-page-px);
+      padding-right: var(--dm-page-px);
+    }
+    .directory-filter[data-mobile-stack] .filter-shell {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      width: 100%;
+      margin-inline: 0;
+      background-color: #fff;
+    }
+    .directory-filter[data-mobile-stack] .filter-top,
+    .directory-filter[data-mobile-stack] [data-mobile-filters] {
+      padding-left: var(--dm-page-px);
+      padding-right: var(--dm-page-px);
+    }
+    .directory-filter[data-mobile-stack] .filter-search {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: none;
+    }
+    .directory-filter[data-mobile-stack] [data-filter-count] {
+      display: none;
+    }
   }
 </style>
 
@@ -281,25 +358,30 @@ const servicios = [...SERVICIOS];
     });
   }
 
-  function crumbSep() {
+  function crumbSep(light: boolean) {
     const sep = document.createElement("span");
-    sep.className = "text-dm-offwhite/35";
+    sep.className = light ? "text-dm-offblack/35" : "text-dm-offwhite/35";
     sep.setAttribute("aria-hidden", "true");
     sep.textContent = "›";
     return sep;
   }
 
-  function crumbPipe() {
+  function crumbPipe(light: boolean) {
     const sep = document.createElement("span");
-    sep.className = "text-dm-offwhite/40";
+    sep.className = light ? "text-dm-offblack/40" : "text-dm-offwhite/40";
     sep.setAttribute("aria-hidden", "true");
     sep.textContent = "|";
     return sep;
   }
 
-  function crumbPill(label: string, facet: "estado" | "servicio" | "q", value: string) {
+  function crumbPill(
+    label: string,
+    facet: "estado" | "servicio" | "q",
+    value: string,
+    light: boolean,
+  ) {
     const wrap = document.createElement("span");
-    wrap.className = "active-crumb";
+    wrap.className = light ? "active-crumb active-crumb--light" : "active-crumb";
     const text = document.createElement("span");
     text.textContent = label;
     text.title = label;
@@ -317,31 +399,33 @@ const servicios = [...SERVICIOS];
     nodes: Node[],
     values: string[],
     facet: "estado" | "servicio",
+    light: boolean,
   ) {
     if (!values.length) return;
-    nodes.push(crumbSep());
+    nodes.push(crumbSep(light));
     values.forEach((value, i) => {
-      if (i > 0) nodes.push(crumbPipe());
-      nodes.push(crumbPill(value, facet, value));
+      if (i > 0) nodes.push(crumbPipe(light));
+      nodes.push(crumbPill(value, facet, value, light));
     });
   }
 
   function renderActiveCrumbs(state: FilterState) {
-    const host = document.querySelector<HTMLElement>("[data-active-crumbs]");
-    if (!host) return;
-    if (!hasFilters(state)) {
-      host.hidden = true;
-      host.replaceChildren();
-      return;
-    }
-    host.hidden = false;
-    const nodes: Node[] = [];
-    appendCrumbGroup(nodes, [...state.estado], "estado");
-    appendCrumbGroup(nodes, [...state.servicio], "servicio");
-    if (state.q) {
-      nodes.push(crumbSep(), crumbPill(`“${state.q}”`, "q", state.q));
-    }
-    host.replaceChildren(...nodes);
+    document.querySelectorAll<HTMLElement>("[data-active-crumbs]").forEach((host) => {
+      const light = host.dataset.crumbsTheme === "light";
+      if (!hasFilters(state)) {
+        host.hidden = true;
+        host.replaceChildren();
+        return;
+      }
+      host.hidden = false;
+      const nodes: Node[] = [];
+      appendCrumbGroup(nodes, [...state.estado], "estado", light);
+      appendCrumbGroup(nodes, [...state.servicio], "servicio", light);
+      if (state.q) {
+        nodes.push(crumbSep(light), crumbPill(`“${state.q}”`, "q", state.q, light));
+      }
+      host.replaceChildren(...nodes);
+    });
   }
 
   function matches(card: HTMLElement, state: FilterState) {
@@ -433,6 +517,29 @@ const servicios = [...SERVICIOS];
     const root = document.querySelector<HTMLElement>(".directory-filter[data-directory-filter]");
     if (!root) return;
 
+    const mobileMq = window.matchMedia("(max-width: 767px)");
+    const stack = root.querySelector<HTMLElement>("[data-sticky-stack]");
+    const main = document.querySelector("main");
+
+    const placeHeader = () => {
+      const header = document.querySelector<HTMLElement>("header");
+      if (!header || !stack || !main) return;
+      if (mobileMq.matches) {
+        root.setAttribute("data-mobile-stack", "");
+        if (header.parentElement !== stack) {
+          stack.prepend(header);
+        }
+      } else {
+        root.removeAttribute("data-mobile-stack");
+        if (header.parentElement === stack) {
+          main.parentElement?.insertBefore(header, main);
+        }
+      }
+    };
+
+    placeHeader();
+    mobileMq.addEventListener("change", placeHeader);
+
     let state = readUrl();
     apply(root, state);
     setMobileFiltersOpen(root, false);
@@ -509,21 +616,23 @@ const servicios = [...SERVICIOS];
       });
     });
 
-    document.querySelector<HTMLElement>("[data-active-crumbs]")?.addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
-      if (!btn) return;
-      e.stopPropagation();
-      const facet = btn.dataset.removeFacet as "estado" | "servicio" | "q";
-      const value = btn.dataset.removeValue || "";
-      if (facet === "q") {
-        state = { ...state, q: "" };
-      } else {
-        const next = new Set(state[facet]);
-        next.delete(value);
-        state = { ...state, [facet]: next };
-      }
-      writeUrl(state);
-      apply(root, state);
+    document.querySelectorAll<HTMLElement>("[data-active-crumbs]").forEach((host) => {
+      host.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
+        if (!btn) return;
+        e.stopPropagation();
+        const facet = btn.dataset.removeFacet as "estado" | "servicio" | "q";
+        const value = btn.dataset.removeValue || "";
+        if (facet === "q") {
+          state = { ...state, q: "" };
+        } else {
+          const next = new Set(state[facet]);
+          next.delete(value);
+          state = { ...state, [facet]: next };
+        }
+        writeUrl(state);
+        apply(root, state);
+      });
     });
 
     document.querySelectorAll<HTMLAnchorElement>("[data-filter-home]").forEach((home) => {
