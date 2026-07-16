@@ -75,7 +75,7 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - `GET /api/auth/me` → user + owned profile + `claimable[]` (ownerless profiles with matching `invite_email`)
 - `POST /api/me/profile/claim` `{ slug }` → attach seeded profile to session user
 - `PUT /api/me/profile` → create/update owned profile (blocks create if claimable pending)
-- **Beta demo login:** `/entrar/` — localhost only (redirects to `/cuenta/` in production); remote needs `BETA_LOGIN=true`
+- **Beta demo login:** `/entrar/` + `GET /api/auth/beta` — enabled on staging via `BETA_LOGIN=true` in `wrangler.toml`. See [beta-launch.md](beta-launch.md) for the full turn-off checklist at launch.
 - Admin can set `inviteEmail` on ownerless profiles via `PATCH /api/admin/profiles/:slug`
 - `POST /api/me/profile/upload` → multipart `kind` + `file` → R2; writes `/media/...` on `cover`/`avatar`
 - `GET /api/me/media/quota` → platform storage + monthly Class A ops vs ~60% free-tier cap

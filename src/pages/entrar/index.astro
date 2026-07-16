@@ -37,9 +37,8 @@ const demos = [...memberDemos, adminEntry];
       <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Beta</p>
       <h1 class="text-3xl tracking-wide">Entrar como ejemplo</h1>
       <p class="text-sm leading-relaxed text-dm-offblack/65">
-        Para testers: inicia sesión al instante con una cuenta demo (sin correo). En local funciona
-        directo; en staging o producción el equipo DIMELA debe habilitar
-        <code class="text-xs">BETA_LOGIN</code>.
+        Para testers: inicia sesión al instante con una cuenta demo (sin correo). Requiere
+        <code class="text-xs">BETA_LOGIN</code> en el Worker (habilitado en staging).
       </p>
     </header>
 
@@ -73,15 +72,6 @@ const demos = [...memberDemos, adminEntry];
 </BaseLayout>
 
 <script>
-  function initBetaGate() {
-    const params = new URLSearchParams(window.location.search);
-    const h = window.location.hostname;
-    const isLocal =
-      h === "localhost" || h === "127.0.0.1" || h.endsWith(".localhost");
-    if (isLocal || params.has("key") || params.has("secret")) return;
-    window.location.replace("/cuenta/");
-  }
-
   function initBetaLinks() {
     const params = new URLSearchParams(window.location.search);
     const secret = params.get("key") || params.get("secret");
@@ -99,6 +89,5 @@ const demos = [...memberDemos, adminEntry];
     }
   }
 
-  initBetaGate();
   initBetaLinks();
 </script>

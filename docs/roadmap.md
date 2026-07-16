@@ -51,12 +51,13 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 - [x] `/cuenta/` hub — magic link, claim, create
 - [x] Profile claim via `invite_email` + `POST /api/me/profile/claim`
 - [~] Production email — deferred until Workers Paid; API returns verify link when email unavailable
-- [x] Beta `/entrar/` gated to localhost / explicit `BETA_LOGIN`
+- [x] Beta `/entrar/` + Dev menu on staging (`BETA_LOGIN`) — turn off at launch: [beta-launch.md](beta-launch.md)
 
 ## Cutover (in progress)
 
 - [x] Remove Decap `static/admin/`, `netlify.toml`, GitHub Pages Hugo workflow
 - [ ] Netlify dashboard: disable test site if still running — [cutover.md](cutover.md)
+- [ ] Public launch: disable Dev/beta toggles — [beta-launch.md](beta-launch.md)
 
 ## Notes
 

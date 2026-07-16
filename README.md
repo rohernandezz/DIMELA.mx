@@ -83,6 +83,7 @@ DIMELA.mx/
 | Doc | What’s in it |
 |-----|----------------|
 | [docs/architecture.md](docs/architecture.md) | Worker routes, D1/R2, local vs prod |
+| [docs/beta-launch.md](docs/beta-launch.md) | Dev/beta toggles — turn off at public launch |
 | [docs/brand.md](docs/brand.md) | Colors + Outpact type tokens |
 | [docs/product.md](docs/product.md) | Free/Pro, approval, discovery UI |
 | [docs/roadmap.md](docs/roadmap.md) | Done / in progress / next |

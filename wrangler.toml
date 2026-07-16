@@ -28,3 +28,8 @@ bucket_name = "dimela-mx-media"
 # Set secret: wrangler secret put MAGIC_LINK_FROM  (e.g. hola@dimela.mx)
 [[send_email]]
 name = "EMAIL"
+
+# Beta / tester tools on workers.dev (Entrar demos). Turn off for public launch.
+# Full checklist: docs/beta-launch.md
+[vars]
+BETA_LOGIN = "true"
