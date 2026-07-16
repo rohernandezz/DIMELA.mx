@@ -55,7 +55,7 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 
 ## Cutover (in progress)
 
-- [x] Remove Decap `static/admin/`, `netlify.toml`, GitHub Pages Hugo workflow
+- [x] Remove Decap `static/admin/`, `netlify.toml`, GitHub Pages workflow
 - [ ] Netlify dashboard: disable test site if still running — [cutover.md](cutover.md)
 - [ ] Public launch: disable Dev/beta toggles — [beta-launch.md](beta-launch.md)
 
@@ -65,4 +65,4 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 - Profile: `GET /api/profile?slug=` (published; owner/admin may get unpublished + `preview`)
 - Local: `npm run dev:api` + `npm run dev`, or `npm run dev:all` (Vite proxies `/api` + `/media` → `:8787`)
 - D1: `dimela-mx` · R2: `dimela-mx-media` (`MEDIA`) · scripts in [architecture.md](architecture.md)
-- Hugo `content/` remains in-repo as legacy reference only
+- [x] Remove legacy static site tree — see [hugo-legacy.md](hugo-legacy.md)

@@ -13,4 +13,4 @@ The others remain in the repo as clickable references (footer of those pages has
 
 `/bar/` redirects to `/` for old links.
 
-**Data:** prototypes share the same client grid pattern as `/` — prefer `/api/search` (D1), fall back to emitted `/data/profiles.json` from `src/data/mockProfiles.ts`. Hugo `content/Directorio` is not imported.
+**Data:** prototypes share the same client grid pattern as `/` — prefer `/api/search` (D1), fall back to emitted `/data/profiles.json` from `src/data/mockProfiles.ts`.

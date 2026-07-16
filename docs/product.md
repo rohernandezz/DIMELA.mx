@@ -1,6 +1,6 @@
 # Product
 
-DIMELA.mx is a Spanish-language **directory** of Mexican lettering / type people. The Astro port turns it from a static Hugo catalog into a **small platform**: self-serve profiles, admin approval, Free vs Pro.
+DIMELA.mx is a Spanish-language **directory** of Mexican lettering / type people — a **small platform** with self-serve profiles, admin approval, Free vs Pro.
 
 ## Audience
 
@@ -72,7 +72,7 @@ Realistic ceiling for years: **~200 profiles**. Design for API filtering; soft p
 - Magic-link / email OTP (no passwords); link returned in API JSON until email is wired
 - Session cookie `dm_session`; one profile per member (admin can edit any via queue)
 - **Beta testers:** `/entrar/` — one-click login as seeded demo accounts (no email). Staging-only; turn off at launch — [beta-launch.md](beta-launch.md)
-- Claim flow for existing Hugo-seeded entries — still TBD
+- Claim flow for existing legacy directory entries — still TBD
 - Demo member: `romina@tortilla.studio` + featured cards (`demo.*@dimela.mx`) · Demo admin: `hola@dimela.mx`
 
 ## Out of scope (for now)
@@ -80,4 +80,3 @@ Realistic ceiling for years: **~200 profiles**. Design for API filtering; soft p
 - Full social graph (follows, comments, activity feed)
 - Arbitrary HTML/JS embeds on Free profiles
 - Decap CMS / Netlify Identity
-- Vendoring the Blowfish Hugo theme inside Astro

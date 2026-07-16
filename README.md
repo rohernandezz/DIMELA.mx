@@ -18,8 +18,6 @@ Astro 7 + Tailwind v4 on **Cloudflare Workers** + D1 (same pattern as [sitioCele
 | Auth | Magic-link OTP → `dm_session` (link in JSON until email provider) |
 | Planned pay | Stripe Checkout (Pro) |
 
-Hugo content under `content/` remains as legacy reference. Do not rely on Hugo scripts.
-
 ## Setup
 
 ```bash
@@ -72,7 +70,6 @@ DIMELA.mx/
 ├── worker/                    # auth, admin, media (R2)
 ├── db/                        # D1 schema + seeds
 ├── wrangler.toml
-├── content/                   # Legacy Hugo markdown (reference)
 └── docs/                      # Product & architecture notes
 ```
 
@@ -94,7 +91,7 @@ To add an alias, edit `LOCATION_ALIASES` with `alias: "Canonical estado"`, using
 | [docs/product.md](docs/product.md) | Free/Pro, approval, discovery UI |
 | [docs/roadmap.md](docs/roadmap.md) | Done / in progress / next |
 | [docs/ui-prototypes.md](docs/ui-prototypes.md) | Filter UI A–D; B is live |
-| [docs/hugo-legacy.md](docs/hugo-legacy.md) | Old Hugo/Netlify/Decap bits still in-tree |
+| [docs/hugo-legacy.md](docs/hugo-legacy.md) | Pre-Astro static site notes (tree removed) |
 
 ## Deploy (Cloudflare)
 
@@ -111,7 +108,7 @@ Worker name: `dimela-mx` (see `wrangler.toml`). Custom domain and secrets land l
 | Branch | Role |
 |--------|------|
 | `filter-bar-mobile` (typical) | Active Astro work |
-| `Netlify` | Legacy Hugo site (production until cutover) |
+| `Netlify` | Retired Netlify deploy (see [cutover.md](docs/cutover.md)) |
 
 ## License / contact
 

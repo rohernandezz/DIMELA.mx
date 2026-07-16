@@ -7,10 +7,6 @@ dist/
 .wrangler/
 public/_astro/
 
-# Hugo (legacy during port)
-# Hugo used to publish into public/; Astro now owns public/ for static assets.
-resources/_gen/
-
 # Env & secrets
 .env
 .env.*
@@ -30,7 +26,6 @@ Thumbs.db
 *.log
 
 # Locks / local
-.hugo_build.lock
 .cache/
 coverage/
 .vercel/

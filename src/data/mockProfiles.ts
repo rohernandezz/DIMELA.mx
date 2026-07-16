@@ -1,7 +1,6 @@
 /**
  * Mock profiles for the live directory UI.
- * Intentional dummy set (richer than the old Blowfish placeholders).
- * Hugo content/Directorio is not imported — keep iterating here until D1.
+ * Intentional dummy set for local dev and profiles.json fallback.
  */
 import { MEXICO_ESTADOS, SERVICIOS, type MexicoEstado, type Servicio } from "./taxonomy";
 
