@@ -57,7 +57,7 @@ export function renderProfileDetailHtml(
 
   const servicesAndTags =
     chips || tagPills
-      ? `<div class="mb-6 flex flex-wrap gap-2">${chips}${tagPills}</div>`
+      ? `<div class="mb-6"><div class="flex flex-wrap gap-2">${chips}</div><div class="mt-2 flex flex-wrap gap-2">${tagPills}</div></div>`
       : "";
 
   const galleries = (profile.galleries || []).filter((g) => g.images?.length);

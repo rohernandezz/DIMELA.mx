@@ -61,7 +61,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const site = siteHref ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel) : "";
 
   const facetRow = chips || tagPills
-    ? `<div class="mt-auto flex min-h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">${chips}${tagPills}</div>`
+    ? `<div class="mt-auto min-h-12 shrink-0 overflow-hidden pt-1"><div class="flex flex-wrap content-start gap-1.5">${chips}</div><div class="mt-1.5 flex flex-wrap content-start gap-1.5">${tagPills}</div></div>`
     : `<div class="mt-auto h-12 shrink-0"></div>`;
 
   return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-profile-theme="${escapeHtml(profile.slug)}" data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
