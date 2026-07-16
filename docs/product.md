@@ -5,15 +5,15 @@ DIMELA.mx is a Spanish-language **directory** of Mexican lettering / type people
 ## Audience
 
 - **Visitors** — find letristas by service, location, or name
-- **Members** — create and maintain their own profile
-- **Admins** — approve submissions, curate homepage Destacados
+- **Members** — create and maintain their own profile (`/editar/`)
+- **Admins** — approve submissions (`/admin/`); later curate homepage Destacados
 
 ## Free vs Pro
 
 | | Free | Pro |
 |---|------|-----|
-| Directory card | Standard size, site styles | Larger card, Pro badge |
-| Homepage | General grid only | Eligible for **Destacados** (admin-curated among Pro) |
+| Directory card | Scaled slightly smaller, softer border | Full cell, stronger border, Pro badge |
+| Homepage | General grid only | Eligible for **Destacados** (admin-curated among Pro; not built yet) |
 | Bio | TipTap → sanitized HTML | Same + richer blocks over time |
 | Gallery | One simple gallery (capped) | Multiple named portfolio galleries |
 | Styling | Site default only | **Custom CSS** scoped to card + profile (MySpace-like) |
@@ -30,6 +30,8 @@ draft → pending_review → published
 
 Members can upgrade to Pro while still draft/pending so they can build the portfolio before going live.
 
+Owner/admin **preview** of unpublished profiles is supported via `/api/profile` (working-tree; verify locally).
+
 ## Discovery UI
 
 Two ways to find people (both stay):
@@ -39,8 +41,9 @@ Two ways to find people (both stay):
 - Text search (`q`)
 - **Servicio** chips (multi-select)
 - **Ubicación** multi-select
-- Clear filters; mobile header crumbs when filters are active
+- Sticky bar (header + search); desktop full-bleed when collapsed sticky; pink **Limpiar** when active
 - Shareable URL: `/?q=&servicio=Lettering,Branding&estado=Ciudad de México`
+- Grid: `auto-fill` cards; page width capped at `96rem`; order randomized once per load
 
 **Facet rule:** OR within a facet, AND across facets  
 (e.g. Lettering *or* Branding, *and* CDMX if selected).
@@ -58,17 +61,18 @@ Other filter UI experiments (A/C/D) are archived as routes — see [ui-prototype
 | `/estado/` | Index of states + counts |
 | `/estado/[slug]/` | Locked to that state; still filter by servicio + text |
 
-Nav keeps today’s IA: Todo · Locación · Servicio · Acerca de.
+Nav IA: Todo · Locación · Servicio · Acerca de · (member/admin entry points via `/editar/`, `/admin/`).
 
 ## Scale
 
 Realistic ceiling for years: **~200 profiles**. Design for API filtering; soft pagination only if the unfiltered grid feels heavy. No Algolia planned.
 
-## Auth (planned)
+## Auth (MVP live)
 
-- Magic-link / email OTP (no passwords)
-- One profile per member (admin can edit any)
-- Claim flow for existing Hugo-seeded entries
+- Magic-link / email OTP (no passwords); link returned in API JSON until email is wired
+- Session cookie `dm_session`; one profile per member (admin can edit any via queue)
+- Claim flow for existing Hugo-seeded entries — still TBD
+- Demo member: `romina@tortilla.studio` · Demo admin: `hola@dimela.mx`
 
 ## Out of scope (for now)
 
