@@ -16,6 +16,8 @@ interface Props {
   homeHref?: string;
   /** Optional second-row crumb trail (under header). */
   showCrumbTrail?: boolean;
+  /** Tagline beside logo in simple header when no active filter breadcrumbs. */
+  showTagline?: boolean;
 }
 
 const {
@@ -24,6 +26,7 @@ const {
   headerVariant = "simple",
   homeHref = "/",
   showCrumbTrail = false,
+  showTagline = false,
 } = Astro.props;
 ---
 
@@ -37,7 +40,7 @@ const {
     <title>{title}</title>
   </head>
   <body class="flex min-h-screen flex-col">
-    <Header variant={headerVariant} homeHref={homeHref} />
+    <Header variant={headerVariant} homeHref={homeHref} showTagline={showTagline} />
     {showCrumbTrail && <DirectoryCrumbTrail />}
     <main
       class="mx-auto w-full max-w-dm-page flex-1 py-6"

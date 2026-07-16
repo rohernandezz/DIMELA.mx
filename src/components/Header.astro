@@ -7,12 +7,14 @@
 interface Props {
   variant?: "path" | "labeled" | "simple";
   homeHref?: string;
+  /** Tagline beside logo when no active header breadcrumbs (simple variant only). */
+  showTagline?: boolean;
 }
 
 import DirectoryPathFilter from "./DirectoryPathFilter.astro";
 import DirectoryLabeledPath from "./DirectoryLabeledPath.astro";
 
-const { variant = "simple", homeHref = "/" } = Astro.props;
+const { variant = "simple", homeHref = "/", showTagline = false } = Astro.props;
 
 const navLinks = [
   { href: "/directorio/", label: "Todo" },
@@ -74,7 +76,7 @@ const betaLinks = [
         style="padding-left: var(--dm-page-px); padding-right: var(--dm-page-px)"
         data-header-inner
       >
-        <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-1.5 gap-y-1">
+        <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-1.5 gap-y-1">
           <a
             href={homeHref}
             data-filter-home
@@ -82,6 +84,16 @@ const betaLinks = [
           >
             DIMELA.mx
           </a>
+          {
+            showTagline && (
+              <span
+                data-site-tagline
+                class="min-w-0 text-sm font-normal tracking-normal text-dm-offwhite/50"
+              >
+                {" | Directorio Mexicano de Letristas"}
+              </span>
+            )
+          }
           <nav
             data-active-crumbs
             hidden
