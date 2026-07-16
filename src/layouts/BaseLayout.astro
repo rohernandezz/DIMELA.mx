@@ -26,7 +26,7 @@ const {
   headerVariant = "simple",
   homeHref = "/",
   showCrumbTrail = false,
-  showTagline = false,
+  showTagline = headerVariant === "simple",
 } = Astro.props;
 ---
 

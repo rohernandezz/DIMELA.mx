@@ -16,6 +16,6 @@ export function getStaticPaths() {
 const { slug } = Astro.params;
 ---
 
-<BaseLayout title="Perfil — DIMELA.mx" headerVariant="simple" homeHref="/">
+<BaseLayout title="Perfil — DIMELA.mx" headerVariant="simple" homeHref="/" showTagline>
   <ProfileDetailClient slug={slug} />
 </BaseLayout>

@@ -90,7 +90,7 @@ const betaLinks = [
                 data-site-tagline
                 class="min-w-0 text-sm font-normal tracking-normal text-dm-offwhite/50"
               >
-                {" | Directorio Mexicano de Letristas"}
+                {"\u00a0|\u2003Directorio Mexicano de Letristas"}
               </span>
             )
           }
@@ -276,5 +276,36 @@ const betaLinks = [
   }
 
   initSiteMenu();
-  document.addEventListener("astro:page-load", initSiteMenu);
+
+  function hasVisibleHeaderCrumbs(): boolean {
+    return [...document.querySelectorAll<HTMLElement>("[data-active-crumbs]")].some((host) => {
+      if (host.hidden || host.childElementCount === 0) return false;
+      return host.getClientRects().length > 0;
+    });
+  }
+
+  function syncSiteTagline() {
+    document.querySelectorAll<HTMLElement>("[data-site-tagline]").forEach((el) => {
+      el.hidden = hasVisibleHeaderCrumbs();
+    });
+  }
+
+  function initSiteTagline() {
+    syncSiteTagline();
+    if (document.documentElement.dataset.taglineSyncReady) return;
+    document.documentElement.dataset.taglineSyncReady = "1";
+
+    const observer = new MutationObserver(() => syncSiteTagline());
+    document.querySelectorAll<HTMLElement>("[data-active-crumbs]").forEach((host) => {
+      observer.observe(host, { attributes: true, childList: true, subtree: true });
+    });
+
+    window.addEventListener("resize", syncSiteTagline, { passive: true });
+  }
+
+  initSiteTagline();
+  document.addEventListener("astro:page-load", () => {
+    initSiteMenu();
+    initSiteTagline();
+  });
 </script>
