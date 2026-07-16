@@ -33,3 +33,29 @@ name = "EMAIL"
 # Full checklist: docs/beta-launch.md
 [vars]
 BETA_LOGIN = "true"
+
+# Preview: profile-tags branch → https://tags.dimela.mx
+# Deploy from cursor/profile-tags: npm run deploy:tags
+# Creates Worker script dimela-mx-tags; shares prod D1 + R2 (tags column is additive).
+[env.tags]
+name = "dimela-mx-tags"
+workers_dev = true
+
+[[env.tags.routes]]
+pattern = "tags.dimela.mx"
+custom_domain = true
+
+[[env.tags.d1_databases]]
+binding = "DB"
+database_name = "dimela-mx"
+database_id = "4b237d4d-ca9f-4304-b1f8-6c8353cb1b53"
+
+[[env.tags.r2_buckets]]
+binding = "MEDIA"
+bucket_name = "dimela-mx-media"
+
+[[env.tags.send_email]]
+name = "EMAIL"
+
+[env.tags.vars]
+BETA_LOGIN = "true"
