@@ -5,9 +5,15 @@
 ```
 Browser → Cloudflare Worker (worker.js)
               │
-              ├─ GET /api/search  → D1 published profiles (fallback: profiles.json)
-              ├─ /api/*           → JSON 501 stubs
-              └─ other            → env.ASSETS → Astro dist/
+              ├─ GET  /api/search          → D1 published profiles
+              ├─ GET  /api/profile?slug=   → one published profile
+              ├─ POST /api/auth/request    → magic link (D1)
+              ├─ GET  /api/auth/verify     → session cookie
+              ├─ GET  /api/auth/me         → user + owned profile
+              ├─ POST /api/auth/logout
+              ├─ PUT  /api/me/profile      → save draft to D1
+              ├─ POST /api/me/profile/submit → pending_review
+              └─ other → env.ASSETS → Astro dist/
 ```
 
 1. `astro build` writes static HTML/CSS/JS to `dist/` (+ emits `public/data/profiles.json`)
@@ -46,12 +52,22 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - Response (search): `{ ok, source, total, query, results }`
 - Response (profile): `{ ok, source, profile }`
 
+### Auth + editor (MVP)
+
+- Magic link: `POST /api/auth/request` `{ email }` → stores token in D1, returns `verifyUrl` (email provider later)
+- `GET /api/auth/verify?token=` → sets `dm_session` HttpOnly cookie, redirects to `/editar/`
+- `GET /api/auth/me` → session user + owned profile (any status)
+- `PUT /api/me/profile` → create/update owned profile in D1 (bio sanitized lightly)
+- `POST /api/me/profile/submit` → `status = pending_review`
+- Demo user: `romina@tortilla.studio` owns `romina-hernandez` (`db/seed-auth.sql`)
+- Local: `npm run dev:api` + `npm run dev` (Vite proxies `/api` → `:8787`)
+
 ### D1
 
 ```bash
-npm run db:migrate:remote   # schema
-npm run db:seed:remote      # emit seed.sql + insert mocks as published
-npm run db:migrate:local    # local wrangler D1
+npm run db:migrate:auth:remote   # users / magic_links / sessions (+ owner columns once)
+npm run db:seed:auth:remote      # link demo member
+npm run db:migrate:local
 npm run db:seed:local
 ```
 

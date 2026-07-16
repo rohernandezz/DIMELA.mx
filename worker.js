@@ -1,6 +1,16 @@
 /**
- * Cloudflare Worker: static assets + directory APIs (D1 when bound, else mock JSON).
+ * Cloudflare Worker: assets + directory/search + auth + profile save (D1).
  */
+import {
+  handleAuthLogout,
+  handleAuthMe,
+  handleAuthRequest,
+  handleAuthVerify,
+  handleMeProfilePut,
+  handleMeProfileSubmit,
+  json,
+  mapProfileRow,
+} from "./worker/auth.js";
 
 function parseList(param) {
   if (!param) return [];
@@ -29,27 +39,10 @@ function filterProfiles(profiles, query) {
 }
 
 function mapD1Row(row) {
-  let servicios = [];
-  try {
-    servicios = JSON.parse(row.servicios || "[]");
-  } catch {
-    servicios = [];
-  }
-  return {
-    slug: row.slug,
-    name: row.name,
-    estado: row.estado,
-    servicios,
-    description: row.description || "",
-    website: row.website || undefined,
-    tier: row.tier,
-    featured: Boolean(row.featured),
-    cover: row.cover,
-    avatar: row.avatar,
-  };
+  return mapProfileRow(row);
 }
 
-function json(data, status = 200) {
+function publicJson(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
@@ -63,7 +56,7 @@ async function loadFromD1(env) {
   if (!env.DB) return null;
   try {
     const { results } = await env.DB.prepare(
-      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar
+      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
        FROM profiles
        WHERE status = 'published'
        ORDER BY name COLLATE NOCASE`,
@@ -80,7 +73,7 @@ async function loadProfileFromD1(env, slug) {
   if (!env.DB) return null;
   try {
     const row = await env.DB.prepare(
-      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar
+      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
        FROM profiles
        WHERE status = 'published' AND slug = ?
        LIMIT 1`,
@@ -111,10 +104,23 @@ async function loadProfiles(env, origin) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const path = url.pathname;
 
-    if (url.pathname === "/api/search") {
+    if (path === "/api/auth/request") return handleAuthRequest(request, env, url);
+    if (path === "/api/auth/verify") return handleAuthVerify(request, env, url);
+    if (path === "/api/auth/logout") return handleAuthLogout(request, env, url);
+    if (path === "/api/auth/me") return handleAuthMe(request, env);
+    if (path === "/api/me/profile") {
+      if (request.method === "PUT" || request.method === "PATCH") {
+        return handleMeProfilePut(request, env);
+      }
+      return json({ ok: false, error: "Método no permitido." }, 405);
+    }
+    if (path === "/api/me/profile/submit") return handleMeProfileSubmit(request, env);
+
+    if (path === "/api/search") {
       if (request.method !== "GET" && request.method !== "HEAD") {
-        return json({ ok: false, error: "Método no permitido." }, 405);
+        return publicJson({ ok: false, error: "Método no permitido." }, 405);
       }
 
       const query = {
@@ -125,12 +131,12 @@ export default {
 
       const { source, profiles } = await loadProfiles(env, url.origin);
       if (!profiles) {
-        return json({ ok: false, error: "No se pudo cargar el directorio." }, 503);
+        return publicJson({ ok: false, error: "No se pudo cargar el directorio." }, 503);
       }
 
       const results = filterProfiles(profiles, query);
 
-      return json({
+      return publicJson({
         ok: true,
         source,
         total: results.length,
@@ -139,14 +145,14 @@ export default {
       });
     }
 
-    if (url.pathname === "/api/profile") {
+    if (path === "/api/profile") {
       if (request.method !== "GET" && request.method !== "HEAD") {
-        return json({ ok: false, error: "Método no permitido." }, 405);
+        return publicJson({ ok: false, error: "Método no permitido." }, 405);
       }
 
       const slug = (url.searchParams.get("slug") || "").trim();
       if (!slug) {
-        return json({ ok: false, error: "Falta slug." }, 400);
+        return publicJson({ ok: false, error: "Falta slug." }, 400);
       }
 
       let source = "d1";
@@ -158,13 +164,13 @@ export default {
       }
 
       if (!profile) {
-        return json({ ok: false, error: "Perfil no encontrado." }, 404);
+        return publicJson({ ok: false, error: "Perfil no encontrado." }, 404);
       }
 
-      return json({ ok: true, source, profile });
+      return publicJson({ ok: true, source, profile });
     }
 
-    if (url.pathname.startsWith("/api/")) {
+    if (path.startsWith("/api/")) {
       return json({ ok: false, error: "API aún no implementada." }, 501);
     }
 

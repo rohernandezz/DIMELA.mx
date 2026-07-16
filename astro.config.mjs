@@ -16,5 +16,14 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      // Pair with `npm run dev:api` (wrangler) so /api/* hits D1 locally.
+      proxy: {
+        "/api": {
+          target: "http://127.0.0.1:8787",
+          changeOrigin: true,
+        },
+      },
+    },
   },
 });

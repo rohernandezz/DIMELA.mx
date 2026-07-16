@@ -1,375 +1,325 @@
 ---
 /**
- * Draft profile editor UI — design sandbox for the member CMS.
- * No auth/save yet; TipTap will replace the bio textarea later.
+ * Member profile editor — magic-link auth + TipTap bio + D1 save.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
-
-const draft = {
-  status: "draft" as const,
-  name: "Romina Hernández",
-  slug: "romina-hernandez",
-  estado: "Ciudad de México",
-  servicios: ["Diseño de Tipografía", "Lettering", "Ingeniería de Fuentes"] as string[],
-  website: "https://tortilla.studio",
-  description:
-    "Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.",
-  tier: "pro" as const,
-  cover: "/mock/cover-warm.svg",
-  avatar: null as string | null,
-};
-
-const statusLabel: Record<string, string> = {
-  draft: "Borrador",
-  pending_review: "En revisión",
-  published: "Publicado",
-  rejected: "Rechazado",
-};
 ---
 
 <BaseLayout
   title="Editar perfil — DIMELA.mx"
-  description="Borrador del editor de perfil para miembros."
+  description="Editor de perfil para miembros DIMELA."
   headerVariant="simple"
   homeHref="/"
 >
   <div class="mx-auto max-w-3xl pb-16">
-    <header class="mb-8 space-y-3">
-      <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-        Cuenta · borrador UI
-      </p>
-      <div class="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 class="text-3xl tracking-wide">Editar perfil</h1>
-          <p class="mt-1 text-sm text-dm-offblack/65">
-            Sin auth ni guardado aún — maqueta para el CMS propio (TipTap + D1 + R2).
-          </p>
-        </div>
-        <span
-          class="rounded border border-dm-offblack/20 bg-dm-blue/60 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-dm-offblack uppercase"
-          data-status-badge
-        >
-          {statusLabel[draft.status]}
-        </span>
+    <!-- Login -->
+    <section
+      class="mb-10 space-y-4 rounded border border-dm-offblack/15 bg-white p-5"
+      data-auth-panel
+      hidden
+    >
+      <div>
+        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+          Cuenta
+        </p>
+        <h1 class="mt-1 text-2xl tracking-wide">Entrar con email</h1>
+        <p class="mt-1 text-sm text-dm-offblack/65">
+          Te enviamos un enlace mágico (sin contraseña). En desarrollo el enlace aparece aquí.
+        </p>
       </div>
-
-      <div class="flex flex-wrap gap-2 pt-1">
-        <button
-          type="button"
-          class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
-          data-action="save"
-        >
-          Guardar borrador
-        </button>
-        <button
-          type="button"
-          class="rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-1.5 text-sm text-dm-offwhite transition hover:opacity-90"
-          data-action="submit"
-        >
-          Enviar a revisión
-        </button>
-        <a
-          href={`/directorio/${draft.slug}/`}
-          class="rounded border border-dm-offblack/20 bg-white px-3 py-1.5 text-sm text-dm-offblack/80 hover:border-dm-offblack/40"
-        >
-          Vista pública
-        </a>
-      </div>
-      <p class="hidden text-sm text-dm-offblack/55" data-editor-toast role="status"></p>
-    </header>
-
-    <form class="space-y-10" data-profile-editor novalidate>
-      <!-- Identity -->
-      <section class="space-y-4" aria-labelledby="editor-identity">
-        <div>
-          <h2 id="editor-identity" class="text-lg tracking-wide">Identidad</h2>
-          <p class="mt-1 text-sm text-dm-offblack/60">Nombre público y URL del perfil.</p>
-        </div>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <label class="block space-y-1.5 sm:col-span-2">
-            <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-              >Nombre</span
-            >
-            <input
-              type="text"
-              name="name"
-              value={draft.name}
-              class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
-            />
-          </label>
-          <label class="block space-y-1.5">
-            <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-              >Slug</span
-            >
-            <input
-              type="text"
-              name="slug"
-              value={draft.slug}
-              class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 font-mono text-sm outline-none focus:border-dm-offblack/50"
-            />
-          </label>
-          <label class="block space-y-1.5">
-            <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-              >Sitio web</span
-            >
-            <input
-              type="url"
-              name="website"
-              value={draft.website}
-              placeholder="https://"
-              class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
-            />
-          </label>
-        </div>
-      </section>
-
-      <!-- Location + services -->
-      <section class="space-y-4" aria-labelledby="editor-facets">
-        <div>
-          <h2 id="editor-facets" class="text-lg tracking-wide">Directorio</h2>
-          <p class="mt-1 text-sm text-dm-offblack/60">
-            Ubicación y servicios (mismos facets que el FilterBar).
-          </p>
-        </div>
-        <label class="block space-y-1.5">
+      <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
+        <label class="block min-w-0 flex-1 space-y-1.5">
           <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-            >Ubicación</span
+            >Email</span
           >
-          <select
-            name="estado"
-            class="w-full rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
-          >
-            {
-              MEXICO_ESTADOS.map((estado) => (
-                <option value={estado} selected={estado === draft.estado}>
-                  {estado}
-                </option>
-              ))
-            }
-          </select>
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="tu@email.com"
+            value="romina@tortilla.studio"
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+          />
         </label>
-        <fieldset>
-          <legend
-            class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+        <button
+          type="submit"
+          class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+        >
+          Enviar enlace
+        </button>
+      </form>
+      <p class="text-sm text-dm-offblack/60" data-auth-message></p>
+      <p class="hidden break-all text-sm" data-auth-link></p>
+    </section>
+
+    <!-- Editor (shown when logged in) -->
+    <div data-editor-root hidden>
+      <header class="mb-8 space-y-3">
+        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+          Cuenta · <span data-user-email></span>
+        </p>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 class="text-3xl tracking-wide">Editar perfil</h1>
+            <p class="mt-1 text-sm text-dm-offblack/65">
+              Guardado en D1. Publicado solo tras aprobación.
+            </p>
+          </div>
+          <span
+            class="rounded border border-dm-offblack/20 bg-dm-blue/60 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-dm-offblack uppercase"
+            data-status-badge
           >
-            Servicios
-          </legend>
-          <div class="flex flex-wrap gap-1.5">
-            {
-              SERVICIOS.map((servicio) => {
-                const on = draft.servicios.includes(servicio);
-                return (
+            —
+          </span>
+        </div>
+
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button
+            type="button"
+            class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
+            data-action="save"
+          >
+            Guardar borrador
+          </button>
+          <button
+            type="button"
+            class="rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-1.5 text-sm text-dm-offwhite transition hover:opacity-90"
+            data-action="submit"
+          >
+            Enviar a revisión
+          </button>
+          <a
+            href="/directorio/"
+            class="rounded border border-dm-offblack/20 bg-white px-3 py-1.5 text-sm text-dm-offblack/80 hover:border-dm-offblack/40"
+            data-public-link
+          >
+            Vista pública
+          </a>
+          <button
+            type="button"
+            class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:border-dm-offblack/30"
+            data-action="logout"
+          >
+            Salir
+          </button>
+        </div>
+        <p class="hidden text-sm text-dm-offblack/55" data-editor-toast role="status"></p>
+      </header>
+
+      <form class="space-y-10" data-profile-editor novalidate>
+        <section class="space-y-4" aria-labelledby="editor-identity">
+          <div>
+            <h2 id="editor-identity" class="text-lg tracking-wide">Identidad</h2>
+            <p class="mt-1 text-sm text-dm-offblack/60">Nombre público y URL del perfil.</p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block space-y-1.5 sm:col-span-2">
+              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+                >Nombre</span
+              >
+              <input
+                type="text"
+                name="name"
+                data-field="name"
+                class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+              />
+            </label>
+            <label class="block space-y-1.5">
+              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+                >Slug</span
+              >
+              <input
+                type="text"
+                name="slug"
+                data-field="slug"
+                class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 font-mono text-sm outline-none focus:border-dm-offblack/50"
+              />
+            </label>
+            <label class="block space-y-1.5">
+              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+                >Sitio web</span
+              >
+              <input
+                type="url"
+                name="website"
+                data-field="website"
+                placeholder="https://"
+                class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+              />
+            </label>
+          </div>
+        </section>
+
+        <section class="space-y-4" aria-labelledby="editor-facets">
+          <div>
+            <h2 id="editor-facets" class="text-lg tracking-wide">Directorio</h2>
+            <p class="mt-1 text-sm text-dm-offblack/60">Ubicación y servicios.</p>
+          </div>
+          <label class="block space-y-1.5">
+            <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+              >Ubicación</span
+            >
+            <select
+              name="estado"
+              data-field="estado"
+              class="w-full rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+            >
+              {MEXICO_ESTADOS.map((estado) => <option value={estado}>{estado}</option>)}
+            </select>
+          </label>
+          <fieldset>
+            <legend
+              class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            >
+              Servicios
+            </legend>
+            <div class="flex flex-wrap gap-1.5" data-servicios-host>
+              {
+                SERVICIOS.map((servicio) => (
                   <label class="cursor-pointer">
                     <input
                       type="checkbox"
                       name="servicios"
                       value={servicio}
-                      checked={on}
                       class="peer sr-only"
+                      data-servicio={servicio}
                     />
                     <span class="inline-block rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack peer-checked:border-dm-offblack peer-checked:bg-dm-offblack peer-checked:text-dm-offwhite">
                       {servicio}
                     </span>
                   </label>
-                );
-              })
-            }
-          </div>
-        </fieldset>
-      </section>
-
-      <!-- Media -->
-      <section class="space-y-4" aria-labelledby="editor-media">
-        <div>
-          <h2 id="editor-media" class="text-lg tracking-wide">Medios</h2>
-          <p class="mt-1 text-sm text-dm-offblack/60">Portada y avatar → R2 más adelante.</p>
-        </div>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div class="space-y-2">
-            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-              Portada
-            </p>
-            <div
-              class="relative flex aspect-[16/10] items-end overflow-hidden rounded-md border border-dashed border-dm-offblack/25 bg-dm-blue"
-            >
-              {
-                draft.cover ? (
-                  <img
-                    src={draft.cover}
-                    alt=""
-                    class="absolute inset-0 h-full w-full object-cover"
-                  />
-                ) : null
+                ))
               }
-              <div class="relative z-10 w-full bg-gradient-to-t from-dm-offblack/50 to-transparent p-3">
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="space-y-4" aria-labelledby="editor-media">
+          <div>
+            <h2 id="editor-media" class="text-lg tracking-wide">Medios</h2>
+            <p class="mt-1 text-sm text-dm-offblack/60">Portada y avatar → R2 próximamente.</p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="space-y-2">
+              <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+                Portada
+              </p>
+              <div
+                class="relative flex aspect-[16/10] items-end overflow-hidden rounded-md border border-dashed border-dm-offblack/25 bg-dm-blue"
+                data-cover-preview
+              >
+                <div class="relative z-10 w-full bg-gradient-to-t from-dm-offblack/50 to-transparent p-3">
+                  <button
+                    type="button"
+                    class="rounded border border-white/40 bg-white/90 px-2.5 py-1 text-xs text-dm-offblack"
+                    data-action="upload-cover"
+                  >
+                    Subir portada
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+                Avatar
+              </p>
+              <div
+                class="flex aspect-square max-w-[12rem] flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dm-offblack/25 bg-white p-4"
+              >
                 <button
                   type="button"
-                  class="rounded border border-white/40 bg-white/90 px-2.5 py-1 text-xs text-dm-offblack"
-                  data-action="upload-cover"
+                  class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80"
+                  data-action="upload-avatar"
                 >
-                  Subir portada
+                  Subir avatar
                 </button>
               </div>
             </div>
           </div>
-          <div class="space-y-2">
-            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-              Avatar
-            </p>
-            <div
-              class="flex aspect-square max-w-[12rem] flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dm-offblack/25 bg-white p-4"
-            >
-              <div
-                class="flex h-16 w-16 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/40"
-                aria-hidden="true"
-              >
-                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="8" r="4"></circle>
-                  <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
-                </svg>
-              </div>
-              <button
-                type="button"
-                class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80 hover:border-dm-offblack/40"
-                data-action="upload-avatar"
-              >
-                Subir avatar
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Bio -->
-      <section class="space-y-4" aria-labelledby="editor-bio">
-        <div>
-          <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
-          <p class="mt-1 text-sm text-dm-offblack/60">
-            TipTap — al guardar se sanitizará el HTML (auth + D1 después).
-          </p>
-        </div>
-        <div
-          class="overflow-hidden rounded border border-dm-offblack/20 bg-white"
-          data-tiptap-shell
-        >
-          <div
-            class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
-            data-bio-toolbar
-          >
-            <button
-              type="button"
-              data-bio-cmd="bold"
-              class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] font-bold text-dm-offblack hover:border-dm-offblack/40"
-              >B</button
-            >
-            <button
-              type="button"
-              data-bio-cmd="italic"
-              class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] italic text-dm-offblack hover:border-dm-offblack/40"
-              >I</button
-            >
-            <button
-              type="button"
-              data-bio-cmd="h2"
-              class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] text-dm-offblack hover:border-dm-offblack/40"
-              >H2</button
-            >
-            <button
-              type="button"
-              data-bio-cmd="bullet"
-              class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] text-dm-offblack hover:border-dm-offblack/40"
-              >Lista</button
-            >
-            <button
-              type="button"
-              data-bio-cmd="link"
-              class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] text-dm-offblack hover:border-dm-offblack/40"
-              >Enlace</button
-            >
-          </div>
-          <div data-bio-editor></div>
-          <input type="hidden" name="description" value={draft.description} data-bio-html />
-        </div>
-      </section>
-
-      <!-- Gallery -->
-      <section class="space-y-4" aria-labelledby="editor-gallery">
-        <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <section class="space-y-4" aria-labelledby="editor-bio">
           <div>
-            <h2 id="editor-gallery" class="text-lg tracking-wide">Galería</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">
-              Free: una galería simple. Pro: varias con nombre.
-            </p>
+            <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
+            <p class="mt-1 text-sm text-dm-offblack/60">TipTap · HTML sanitizado al guardar.</p>
           </div>
-          <span
-            class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase"
+          <div class="overflow-hidden rounded border border-dm-offblack/20 bg-white" data-tiptap-shell>
+            <div
+              class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
+              data-bio-toolbar
+            >
+              <button type="button" data-bio-cmd="bold" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] font-bold">B</button>
+              <button type="button" data-bio-cmd="italic" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px] italic">I</button>
+              <button type="button" data-bio-cmd="h2" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px]">H2</button>
+              <button type="button" data-bio-cmd="bullet" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px]">Lista</button>
+              <button type="button" data-bio-cmd="link" class="rounded border border-dm-offblack/15 bg-white px-2 py-0.5 text-[11px]">Enlace</button>
+            </div>
+            <div data-bio-editor></div>
+            <input type="hidden" name="description" value="" data-bio-html />
+          </div>
+        </section>
+
+        <section class="space-y-4" aria-labelledby="editor-css">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h2 id="editor-css" class="text-lg tracking-wide">CSS personalizado</h2>
+              <p class="mt-1 text-sm text-dm-offblack/60">Solo Pro — scoped a tarjeta + perfil.</p>
+            </div>
+            <span class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">Pro</span>
+          </div>
+          <textarea
+            name="customCss"
+            data-field="customCss"
+            rows="5"
+            placeholder={`.profile-card {\n  /* tu estilo */\n}`}
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offblack px-3 py-3 font-mono text-xs leading-relaxed text-dm-offwhite outline-none placeholder:text-dm-offwhite/35 focus:border-dm-pink/50"
+          ></textarea>
+        </section>
+
+        <div class="flex flex-wrap gap-2 border-t border-dm-offblack/10 pt-6">
+          <button
+            type="submit"
+            class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
           >
-            Pro · varias
-          </span>
-        </div>
-        <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {
-            [1, 2, 3].map((n) => (
-              <div class="flex aspect-square items-center justify-center rounded-md border border-dashed border-dm-offblack/20 bg-dm-offwhite text-xs text-dm-offblack/40">
-                Pieza {n}
-              </div>
-            ))
-          }
+            Guardar borrador
+          </button>
           <button
             type="button"
-            class="flex aspect-square items-center justify-center rounded-md border border-dashed border-dm-offblack/30 bg-white text-sm text-dm-offblack/70 hover:border-dm-offblack/50"
-            data-action="add-work"
+            class="rounded border border-dm-offblack/25 px-4 py-2 text-sm text-dm-offblack/70"
+            data-action="submit"
           >
-            + Añadir
+            Enviar a revisión
           </button>
         </div>
-      </section>
-
-      <!-- Pro CSS -->
-      <section class="space-y-4" aria-labelledby="editor-css">
-        <div class="flex flex-wrap items-baseline justify-between gap-2">
-          <div>
-            <h2 id="editor-css" class="text-lg tracking-wide">CSS personalizado</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">
-              Solo Pro — scoped a tarjeta + página de perfil.
-            </p>
-          </div>
-          <span
-            class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase"
-          >
-            Pro
-          </span>
-        </div>
-        <textarea
-          name="customCss"
-          rows="5"
-          placeholder={`.profile-card {\n  /* tu estilo */\n}`}
-          class="w-full rounded border border-dm-offblack/20 bg-dm-offblack px-3 py-3 font-mono text-xs leading-relaxed text-dm-offwhite outline-none placeholder:text-dm-offwhite/35 focus:border-dm-pink/50"
-        ></textarea>
-      </section>
-
-      <div class="flex flex-wrap gap-2 border-t border-dm-offblack/10 pt-6">
-        <button
-          type="submit"
-          class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
-        >
-          Guardar borrador
-        </button>
-        <button
-          type="button"
-          class="rounded border border-dm-offblack/25 px-4 py-2 text-sm text-dm-offblack/70 hover:border-dm-offblack/40"
-          data-action="submit"
-        >
-          Enviar a revisión
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </BaseLayout>
 
 <script>
   import { bindBioToolbar, mountBioEditor, type BioEditor } from "../../lib/bioEditor";
+
+  type Profile = {
+    slug: string;
+    name: string;
+    estado: string;
+    servicios: string[];
+    description: string;
+    website?: string;
+    tier: string;
+    cover: string | null;
+    avatar: string | null;
+    customCss?: string;
+    status: string;
+  };
+
+  const STATUS_LABEL: Record<string, string> = {
+    draft: "Borrador",
+    pending_review: "En revisión",
+    published: "Publicado",
+    rejected: "Rechazado",
+  };
 
   let bio: BioEditor | null = null;
 
@@ -378,48 +328,219 @@ const statusLabel: Record<string, string> = {
     if (!el) return;
     el.textContent = message;
     el.classList.remove("hidden");
-    window.setTimeout(() => el.classList.add("hidden"), 2400);
+    window.setTimeout(() => el.classList.add("hidden"), 2800);
   }
 
-  function init() {
-    const form = document.querySelector<HTMLFormElement>("[data-profile-editor]");
-    if (!form || form.dataset.ready) return;
-    form.dataset.ready = "1";
+  function showLogin(show: boolean) {
+    const auth = document.querySelector<HTMLElement>("[data-auth-panel]");
+    const editor = document.querySelector<HTMLElement>("[data-editor-root]");
+    if (auth) auth.hidden = !show;
+    if (editor) editor.hidden = show;
+  }
 
+  function fillProfile(profile: Profile | null) {
+    const form = document.querySelector<HTMLFormElement>("[data-profile-editor]");
+    if (!form) return;
+
+    const name = profile?.name || "";
+    const slug = profile?.slug || "";
+    const estado = profile?.estado || "Ciudad de México";
+    const website = profile?.website || "";
+    const description = profile?.description || "";
+    const customCss = profile?.customCss || "";
+    const servicios = new Set(profile?.servicios || []);
+    const status = profile?.status || "draft";
+
+    const set = (field: string, value: string) => {
+      const el = form.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+        `[data-field="${field}"]`,
+      );
+      if (el) el.value = value;
+    };
+    set("name", name);
+    set("slug", slug);
+    set("estado", estado);
+    set("website", website);
+    set("customCss", customCss);
+
+    form.querySelectorAll<HTMLInputElement>("[data-servicio]").forEach((box) => {
+      box.checked = servicios.has(box.value);
+    });
+
+    const badge = document.querySelector<HTMLElement>("[data-status-badge]");
+    if (badge) badge.textContent = STATUS_LABEL[status] || status;
+
+    const pub = document.querySelector<HTMLAnchorElement>("[data-public-link]");
+    if (pub) pub.href = slug ? `/directorio/${slug}/` : "/directorio/";
+
+    const cover = document.querySelector<HTMLElement>("[data-cover-preview]");
+    if (cover) {
+      cover.querySelector("img[data-cover-img]")?.remove();
+      if (profile?.cover) {
+        const img = document.createElement("img");
+        img.src = profile.cover;
+        img.alt = "";
+        img.dataset.coverImg = "1";
+        img.className = "absolute inset-0 h-full w-full object-cover";
+        cover.prepend(img);
+      }
+    }
+
+    const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
     const mount = form.querySelector<HTMLElement>("[data-bio-editor]");
     const toolbar = form.querySelector<HTMLElement>("[data-bio-toolbar]");
-    const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
-    if (mount && hidden) {
+    if (hidden) hidden.value = description;
+    if (mount) {
       bio?.destroy();
+      mount.innerHTML = "";
       bio = mountBioEditor({
         element: mount,
-        content: hidden.value || "",
+        content: description,
         onUpdate: (html) => {
-          hidden.value = html;
+          if (hidden) hidden.value = html;
         },
       });
       if (toolbar) bindBioToolbar(toolbar, bio.editor);
     }
+  }
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (bio && hidden) hidden.value = bio.getHTML();
-      toast("Borrador guardado (simulado).");
+  function readForm(): Partial<Profile> & { customCss?: string } {
+    const form = document.querySelector<HTMLFormElement>("[data-profile-editor]")!;
+    const servicios = [...form.querySelectorAll<HTMLInputElement>("[data-servicio]:checked")].map(
+      (el) => el.value,
+    );
+    const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
+    if (bio && hidden) hidden.value = bio.getHTML();
+    return {
+      name: form.querySelector<HTMLInputElement>('[data-field="name"]')?.value || "",
+      slug: form.querySelector<HTMLInputElement>('[data-field="slug"]')?.value || "",
+      estado: form.querySelector<HTMLSelectElement>('[data-field="estado"]')?.value || "",
+      website: form.querySelector<HTMLInputElement>('[data-field="website"]')?.value || "",
+      customCss: form.querySelector<HTMLTextAreaElement>('[data-field="customCss"]')?.value || "",
+      description: hidden?.value || "",
+      servicios,
+    };
+  }
+
+  async function saveDraft() {
+    const body = readForm();
+    const res = await fetch("/api/me/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(body),
     });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo guardar.");
+      return;
+    }
+    fillProfile(data.profile);
+    toast("Guardado en D1.");
+  }
 
-    document.querySelectorAll<HTMLElement>("[data-action]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const action = btn.dataset.action;
-        if (action === "save") {
-          if (bio && hidden) hidden.value = bio.getHTML();
-          toast("Borrador guardado (simulado).");
+  async function submitReview() {
+    await saveDraft();
+    const res = await fetch("/api/me/profile/submit", {
+      method: "POST",
+      credentials: "same-origin",
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo enviar.");
+      return;
+    }
+    fillProfile(data.profile);
+    toast("Enviado a revisión.");
+  }
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    showLogin(true);
+    toast("Sesión cerrada.");
+  }
+
+  async function loadSession() {
+    try {
+      const res = await fetch("/api/auth/me", { credentials: "same-origin" });
+      if (res.status === 401 || !res.headers.get("content-type")?.includes("json")) {
+        showLogin(true);
+        return;
+      }
+      const data = await res.json();
+      if (!data.ok) {
+        showLogin(true);
+        return;
+      }
+      showLogin(false);
+      const emailEl = document.querySelector<HTMLElement>("[data-user-email]");
+      if (emailEl) emailEl.textContent = data.user.email;
+      fillProfile(data.profile);
+    } catch {
+      showLogin(true);
+    }
+  }
+
+  function init() {
+    const authForm = document.querySelector<HTMLFormElement>("[data-auth-form]");
+    const editorForm = document.querySelector<HTMLFormElement>("[data-profile-editor]");
+    if (authForm && !authForm.dataset.ready) {
+      authForm.dataset.ready = "1";
+      authForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = new FormData(authForm).get("email") as string;
+        const msg = document.querySelector<HTMLElement>("[data-auth-message]");
+        const linkEl = document.querySelector<HTMLElement>("[data-auth-link]");
+        if (msg) msg.textContent = "Enviando…";
+        if (linkEl) {
+          linkEl.classList.add("hidden");
+          linkEl.textContent = "";
         }
-        if (action === "submit") toast("Enviado a revisión (simulado).");
-        if (action === "upload-cover" || action === "upload-avatar" || action === "add-work") {
-          toast("Subida a R2 — próximamente.");
+        try {
+          const res = await fetch("/api/auth/request", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) {
+            if (msg) msg.textContent = data.error || "No se pudo enviar.";
+            return;
+          }
+          if (msg) msg.textContent = data.message || "Enlace listo.";
+          if (data.verifyUrl && linkEl) {
+            linkEl.classList.remove("hidden");
+            linkEl.innerHTML = `<a class="text-dm-offblack underline" href="${data.verifyUrl}">Abrir enlace mágico</a>`;
+          }
+        } catch {
+          if (msg) {
+            msg.textContent =
+              "API no disponible. Usa `wrangler dev` o el Worker desplegado (proxy /api).";
+          }
         }
       });
-    });
+    }
+
+    if (editorForm && !editorForm.dataset.ready) {
+      editorForm.dataset.ready = "1";
+      editorForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        void saveDraft();
+      });
+      document.querySelectorAll<HTMLElement>("[data-action]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const action = btn.dataset.action;
+          if (action === "save") void saveDraft();
+          if (action === "submit") void submitReview();
+          if (action === "logout") void logout();
+          if (action === "upload-cover" || action === "upload-avatar") {
+            toast("Subida a R2 — próximamente.");
+          }
+        });
+      });
+    }
+
+    void loadSession();
   }
 
   init();

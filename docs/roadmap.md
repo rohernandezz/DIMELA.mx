@@ -32,10 +32,17 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 
 ## Next (build)
 
-1. **Auth** — magic-link / email OTP
-2. **Wire `/editar/`** — TipTap bio ✅ (draft); R2 uploads, D1 save, approval next
-3. **Approval** — draft → pending_review → published
+1. **Email provider** for magic links (stop returning `verifyUrl` in JSON)
+2. **Admin approval UI** — pending_review → published / rejected
+3. **R2 uploads** — cover / avatar / gallery
 4. **Pro / Stripe** → cutover from Hugo
+
+## Auth / editor
+
+- [x] Magic-link auth (D1 sessions) + `/editar/` login
+- [x] TipTap bio
+- [x] `PUT /api/me/profile` + submit for review
+- Demo: sign in as `romina@tortilla.studio`, open the magic link, edit & save
 
 Profile **detail** pages and taxonomy **indexes** load from `/api/profile` and `/api/search` (D1). Static paths for details are generated from emitted `profiles.json` at build time.
 
