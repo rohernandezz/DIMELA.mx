@@ -649,12 +649,20 @@ const servicios = [...SERVICIOS];
     syncSiteTaglineFromCrumbs();
   }
 
-  function setMobileFiltersOpen(root: HTMLElement, open: boolean) {
+  /** User wants the mobile filters panel open (survives scroll-down auto-hide). */
+  let mobileFiltersWanted = false;
+
+  function setMobileFiltersOpen(
+    root: HTMLElement,
+    open: boolean,
+    opts?: { fromUser?: boolean },
+  ) {
     const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
     const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
     if (!panel || !toggle) return;
     panel.hidden = !open;
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (opts?.fromUser) mobileFiltersWanted = open;
   }
 
   function uiState(state: FilterState, root: HTMLElement): FilterState {
@@ -893,6 +901,42 @@ const servicios = [...SERVICIOS];
       setCollapsed(sentinelTop < headerBottom - 1);
     };
 
+    /** Hide open mobile filters on scroll-down; restore on scroll-up if still wanted. */
+    const SCROLL_DIR_THRESHOLD = 40;
+    let lastScrollY = window.scrollY;
+    let scrollAccum = 0;
+    const isMobileFiltersViewport = () => window.matchMedia("(max-width: 767px)").matches;
+
+    const syncMobileFiltersFromScroll = () => {
+      if (!isMobileFiltersViewport() || !mobileFiltersWanted) {
+        lastScrollY = window.scrollY;
+        scrollAccum = 0;
+        return;
+      }
+      const y = window.scrollY;
+      const dy = y - lastScrollY;
+      lastScrollY = y;
+      if (dy === 0) return;
+      if ((scrollAccum > 0 && dy < 0) || (scrollAccum < 0 && dy > 0)) {
+        scrollAccum = 0;
+      }
+      scrollAccum += dy;
+      if (scrollAccum >= SCROLL_DIR_THRESHOLD) {
+        scrollAccum = 0;
+        const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+        if (panel && !panel.hidden) setMobileFiltersOpen(root, false);
+      } else if (scrollAccum <= -SCROLL_DIR_THRESHOLD) {
+        scrollAccum = 0;
+        const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+        if (panel && panel.hidden) setMobileFiltersOpen(root, true);
+      }
+    };
+
+    const onScroll = () => {
+      syncCollapsedFromScroll();
+      syncMobileFiltersFromScroll();
+    };
+
     syncSiteHeaderHeight();
     if (siteHeader && typeof ResizeObserver !== "undefined") {
       const headerRo = new ResizeObserver(() => {
@@ -903,16 +947,14 @@ const servicios = [...SERVICIOS];
       headerRo.observe(siteHeader);
     }
 
-    if (sentinel) {
-      syncCollapsedFromScroll();
-      window.addEventListener("scroll", syncCollapsedFromScroll, { passive: true });
-    }
+    if (sentinel) syncCollapsedFromScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     let state = readUrl();
     if (root.dataset.hideEstado === "true") state = { ...state, estado: new Set() };
     if (root.dataset.hideServicio === "true") state = { ...state, servicio: new Set() };
     apply(root, state);
-    setMobileFiltersOpen(root, false);
+    setMobileFiltersOpen(root, false, { fromUser: true });
 
     let resizeTimer: number | undefined;
     window.addEventListener("resize", () => {
@@ -1110,14 +1152,14 @@ const servicios = [...SERVICIOS];
     mobileToggle?.addEventListener("click", (e) => {
       e.stopPropagation();
       const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
-      const open = panel?.hidden ?? true;
-      setMobileFiltersOpen(root, open);
+      const willOpen = panel?.hidden ?? true;
+      setMobileFiltersOpen(root, willOpen, { fromUser: true });
     });
 
     document.addEventListener("click", (e) => {
       const target = e.target as Node;
       if (!root.contains(target)) {
-        setMobileFiltersOpen(root, false);
+        setMobileFiltersOpen(root, false, { fromUser: true });
       }
       root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
         const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
