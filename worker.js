@@ -1,7 +1,8 @@
 /**
- * Cloudflare Worker: assets + directory/search + auth + profile save (D1).
+ * Cloudflare Worker: assets + directory/search + auth + profile save (D1) + R2 media.
  */
 import {
+  getSessionUser,
   handleAuthLogout,
   handleAuthMe,
   handleAuthRequest,
@@ -12,6 +13,7 @@ import {
   mapProfileRow,
 } from "./worker/auth.js";
 import { handleAdminDecide, handleAdminQueue } from "./worker/admin.js";
+import { handleMeProfileUpload, handleMediaGet, handleMediaQuotaGet } from "./worker/media.js";
 
 function parseList(param) {
   if (!param) return [];
@@ -70,13 +72,13 @@ async function loadFromD1(env) {
   }
 }
 
-async function loadProfileFromD1(env, slug) {
+async function loadProfileFromD1(env, slug, { publishedOnly = true } = {}) {
   if (!env.DB) return null;
   try {
     const row = await env.DB.prepare(
       `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
        FROM profiles
-       WHERE status = 'published' AND slug = ?
+       WHERE ${publishedOnly ? "status = 'published' AND " : ""}slug = ?
        LIMIT 1`,
     )
       .bind(slug)
@@ -86,6 +88,46 @@ async function loadProfileFromD1(env, slug) {
     console.error("D1 profile load failed:", err);
     return null;
   }
+}
+
+async function canPreviewProfile(env, request, profile) {
+  const user = await getSessionUser(env, request);
+  if (!user || !profile) return false;
+  if (user.role === "admin") return true;
+  return Boolean(profile.userId && profile.userId === user.id);
+}
+
+/** Serve static assets; rewrite missing /directorio/{slug}/ to the client shell when visible. */
+async function serveAssets(request, env, url) {
+  const assetRes = await env.ASSETS.fetch(request);
+  if (assetRes.status !== 404) return assetRes;
+
+  const m = url.pathname.match(/^\/directorio\/([^/]+)\/?$/);
+  const slug = m?.[1] ? decodeURIComponent(m[1]) : "";
+  if (!slug || slug === "ver") return assetRes;
+
+  // Only rewrite when the profile is public or the session may preview it.
+  let visible = await loadProfileFromD1(env, slug);
+  if (!visible) {
+    const { profiles } = await loadProfiles(env, url.origin);
+    visible = profiles?.find((p) => p.slug === slug) || null;
+  }
+  if (!visible) {
+    const draft = await loadProfileFromD1(env, slug, { publishedOnly: false });
+    if (draft && draft.status !== "published" && (await canPreviewProfile(env, request, draft))) {
+      visible = draft;
+    }
+  }
+  if (!visible) return assetRes;
+
+  const shellUrl = new URL("/directorio/ver/", url.origin);
+  const shellRes = await env.ASSETS.fetch(new Request(shellUrl, request));
+  if (!shellRes.ok) return assetRes;
+
+  return new Response(shellRes.body, {
+    status: 200,
+    headers: shellRes.headers,
+  });
 }
 
 async function loadFromMock(env, origin) {
@@ -118,6 +160,9 @@ export default {
       return json({ ok: false, error: "Método no permitido." }, 405);
     }
     if (path === "/api/me/profile/submit") return handleMeProfileSubmit(request, env);
+    if (path === "/api/me/profile/upload") return handleMeProfileUpload(request, env, url);
+    if (path === "/api/me/media/quota") return handleMediaQuotaGet(request, env);
+    if (path.startsWith("/media/")) return handleMediaGet(request, env, url);
     if (path === "/api/admin/queue") return handleAdminQueue(request, env);
     if (path.startsWith("/api/admin/profiles/") && (path.endsWith("/approve") || path.endsWith("/reject"))) {
       return handleAdminDecide(request, env, url);
@@ -162,14 +207,30 @@ export default {
 
       let source = "d1";
       let profile = await loadProfileFromD1(env, slug);
+      let preview = false;
+
       if (!profile) {
         const { source: mockSource, profiles } = await loadProfiles(env, url.origin);
         source = mockSource;
         profile = profiles?.find((p) => p.slug === slug) || null;
       }
 
+      // Owner/admin preview of draft|pending_review|rejected (not listed publicly).
+      if (!profile) {
+        const draft = await loadProfileFromD1(env, slug, { publishedOnly: false });
+        if (draft && draft.status !== "published" && (await canPreviewProfile(env, request, draft))) {
+          profile = draft;
+          source = "d1";
+          preview = true;
+        }
+      }
+
       if (!profile) {
         return publicJson({ ok: false, error: "Perfil no encontrado." }, 404);
+      }
+
+      if (preview) {
+        return json({ ok: true, source, profile, preview: true });
       }
 
       return publicJson({ ok: true, source, profile });
@@ -179,6 +240,6 @@ export default {
       return json({ ok: false, error: "API aún no implementada." }, 501);
     }
 
-    return env.ASSETS.fetch(request);
+    return serveAssets(request, env, url);
   },
 };

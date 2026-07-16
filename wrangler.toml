@@ -16,3 +16,9 @@ run_worker_first = true
 binding = "DB"
 database_name = "dimela-mx"
 database_id = "4b237d4d-ca9f-4304-b1f8-6c8353cb1b53"
+
+# Profile images (cover / avatar). Enable R2 in Dashboard, then:
+#   npx wrangler r2 bucket create dimela-mx-media
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "dimela-mx-media"
