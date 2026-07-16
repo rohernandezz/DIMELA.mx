@@ -76,7 +76,7 @@ const servicios = [...SERVICIOS];
       <button
         type="button"
         data-filter-clear
-        class="hidden shrink-0 rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-white disabled:opacity-40 md:inline"
+        class="hidden shrink-0 rounded border border-dm-offblack bg-dm-pink px-2 py-1 text-xs text-dm-offblack transition hover:bg-dm-offblack hover:text-white disabled:cursor-not-allowed disabled:border-dm-offblack/20 disabled:bg-transparent disabled:text-dm-offblack/40 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-dm-offblack/40 md:inline"
         disabled
       >
         Limpiar
@@ -160,7 +160,7 @@ const servicios = [...SERVICIOS];
       <button
         type="button"
         data-filter-clear
-        class="w-full rounded border border-dm-offblack/20 py-2 text-sm text-dm-offblack/70 disabled:opacity-40"
+        class="w-full rounded border border-dm-offblack bg-dm-pink py-2 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white disabled:cursor-not-allowed disabled:border-dm-offblack/20 disabled:bg-transparent disabled:text-dm-offblack/40 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-dm-offblack/40"
         disabled
       >
         Limpiar filtros
@@ -229,6 +229,7 @@ const servicios = [...SERVICIOS];
   /*
    * Collapsed (scroll): real header + search stick as one unit.
    * At top of page: normal spacing — header in body, search as inset card.
+   * Mobile: break out of main padding. Desktop: full viewport width.
    */
   .directory-filter[data-collapsed] {
     position: sticky;
@@ -248,9 +249,17 @@ const servicios = [...SERVICIOS];
     padding-left: var(--dm-page-px);
     padding-right: var(--dm-page-px);
   }
-  /* Desktop sticky: compact grey bar */
+  /* Desktop sticky: edge-to-edge; controls stay on page column */
   @media (min-width: 768px) {
+    .directory-filter[data-collapsed] {
+      width: 100vw;
+      max-width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+    }
     .directory-filter[data-collapsed] :global(header [data-header-inner]) {
+      max-width: var(--max-width-dm-page);
+      margin-inline: auto;
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
       min-height: 0;
@@ -260,6 +269,15 @@ const servicios = [...SERVICIOS];
       line-height: 1rem;
       letter-spacing: 0.02em;
     }
+    .directory-filter[data-collapsed] .filter-top,
+    .directory-filter[data-collapsed] .filter-shell > .border-t {
+      max-width: var(--max-width-dm-page);
+      margin-inline: auto;
+      width: 100%;
+    }
+  }
+  .filter-shell {
+    transition: border-radius 0.2s ease;
   }
   .directory-filter[data-collapsed] .filter-shell {
     border-radius: 0;
@@ -286,6 +304,15 @@ const servicios = [...SERVICIOS];
     }
     .directory-filter[data-collapsed] [data-filter-count] {
       display: none;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .directory-filter[data-collapsed] :global(header [data-header-inner]),
+    .directory-filter[data-collapsed] :global(header [data-header-inner] a[data-filter-home]) {
+      transition:
+        padding 0.2s ease,
+        font-size 0.2s ease,
+        line-height 0.2s ease;
     }
   }
 </style>
@@ -540,10 +567,22 @@ const servicios = [...SERVICIOS];
       const header = document.querySelector<HTMLElement>("header");
       if (!header || !stack || !main) return;
 
+      const wasCollapsed = root.hasAttribute("data-collapsed");
+      if (collapsed === wasCollapsed) return;
+
       root.toggleAttribute("data-collapsed", collapsed);
 
       if (collapsed) {
         if (header.parentElement !== stack) stack.prepend(header);
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          stack.animate(
+            [
+              { transform: "translateY(-0.5rem)", opacity: 0.75 },
+              { transform: "translateY(0)", opacity: 1 },
+            ],
+            { duration: 180, easing: "ease-out" },
+          );
+        }
       } else if (header.parentElement === stack) {
         main.parentElement?.insertBefore(header, main);
       }

@@ -29,8 +29,8 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 ### Styling
 
 - **Tailwind v4** via `@tailwindcss/vite` (no separate PostCSS config)
-- Brand font: `OutpactVF` in `public/fonts/`
-- Theme colors in `@theme` (`dm-offwhite`, `dm-offblack`, pink/blue/green accents from the old prototype palette)
+- Brand color + type: [docs/brand.md](brand.md) — tokens in `src/styles/global.css` `@theme`
+- Font file: `public/fonts/Outpact-VF.woff2`
 
 ## Planned (platform)
 

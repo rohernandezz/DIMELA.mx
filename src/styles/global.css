@@ -15,6 +15,8 @@
   --color-dm-blue: #e8f2fb;
   --color-dm-blue-strong: #cde7fe;
   --color-dm-green: #d9f7d9;
+  /* Wide enough for 4 directory columns on large screens */
+  --max-width-dm-page: 96rem;
 }
 
 html {

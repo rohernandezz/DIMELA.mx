@@ -71,6 +71,7 @@ DIMELA.mx/
 | Doc | What’s in it |
 |-----|----------------|
 | [docs/architecture.md](docs/architecture.md) | Astro + Worker deploy, planned D1/R2 |
+| [docs/brand.md](docs/brand.md) | Colors + Outpact type tokens |
 | [docs/product.md](docs/product.md) | Free/Pro tiers, approval flow, discovery UI |
 | [docs/roadmap.md](docs/roadmap.md) | Phased delivery / what’s next |
 | [docs/ui-prototypes.md](docs/ui-prototypes.md) | Filter UI A–D; B is live |
