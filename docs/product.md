@@ -34,18 +34,20 @@ Members can upgrade to Pro while still draft/pending so they can build the portf
 
 Two ways to find people (both stay):
 
-### 1. Homepage / directorio FilterBar (primary)
+### 1. Homepage / directorio FilterBar (primary) — **Option B, live on `/`**
 
 - Text search (`q`)
 - **Servicio** chips (multi-select)
-- **Ubicación** chips (multi-select)
-- Clear filters
-- Shareable URL: `/?q=&servicio=lettering,branding&estado=cdmx`
+- **Ubicación** multi-select
+- Clear filters; mobile header crumbs when filters are active
+- Shareable URL: `/?q=&servicio=Lettering,Branding&estado=Ciudad de México`
 
 **Facet rule:** OR within a facet, AND across facets  
 (e.g. Lettering *or* Branding, *and* CDMX if selected).
 
-Backed by `/api/search` over **published** profiles only (not client show/hide of every card).
+**Data today:** client filter over `src/data/mockProfiles.ts` (intentional dummy set). Later: `/api/search` over **published** profiles only.
+
+Other filter UI experiments (A/C/D) are archived as routes — see [ui-prototypes.md](ui-prototypes.md).
 
 ### 2. Taxonomy browse (secondary)
 

@@ -7,6 +7,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://dimela.mx",
   output: "static",
+  redirects: {
+    "/bar": "/",
+  },
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",

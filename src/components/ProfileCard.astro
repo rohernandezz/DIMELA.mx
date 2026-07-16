@@ -11,7 +11,7 @@ interface Props {
 
 const { profile } = Astro.props;
 const isPro = profile.tier === "pro";
-const href = `#${profile.slug}`;
+const href = `/directorio/${profile.slug}/`;
 ---
 
 <article

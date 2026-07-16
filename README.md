@@ -4,7 +4,7 @@
 
 This branch (`AstroPort`) ports the site from Hugo/Blowfish to **Astro + Tailwind**, deployed on **Cloudflare Workers** (same pattern as [sitioCelest](https://github.com/rohernandezz/sitioCelest)).
 
-> **Status:** scaffold only. Placeholder pages are live locally; FilterBar prototype, content migration, auth, and Free/Pro come next. See [docs/roadmap.md](docs/roadmap.md).
+> **Status:** Option B filter bar is the live homepage on Cloudflare Workers. Directory still uses mock profiles (`src/data/mockProfiles.ts`). Auth, D1, and Pro come next — see [docs/roadmap.md](docs/roadmap.md). UI A/C/D kept as prototypes ([docs/ui-prototypes.md](docs/ui-prototypes.md)).
 
 ## Stack
 
@@ -13,10 +13,11 @@ This branch (`AstroPort`) ports the site from Hugo/Blowfish to **Astro + Tailwin
 | Site | Astro 7 (`output: "static"` for now) |
 | CSS | Tailwind CSS v4 (`@tailwindcss/vite`) + Outpact VF |
 | Deploy | `astro build` → `dist/` → Cloudflare Worker `[assets]` |
+| Directory data (now) | `src/data/mockProfiles.ts` + taxonomy constants |
 | Planned data | Cloudflare D1 (profiles), R2 (images) |
 | Planned auth / pay | Magic-link OTP, Stripe Checkout (Pro) |
 
-Hugo content under `content/` is still in the repo for migration. Do not rely on `npm run server` / Hugo scripts — those were replaced.
+Hugo content under `content/` is still in the repo as legacy reference. Do not rely on Hugo scripts.
 
 ## Setup
 
@@ -72,6 +73,7 @@ DIMELA.mx/
 | [docs/architecture.md](docs/architecture.md) | Astro + Worker deploy, planned D1/R2 |
 | [docs/product.md](docs/product.md) | Free/Pro tiers, approval flow, discovery UI |
 | [docs/roadmap.md](docs/roadmap.md) | Phased delivery / what’s next |
+| [docs/ui-prototypes.md](docs/ui-prototypes.md) | Filter UI A–D; B is live |
 | [docs/hugo-legacy.md](docs/hugo-legacy.md) | Old Hugo/Netlify/Decap bits still in-tree |
 
 ## Deploy (Cloudflare)

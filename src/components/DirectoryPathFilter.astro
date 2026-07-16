@@ -287,7 +287,12 @@ const servicios = [...SERVICIOS];
     if (state.estado.size) params.set("estado", [...state.estado].join(","));
     const qs = params.toString();
     const path = window.location.pathname;
-    const onDirectory = path === "/" || path === "/directorio" || path === "/directorio/";
+    const onDirectory =
+      path === "/" ||
+      path === "/path" ||
+      path === "/path/" ||
+      path === "/directorio" ||
+      path === "/directorio/";
     const targetPath = onDirectory ? path : "/";
     const next = qs ? `${targetPath}?${qs}` : targetPath;
     if (!onDirectory && qs) {

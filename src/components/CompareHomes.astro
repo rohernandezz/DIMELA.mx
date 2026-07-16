@@ -1,9 +1,9 @@
 ---
 /**
- * Tiny strip to flip between homepage filter mocks.
+ * Tiny strip on UI prototype pages only (not on canonical `/`).
  */
 interface Props {
-  current: "path" | "bar" | "labeled" | "trail";
+  current: "path" | "labeled" | "trail";
 }
 
 const { current } = Astro.props;
@@ -12,18 +12,16 @@ const { current } = Astro.props;
 <p
   class="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 rounded border border-dashed border-dm-offblack/20 bg-white/70 px-3 py-2 text-xs text-dm-offblack/70"
 >
-  <span class="font-semibold tracking-wide uppercase">Comparar UI</span>
+  <span class="font-semibold tracking-wide uppercase">UI prototypes</span>
+  <a href="/" class="underline-offset-2 hover:underline">B · Filter bar (live)</a>
   <a
-    href="/"
-    class:list={["underline-offset-2 hover:underline", current === "path" && "font-bold text-dm-offblack underline"]}
+    href="/path/"
+    class:list={[
+      "underline-offset-2 hover:underline",
+      current === "path" && "font-bold text-dm-offblack underline",
+    ]}
   >
     A · Path
-  </a>
-  <a
-    href="/bar/"
-    class:list={["underline-offset-2 hover:underline", current === "bar" && "font-bold text-dm-offblack underline"]}
-  >
-    B · Filter bar
   </a>
   <a
     href="/labeled/"
@@ -32,12 +30,15 @@ const { current } = Astro.props;
       current === "labeled" && "font-bold text-dm-offblack underline",
     ]}
   >
-    C · Labeled path
+    C · Labeled
   </a>
   <a
     href="/trail/"
-    class:list={["underline-offset-2 hover:underline", current === "trail" && "font-bold text-dm-offblack underline"]}
+    class:list={[
+      "underline-offset-2 hover:underline",
+      current === "trail" && "font-bold text-dm-offblack underline",
+    ]}
   >
-    D · Crumb trail
+    D · Trail
   </a>
 </p>

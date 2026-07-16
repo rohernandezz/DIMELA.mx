@@ -1,6 +1,7 @@
 /**
- * Mock profiles for homepage UI review.
- * Covers every estado (+ Fuera de México); denser in CDMX, Puebla, Jalisco, etc.
+ * Mock profiles for the live directory UI.
+ * Intentional dummy set (richer than the old Blowfish placeholders).
+ * Hugo content/Directorio is not imported — keep iterating here until D1.
  */
 import { MEXICO_ESTADOS, SERVICIOS, type MexicoEstado, type Servicio } from "./taxonomy";
 
@@ -282,6 +283,10 @@ export const MOCK_PROFILES: MockProfile[] = [
   ...FEATURED_REALISTIC,
   ...buildPlaceholders(),
 ];
+
+export function getMockProfileBySlug(slug: string): MockProfile | undefined {
+  return MOCK_PROFILES.find((p) => p.slug === slug);
+}
 
 export function mockFacetOptions(profiles: MockProfile[] = MOCK_PROFILES) {
   const servicios = new Set<string>();

@@ -1,24 +1,22 @@
 ---
 /**
- * Homepage A — path / breadcrumb filters in the header.
+ * Homepage — Option B filter bar (chosen discovery UI).
+ * Mock profiles: src/data/mockProfiles.ts
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileCard from "../components/ProfileCard.astro";
-import CompareHomes from "../components/CompareHomes.astro";
+import DirectoryFilterBar from "../components/DirectoryFilterBar.astro";
 import { MOCK_PROFILES } from "../data/mockProfiles";
 ---
 
-<BaseLayout
-  title="DIMELA.mx — Path UI"
-  headerVariant="path"
->
+<BaseLayout title="DIMELA.mx — Directorio Mexicano de Letristas" headerVariant="simple" homeHref="/">
+  <DirectoryFilterBar />
   <section aria-label="Directorio">
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-profile-grid>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3" data-profile-grid>
       {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
     </div>
     <p class="mt-8 hidden text-center text-sm text-dm-offblack/55" data-filter-empty>
       No hay perfiles con esos filtros.
     </p>
   </section>
-  <CompareHomes current="path" />
 </BaseLayout>
