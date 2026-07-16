@@ -3,7 +3,7 @@
  * Member profile editor — magic-link auth + TipTap bio + D1 save.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
+import { MEXICO_ESTADOS } from "../../data/taxonomy";
 import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
 ---
 
@@ -181,34 +181,14 @@ import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
           </label>
           <fieldset>
             <legend
-              class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+              class="mb-1 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
             >
               Servicios
             </legend>
-            <div class="flex flex-wrap gap-1.5" data-servicios-host>
-              {
-                SERVICIOS.map((servicio) => (
-                  <label class="cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="servicios"
-                      value={servicio}
-                      class="peer sr-only"
-                      data-servicio={servicio}
-                    />
-                    <span class="inline-block rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack peer-checked:border-dm-offblack peer-checked:bg-dm-offblack peer-checked:text-dm-offwhite">
-                      {servicio}
-                    </span>
-                  </label>
-                ))
-              }
-            </div>
-            <div class="mt-3" data-servicios-order hidden>
-              <p class="mb-1.5 text-xs text-dm-offblack/50">
-                Orden en el perfil (arriba = primero)
-              </p>
-              <ol class="space-y-1.5" data-servicios-order-list></ol>
-            </div>
+            <p class="mb-2 text-xs text-dm-offblack/50">
+              Selecciona servicios; arrastra los seleccionados para ordenarlos en el perfil.
+            </p>
+            <div class="flex flex-wrap gap-1.5" data-servicios-host></div>
           </fieldset>
           <fieldset>
             <legend
@@ -462,15 +442,17 @@ import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
   import { openAvatarCropper } from "../../lib/imageCropper";
   import { requestMagicLink, renderDevMagicLink } from "../../lib/authClient";
   import { MAX_PROFILE_TAGS } from "../../data/tags";
-  import { normalizeServicios } from "../../data/taxonomy";
+  import { normalizeServicios, SERVICIOS } from "../../data/taxonomy";
 
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
 
   type ProfileFont = { id: string; family: string; url: string; format: string };
 
-  /** Selected servicios in display order (not checkbox DOM order). */
+  /** Selected servicios in display order (drag order in the picker). */
   let serviciosOrder: string[] = [];
+  let dragServicio: string | null = null;
+  let didServicioDrag = false;
 
   type Profile = {
     slug: string;
@@ -599,11 +581,7 @@ import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
       }
     }
 
-    const selected = new Set(serviciosOrder);
-    form.querySelectorAll<HTMLInputElement>("[data-servicio]").forEach((box) => {
-      box.checked = selected.has(box.value);
-    });
-    renderServiciosOrder();
+    renderServiciosPicker();
 
     form.querySelectorAll<HTMLInputElement>("[data-tag]").forEach((box) => {
       box.checked = tags.has(box.value);
@@ -695,74 +673,127 @@ import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
       .replace(/"/g, "&quot;");
   }
 
-  function renderServiciosOrder() {
-    const wrap = document.querySelector<HTMLElement>("[data-servicios-order]");
-    const list = document.querySelector<HTMLOListElement>("[data-servicios-order-list]");
-    if (!wrap || !list) return;
-
-    if (serviciosOrder.length === 0) {
-      wrap.hidden = true;
-      list.innerHTML = "";
-      return;
-    }
-
-    wrap.hidden = false;
-    list.innerHTML = serviciosOrder
-      .map((servicio, i) => {
-        const atTop = i === 0;
-        const atBottom = i === serviciosOrder.length - 1;
-        const btn =
-          "rounded border border-dm-offblack/20 bg-white px-2 py-0.5 text-xs text-dm-offblack disabled:opacity-30";
-        const safe = escapeHtmlText(servicio);
-        return `<li class="flex items-center gap-2 rounded border border-dm-offblack/10 bg-dm-offwhite/60 px-2 py-1.5">
-          <span class="w-5 shrink-0 text-center text-[10px] font-semibold text-dm-offblack/40">${i + 1}</span>
-          <span class="min-w-0 flex-1 truncate text-sm text-dm-offblack">${safe}</span>
-          <span class="flex shrink-0 gap-1">
-            <button type="button" class="${btn}" data-servicio-move="up" data-servicio-value="${safe}" ${atTop ? "disabled" : ""} aria-label="Subir">↑</button>
-            <button type="button" class="${btn}" data-servicio-move="down" data-servicio-value="${safe}" ${atBottom ? "disabled" : ""} aria-label="Bajar">↓</button>
-          </span>
-        </li>`;
-      })
-      .join("");
+  function servicioChipHtml(servicio: string, selected: boolean) {
+    const safe = escapeHtmlText(servicio);
+    const chipClass = selected
+      ? "inline-block rounded border border-dm-offblack bg-dm-offblack px-2.5 py-1 text-sm text-dm-offwhite"
+      : "inline-block rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack";
+    const labelClass = selected ? "cursor-grab active:cursor-grabbing" : "cursor-pointer";
+    return `<label class="${labelClass}" data-servicio-chip="${safe}" ${selected ? 'draggable="true"' : ""}>
+      <input type="checkbox" name="servicios" value="${safe}" class="sr-only" data-servicio="${safe}" ${selected ? "checked" : ""} />
+      <span class="${chipClass}">${safe}</span>
+    </label>`;
   }
 
-  function moveServicio(value: string, dir: "up" | "down") {
-    const i = serviciosOrder.indexOf(value);
-    if (i < 0) return;
-    const j = dir === "up" ? i - 1 : i + 1;
-    if (j < 0 || j >= serviciosOrder.length) return;
+  function renderServiciosPicker() {
+    const host = document.querySelector<HTMLElement>("[data-servicios-host]");
+    if (!host) return;
+    const selected = new Set(serviciosOrder);
+    const unselected = SERVICIOS.filter((s) => !selected.has(s));
+    host.innerHTML = [
+      ...serviciosOrder.map((s) => servicioChipHtml(s, true)),
+      ...unselected.map((s) => servicioChipHtml(s, false)),
+    ].join("");
+  }
+
+  function reorderServicio(from: string, to: string) {
+    if (from === to) return;
+    const fromIdx = serviciosOrder.indexOf(from);
+    const toIdx = serviciosOrder.indexOf(to);
+    if (fromIdx < 0 || toIdx < 0) return;
     const next = [...serviciosOrder];
-    [next[i], next[j]] = [next[j], next[i]];
+    next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, from);
     serviciosOrder = next;
-    renderServiciosOrder();
+    renderServiciosPicker();
   }
 
-  function onServicioToggle(box: HTMLInputElement) {
-    const value = box.value;
-    if (box.checked) {
-      if (!serviciosOrder.includes(value)) serviciosOrder = [...serviciosOrder, value];
-    } else {
-      serviciosOrder = serviciosOrder.filter((s) => s !== value);
-    }
-    renderServiciosOrder();
-  }
+  function bindServiciosPicker() {
+    const host = document.querySelector<HTMLElement>("[data-servicios-host]");
+    if (!host || host.dataset.ready) return;
+    host.dataset.ready = "1";
+    renderServiciosPicker();
 
-  function bindServiciosOrder() {
-    const form = document.querySelector<HTMLFormElement>("[data-profile-editor]");
-    if (!form) return;
-    form.querySelectorAll<HTMLInputElement>("[data-servicio]").forEach((box) => {
-      box.addEventListener("change", () => onServicioToggle(box));
+    host.addEventListener("change", (e) => {
+      const box = e.target as HTMLInputElement;
+      if (!box.matches?.("[data-servicio]")) return;
+      const value = box.value;
+      if (box.checked) {
+        if (!serviciosOrder.includes(value)) serviciosOrder = [...serviciosOrder, value];
+      } else {
+        serviciosOrder = serviciosOrder.filter((s) => s !== value);
+      }
+      renderServiciosPicker();
     });
-    const list = document.querySelector<HTMLElement>("[data-servicios-order-list]");
-    if (list && !list.dataset.ready) {
-      list.dataset.ready = "1";
-      list.addEventListener("click", (e) => {
-        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-servicio-move]");
-        if (!btn?.dataset.servicioValue || !btn.dataset.servicioMove) return;
-        const dir = btn.dataset.servicioMove === "up" ? "up" : "down";
-        moveServicio(btn.dataset.servicioValue, dir);
+
+    // After a drag, the browser may fire a click that would toggle the chip — block it.
+    host.addEventListener(
+      "click",
+      (e) => {
+        if (!didServicioDrag) return;
+        e.preventDefault();
+        e.stopPropagation();
+        didServicioDrag = false;
+      },
+      true,
+    );
+
+    host.addEventListener("dragstart", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      if (!chip?.draggable || !chip.dataset.servicioChip) {
+        e.preventDefault();
+        return;
+      }
+      dragServicio = chip.dataset.servicioChip;
+      didServicioDrag = false;
+      chip.classList.add("opacity-60");
+      e.dataTransfer?.setData("text/plain", dragServicio);
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+    });
+
+    host.addEventListener("drag", () => {
+      if (dragServicio) didServicioDrag = true;
+    });
+
+    host.addEventListener("dragend", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      chip?.classList.remove("opacity-60");
+      host.querySelectorAll("[data-servicio-chip].ring-2").forEach((el) => {
+        el.classList.remove("ring-2", "ring-dm-pink");
       });
-    }
+      dragServicio = null;
+    });
+
+    host.addEventListener("dragover", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      if (!dragServicio || !chip?.draggable) return;
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      host.querySelectorAll("[data-servicio-chip].ring-2").forEach((el) => {
+        el.classList.remove("ring-2", "ring-dm-pink");
+      });
+      if (chip.dataset.servicioChip !== dragServicio) {
+        chip.classList.add("ring-2", "ring-dm-pink");
+      }
+    });
+
+    host.addEventListener("dragleave", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      chip?.classList.remove("ring-2", "ring-dm-pink");
+    });
+
+    host.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      const to = chip?.dataset.servicioChip;
+      const from = dragServicio || e.dataTransfer?.getData("text/plain") || "";
+      host.querySelectorAll("[data-servicio-chip].ring-2").forEach((el) => {
+        el.classList.remove("ring-2", "ring-dm-pink");
+      });
+      if (!from || !to || !chip?.draggable) return;
+      didServicioDrag = true;
+      reorderServicio(from, to);
+    });
   }
 
   function bindTagLimit() {
@@ -1304,7 +1335,7 @@ import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
     if (editorForm && !editorForm.dataset.ready) {
       editorForm.dataset.ready = "1";
       bindTagLimit();
-      bindServiciosOrder();
+      bindServiciosPicker();
       editorForm.addEventListener("submit", (e) => {
         e.preventDefault();
         void saveDraft();
