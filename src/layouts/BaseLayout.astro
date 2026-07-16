@@ -4,15 +4,18 @@
  */
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import DirectoryCrumbTrail from "../components/DirectoryCrumbTrail.astro";
 import "../styles/global.css";
 
 interface Props {
   title?: string;
   description?: string;
-  /** path = filters in header crumbs; simple = logo/nav only */
-  headerVariant?: "path" | "simple";
+  /** path | labeled = filters in dark header; simple = logo/nav only */
+  headerVariant?: "path" | "labeled" | "simple";
   /** Logo target for simple header (compare homes). */
   homeHref?: string;
+  /** Optional second-row crumb trail (under header). */
+  showCrumbTrail?: boolean;
 }
 
 const {
@@ -20,6 +23,7 @@ const {
   description = "Directorio Mexicano de Letristas",
   headerVariant = "simple",
   homeHref = "/",
+  showCrumbTrail = false,
 } = Astro.props;
 ---
 
@@ -34,6 +38,7 @@ const {
   </head>
   <body class="flex min-h-screen flex-col">
     <Header variant={headerVariant} homeHref={homeHref} />
+    {showCrumbTrail && <DirectoryCrumbTrail />}
     <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
       <slot />
     </main>

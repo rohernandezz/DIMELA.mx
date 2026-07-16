@@ -1,0 +1,26 @@
+---
+/**
+ * Homepage — simple header + second-row crumb trail with per-crumb ×.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProfileCard from "../components/ProfileCard.astro";
+import CompareHomes from "../components/CompareHomes.astro";
+import { MOCK_PROFILES } from "../data/mockProfiles";
+---
+
+<BaseLayout
+  title="DIMELA.mx — Crumb trail"
+  headerVariant="simple"
+  homeHref="/trail/"
+  showCrumbTrail={true}
+>
+  <section aria-label="Directorio">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-profile-grid>
+      {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
+    </div>
+    <p class="mt-8 hidden text-center text-sm text-dm-offblack/55" data-filter-empty>
+      No hay perfiles con esos filtros.
+    </p>
+  </section>
+  <CompareHomes current="trail" />
+</BaseLayout>

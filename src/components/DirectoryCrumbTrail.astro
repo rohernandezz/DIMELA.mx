@@ -1,0 +1,346 @@
+---
+/**
+ * Second-row crumb trail under a simple gray header.
+ * Inicio › CDMX × › Lettering × — remove per crumb; menus to add.
+ */
+import { MEXICO_ESTADOS, SERVICIOS } from "../data/taxonomy";
+
+const estados = [...MEXICO_ESTADOS];
+const servicios = [...SERVICIOS];
+---
+
+<div
+  class="directory-trail border-b border-dm-offblack/10 bg-dm-offwhite"
+  data-directory-filter
+  aria-label="Filtrar directorio"
+>
+  <div
+    class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-1.5 gap-y-2 px-4 py-2 text-sm text-dm-offblack sm:px-6"
+  >
+    <a href="/trail/" data-filter-home class="font-semibold hover:underline">Inicio</a>
+
+    <span class="text-dm-offblack/30" aria-hidden="true">›</span>
+
+    <div class="flex flex-wrap items-center gap-1" data-estado-crumbs></div>
+
+    <div class="relative" data-menu="estado">
+      <button
+        type="button"
+        data-menu-toggle
+        class="rounded border border-dashed border-dm-offblack/30 px-2 py-0.5 text-xs text-dm-offblack/70 hover:border-dm-offblack/50"
+        aria-expanded="false"
+      >
+        Ubicación ▾
+      </button>
+      <div
+        data-menu-panel
+        hidden
+        class="absolute top-full left-0 z-40 mt-1 max-h-64 w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+      >
+        {
+          estados.map((estado) => (
+            <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-white">
+              <input type="checkbox" data-estado-option value={estado} class="rounded" />
+              <span>{estado}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+
+    <span class="text-dm-offblack/30" aria-hidden="true">›</span>
+
+    <div class="flex flex-wrap items-center gap-1" data-servicio-crumbs></div>
+
+    <div class="relative" data-menu="servicio">
+      <button
+        type="button"
+        data-menu-toggle
+        class="rounded border border-dashed border-dm-offblack/30 px-2 py-0.5 text-xs text-dm-offblack/70 hover:border-dm-offblack/50"
+        aria-expanded="false"
+      >
+        Servicio ▾
+      </button>
+      <div
+        data-menu-panel
+        hidden
+        class="absolute top-full left-0 z-40 mt-1 w-[min(100vw-2rem,22rem)] rounded border border-dm-offblack/20 bg-white p-3 shadow-lg"
+      >
+        <div class="flex flex-wrap gap-2">
+          {
+            servicios.map((servicio) => (
+              <button
+                type="button"
+                class="filter-chip rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm"
+                data-filter-chip
+                data-value={servicio}
+                aria-pressed="false"
+              >
+                {servicio}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <label class="relative ml-auto w-full max-w-[11rem] sm:w-40">
+      <span class="sr-only">Buscar</span>
+      <input
+        type="search"
+        data-filter-q
+        placeholder="Buscar…"
+        autocomplete="off"
+        class="w-full rounded border border-dm-offblack/20 bg-white px-2 py-1 text-sm outline-none focus:border-dm-offblack/50"
+      />
+    </label>
+
+    <span
+      data-q-crumb
+      hidden
+      class="inline-flex items-center gap-1 rounded-full bg-dm-offblack px-2 py-0.5 text-xs text-dm-offwhite"
+    >
+      <span data-q-crumb-text></span>
+      <button type="button" data-clear-q class="opacity-80 hover:opacity-100" aria-label="Quitar búsqueda"
+        >×</button
+      >
+    </span>
+
+    <p class="text-xs text-dm-offblack/50" data-filter-count aria-live="polite"></p>
+    <button
+      type="button"
+      data-filter-clear
+      class="rounded border border-dm-offblack/20 px-2 py-0.5 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-white disabled:opacity-40"
+      disabled
+    >
+      Limpiar
+    </button>
+  </div>
+</div>
+
+<style>
+  .filter-chip[aria-pressed="true"] {
+    background-color: var(--color-dm-offblack);
+    color: var(--color-dm-offwhite);
+    border-color: var(--color-dm-offblack);
+  }
+  .crumb-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid color-mix(in oklab, var(--color-dm-offblack) 20%, transparent);
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  .crumb-pill button {
+    opacity: 0.55;
+    line-height: 1;
+  }
+  .crumb-pill button:hover {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  type FilterState = { q: string; servicio: Set<string>; estado: Set<string> };
+
+  function parseList(param: string | null) {
+    if (!param) return [];
+    return param.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+  function readUrl(): FilterState {
+    const p = new URLSearchParams(window.location.search);
+    return {
+      q: (p.get("q") || "").trim(),
+      servicio: new Set(parseList(p.get("servicio"))),
+      estado: new Set(parseList(p.get("estado"))),
+    };
+  }
+  function writeUrl(state: FilterState) {
+    const p = new URLSearchParams();
+    if (state.q) p.set("q", state.q);
+    if (state.servicio.size) p.set("servicio", [...state.servicio].join(","));
+    if (state.estado.size) p.set("estado", [...state.estado].join(","));
+    const qs = p.toString();
+    history.replaceState({}, "", qs ? `${location.pathname}?${qs}` : location.pathname);
+  }
+  function hasFilters(s: FilterState) {
+    return Boolean(s.q || s.servicio.size || s.estado.size);
+  }
+  function matches(card: HTMLElement, state: FilterState) {
+    const name = (card.dataset.name || "").toLowerCase();
+    const description = (card.dataset.description || "").toLowerCase();
+    const estado = card.dataset.estado || "";
+    let servicios: string[] = [];
+    try { servicios = JSON.parse(card.dataset.servicios || "[]"); } catch { /* */ }
+    if (state.q) {
+      const q = state.q.toLowerCase();
+      if (!name.includes(q) && !description.includes(q)) return false;
+    }
+    if (state.servicio.size && ![...state.servicio].some((s) => servicios.includes(s))) return false;
+    if (state.estado.size && !state.estado.has(estado)) return false;
+    return true;
+  }
+  function closeMenus(root: HTMLElement) {
+    root.querySelectorAll<HTMLElement>("[data-menu-panel]").forEach((el) => { el.hidden = true; });
+    root.querySelectorAll("[data-menu-toggle]").forEach((t) => t.setAttribute("aria-expanded", "false"));
+  }
+  function renderCrumbs(
+    host: HTMLElement | null,
+    values: Set<string>,
+    facet: "estado" | "servicio",
+  ) {
+    if (!host) return;
+    host.innerHTML = "";
+    for (const value of values) {
+      const pill = document.createElement("span");
+      pill.className = "crumb-pill";
+      const label = document.createElement("span");
+      label.textContent = value;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("aria-label", `Quitar ${value}`);
+      btn.dataset.removeFacet = facet;
+      btn.dataset.removeValue = value;
+      btn.textContent = "×";
+      pill.append(label, btn);
+      host.append(pill);
+    }
+  }
+
+  function apply(root: HTMLElement, state: FilterState) {
+    const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
+    let visible = 0;
+    cards.forEach((card) => {
+      const ok = matches(card, state);
+      card.hidden = !ok;
+      if (ok) visible += 1;
+    });
+
+    renderCrumbs(root.querySelector("[data-estado-crumbs]"), state.estado, "estado");
+    renderCrumbs(root.querySelector("[data-servicio-crumbs]"), state.servicio, "servicio");
+
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
+      chip.setAttribute("aria-pressed", state.servicio.has(chip.dataset.value || "") ? "true" : "false");
+    });
+    root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
+      box.checked = state.estado.has(box.value);
+    });
+
+    const qCrumb = root.querySelector<HTMLElement>("[data-q-crumb]");
+    const qText = root.querySelector("[data-q-crumb-text]");
+    if (qCrumb && qText) {
+      if (state.q) {
+        qCrumb.hidden = false;
+        qText.textContent = `“${state.q}”`;
+      } else {
+        qCrumb.hidden = true;
+      }
+    }
+
+    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
+    if (qInput && qInput.value !== state.q) qInput.value = state.q;
+
+    const clearBtn = root.querySelector<HTMLButtonElement>("[data-filter-clear]");
+    if (clearBtn) clearBtn.disabled = !hasFilters(state);
+
+    const countEl = root.querySelector("[data-filter-count]");
+    if (countEl) {
+      countEl.textContent = cards.length
+        ? hasFilters(state) ? `${visible} de ${cards.length}` : `${cards.length}`
+        : "";
+    }
+    document.querySelector("[data-filter-empty]")?.classList.toggle("hidden", !cards.length || visible > 0);
+  }
+
+  function init() {
+    const root = document.querySelector<HTMLElement>(".directory-trail[data-directory-filter]");
+    if (!root) return;
+    let state = readUrl();
+    apply(root, state);
+    closeMenus(root);
+
+    root.querySelectorAll<HTMLButtonElement>("[data-menu-toggle]").forEach((toggle) => {
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const panel = toggle.closest("[data-menu]")?.querySelector<HTMLElement>("[data-menu-panel]");
+        if (!panel) return;
+        const open = panel.hidden;
+        closeMenus(root);
+        panel.hidden = !open;
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    });
+
+    root.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
+      if (!btn) return;
+      const facet = btn.dataset.removeFacet as "estado" | "servicio";
+      const value = btn.dataset.removeValue || "";
+      const next = new Set(state[facet]);
+      next.delete(value);
+      state = { ...state, [facet]: next };
+      writeUrl(state);
+      apply(root, state);
+    });
+
+    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
+    let t: number | undefined;
+    qInput?.addEventListener("input", () => {
+      clearTimeout(t);
+      t = window.setTimeout(() => {
+        state = { ...state, q: (qInput.value || "").trim() };
+        writeUrl(state);
+        apply(root, state);
+      }, 150);
+    });
+
+    root.querySelector("[data-clear-q]")?.addEventListener("click", () => {
+      state = { ...state, q: "" };
+      writeUrl(state);
+      apply(root, state);
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
+      chip.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const v = chip.dataset.value || "";
+        const next = new Set(state.servicio);
+        if (next.has(v)) next.delete(v); else next.add(v);
+        state = { ...state, servicio: next };
+        writeUrl(state);
+        apply(root, state);
+      });
+    });
+
+    root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
+      box.addEventListener("change", () => {
+        const next = new Set(state.estado);
+        if (box.checked) next.add(box.value); else next.delete(box.value);
+        state = { ...state, estado: next };
+        writeUrl(state);
+        apply(root, state);
+      });
+    });
+
+    const clear = () => {
+      state = { q: "", servicio: new Set(), estado: new Set() };
+      writeUrl(state);
+      apply(root, state);
+      closeMenus(root);
+    };
+    root.querySelector("[data-filter-clear]")?.addEventListener("click", clear);
+    root.querySelector("[data-filter-home]")?.addEventListener("click", (e) => {
+      if (!hasFilters(state)) return;
+      e.preventDefault();
+      clear();
+    });
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target as Node)) closeMenus(root);
+    });
+  }
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

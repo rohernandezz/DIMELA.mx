@@ -3,7 +3,7 @@
  * Tiny strip to flip between homepage filter mocks.
  */
 interface Props {
-  current: "path" | "bar" | "hybrid";
+  current: "path" | "bar" | "labeled" | "trail";
 }
 
 const { current } = Astro.props;
@@ -15,29 +15,29 @@ const { current } = Astro.props;
   <span class="font-semibold tracking-wide uppercase">Comparar UI</span>
   <a
     href="/"
-    class:list={[
-      "underline-offset-2 hover:underline",
-      current === "path" && "font-bold text-dm-offblack underline",
-    ]}
+    class:list={["underline-offset-2 hover:underline", current === "path" && "font-bold text-dm-offblack underline"]}
   >
-    A · Path in header
+    A · Path
   </a>
   <a
     href="/bar/"
-    class:list={[
-      "underline-offset-2 hover:underline",
-      current === "bar" && "font-bold text-dm-offblack underline",
-    ]}
+    class:list={["underline-offset-2 hover:underline", current === "bar" && "font-bold text-dm-offblack underline"]}
   >
     B · Filter bar
   </a>
   <a
-    href="/v3/"
+    href="/labeled/"
     class:list={[
       "underline-offset-2 hover:underline",
-      current === "hybrid" && "font-bold text-dm-offblack underline",
+      current === "labeled" && "font-bold text-dm-offblack underline",
     ]}
   >
-    C · Hybrid breadcrumbs
+    C · Labeled path
+  </a>
+  <a
+    href="/trail/"
+    class:list={["underline-offset-2 hover:underline", current === "trail" && "font-bold text-dm-offblack underline"]}
+  >
+    D · Crumb trail
   </a>
 </p>

@@ -1,20 +1,14 @@
 ---
 /**
- * Homepage C — simple header + explicit light breadcrumb/filter strip.
+ * Homepage — labeled path in dark header.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileCard from "../components/ProfileCard.astro";
-import DirectoryBreadcrumbStrip from "../components/DirectoryBreadcrumbStrip.astro";
 import CompareHomes from "../components/CompareHomes.astro";
 import { MOCK_PROFILES } from "../data/mockProfiles";
 ---
 
-<BaseLayout
-  title="DIMELA.mx — Hybrid breadcrumb UI"
-  headerVariant="simple"
-  homeHref="/v3/"
->
-  <DirectoryBreadcrumbStrip />
+<BaseLayout title="DIMELA.mx — Labeled path" headerVariant="labeled">
   <section aria-label="Directorio">
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-profile-grid>
       {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
@@ -23,5 +17,5 @@ import { MOCK_PROFILES } from "../data/mockProfiles";
       No hay perfiles con esos filtros.
     </p>
   </section>
-  <CompareHomes current="hybrid" />
+  <CompareHomes current="labeled" />
 </BaseLayout>
