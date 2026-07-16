@@ -1,13 +1,10 @@
 ---
 /**
- * Scaffold homepage — profile card visual mockup.
+ * Scaffold homepage — single card grid mockup (Free + Pro).
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileCard from "../components/ProfileCard.astro";
 import { MOCK_PROFILES } from "../data/mockProfiles";
-
-const destacados = MOCK_PROFILES.filter((p) => p.featured);
-const resto = MOCK_PROFILES.filter((p) => !p.featured);
 ---
 
 <BaseLayout title="DIMELA.mx — Directorio Mexicano de Letristas">
@@ -16,31 +13,13 @@ const resto = MOCK_PROFILES.filter((p) => !p.featured);
       Descubre a letristas Mexicanxs: tipografía, lettering, caligrafía, rotulación y más.
     </p>
     <p class="text-xs tracking-wide text-dm-offblack/50 uppercase">
-      Mockup visual · cards Free / Pro · sin FilterBar aún
+      Mockup visual · grid simple · Free / Pro
     </p>
   </section>
 
-  {
-    destacados.length > 0 && (
-      <section class="mb-10" aria-labelledby="destacados-heading">
-        <h2 id="destacados-heading" class="mb-4 text-sm font-semibold tracking-wide uppercase">
-          Destacados
-        </h2>
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {destacados.map((profile) => (
-            <ProfileCard profile={profile} />
-          ))}
-        </div>
-      </section>
-    )
-  }
-
-  <section aria-labelledby="directorio-heading">
-    <h2 id="directorio-heading" class="mb-4 text-sm font-semibold tracking-wide uppercase">
-      Directorio
-    </h2>
+  <section aria-label="Directorio">
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {resto.map((profile) => <ProfileCard profile={profile} />)}
+      {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
     </div>
   </section>
 </BaseLayout>
