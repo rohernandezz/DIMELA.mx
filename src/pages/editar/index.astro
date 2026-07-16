@@ -337,21 +337,51 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           />
         </section>
 
-        <section class="space-y-4" aria-labelledby="editor-css">
+        <section class="space-y-4" aria-labelledby="editor-css" data-pro-theme-section>
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <h2 id="editor-css" class="text-lg tracking-wide">CSS personalizado</h2>
-              <p class="mt-1 text-sm text-dm-offblack/60">Solo Pro — scoped a tarjeta + perfil.</p>
+              <h2 id="editor-css" class="text-lg tracking-wide">Estilo Pro</h2>
+              <p class="mt-1 text-sm text-dm-offblack/60">
+                Fuentes (máx. 2) y CSS scoped a <code class="text-xs">.profile-card</code> y
+                <code class="text-xs">.profile-detail</code>.
+              </p>
             </div>
             <span class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">Pro</span>
+          </div>
+          <div class="space-y-3 rounded border border-dm-offblack/15 bg-white/80 p-3" data-font-panel>
+            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Fuentes</p>
+            <p class="text-[11px] text-dm-offblack/55">WOFF2, WOFF, TTF u OTF · máx. 768 KB c/u · hasta 2 fuentes.</p>
+            <ul class="space-y-1.5 text-sm" data-font-list></ul>
+            <div class="flex flex-wrap items-end gap-2" data-font-upload-row>
+              <label class="block min-w-[8rem] flex-1 space-y-1">
+                <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Nombre CSS</span>
+                <input
+                  type="text"
+                  data-font-family
+                  placeholder="Mi Fuente"
+                  class="w-full rounded border border-dm-offblack/20 bg-white px-2 py-1.5 text-sm outline-none focus:border-dm-offblack/50"
+                />
+              </label>
+              <button
+                type="button"
+                data-action="font-upload"
+                class="rounded border border-dm-offblack/20 px-2.5 py-1.5 text-xs hover:border-dm-offblack/40 disabled:opacity-50"
+              >
+                Subir fuente
+              </button>
+            </div>
+            <input type="file" class="sr-only" accept=".woff2,.woff,.ttf,.otf,font/woff2,font/woff,font/ttf,font/otf" data-font-input tabindex="-1" />
           </div>
           <textarea
             name="customCss"
             data-field="customCss"
-            rows="5"
-            placeholder={`.profile-card {\n  /* tu estilo */\n}`}
-            class="w-full rounded border border-dm-offblack/20 bg-dm-offblack px-3 py-3 font-mono text-xs leading-relaxed text-dm-offwhite outline-none placeholder:text-dm-offwhite/35 focus:border-dm-pink/50"
+            rows="6"
+            placeholder={`.profile-card {\n  font-family: "Mi Fuente", sans-serif;\n}\n.profile-detail h1 {\n  letter-spacing: 0.04em;\n}`}
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offblack px-3 py-3 font-mono text-xs leading-relaxed text-dm-offwhite outline-none placeholder:text-dm-offwhite/35 focus:border-dm-pink/50 disabled:opacity-50"
           ></textarea>
+          <p class="text-[11px] text-dm-offblack/45" data-pro-theme-hint hidden>
+            Actualiza a Pro para personalizar fuentes y CSS.
+          </p>
         </section>
 
         <div class="flex flex-wrap gap-2 border-t border-dm-offblack/10 pt-6">
@@ -381,6 +411,8 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
 
+  type ProfileFont = { id: string; family: string; url: string; format: string };
+
   type Profile = {
     slug: string;
     name: string;
@@ -392,9 +424,12 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     cover: string | null;
     avatar: string | null;
     customCss?: string;
+    customFonts?: ProfileFont[];
     status: string;
     galleries?: ProfileGallery[];
   };
+
+  const FONT_LIMITS = { maxFonts: 2, maxKb: 768 };
 
   const GALLERY_LIMITS = {
     free: { maxGalleries: 1, maxImages: 12, maxMb: 3 },
@@ -506,6 +541,8 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
 
     currentTier = profile?.tier || "free";
     currentGalleries = profile?.galleries || [];
+    renderFonts(profile?.customFonts || [], currentTier);
+    applyProThemeGate(currentTier);
     renderGalleries(currentGalleries, currentTier);
 
     const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
@@ -586,6 +623,105 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   let uploadsBlocked = false;
   let currentTier = "free";
   let currentGalleries: ProfileGallery[] = [];
+  let currentFonts: ProfileFont[] = [];
+
+  function applyProThemeGate(tier: string) {
+    const isPro = tier === "pro";
+    const css = document.querySelector<HTMLTextAreaElement>("[data-field='customCss']");
+    const hint = document.querySelector<HTMLElement>("[data-pro-theme-hint]");
+    const fontPanel = document.querySelector<HTMLElement>("[data-font-panel]");
+    const fontUpload = document.querySelector<HTMLButtonElement>("[data-action='font-upload']");
+    const fontFamily = document.querySelector<HTMLInputElement>("[data-font-family]");
+    if (css) css.disabled = !isPro;
+    if (hint) hint.hidden = isPro;
+    if (fontPanel) fontPanel.classList.toggle("opacity-60", !isPro);
+    if (fontUpload) fontUpload.disabled = !isPro || uploadsBlocked;
+    if (fontFamily) fontFamily.disabled = !isPro;
+  }
+
+  function renderFonts(fonts: ProfileFont[], tier: string) {
+    const list = document.querySelector<HTMLElement>("[data-font-list]");
+    const uploadBtn = document.querySelector<HTMLButtonElement>("[data-action='font-upload']");
+    if (!list) return;
+    currentFonts = fonts;
+    if (!fonts.length) {
+      list.innerHTML = `<li class="text-xs text-dm-offblack/45">Sin fuentes subidas.</li>`;
+    } else {
+      list.innerHTML = fonts
+        .map(
+          (f) =>
+            `<li class="flex flex-wrap items-center justify-between gap-2 rounded border border-dm-offblack/10 px-2 py-1.5">
+              <span class="font-mono text-xs">${f.family}</span>
+              <span class="text-[10px] text-dm-offblack/45 uppercase">${f.format}</span>
+              <button type="button" class="text-xs text-dm-offblack/55 hover:text-dm-offblack" data-action="font-delete" data-font-id="${f.id}" ${tier !== "pro" ? "disabled" : ""}>Quitar</button>
+            </li>`,
+        )
+        .join("");
+    }
+    if (uploadBtn) {
+      uploadBtn.disabled = tier !== "pro" || uploadsBlocked || fonts.length >= FONT_LIMITS.maxFonts;
+    }
+  }
+
+  async function uploadFontFile(file: File) {
+    const familyInput = document.querySelector<HTMLInputElement>("[data-font-family]");
+    const family = familyInput?.value.trim() || "";
+    if (!family) {
+      toast("Escribe el nombre CSS de la fuente.");
+      return;
+    }
+    setUploadBusy(true);
+    toast("Subiendo fuente…");
+    try {
+      const body = new FormData();
+      body.set("family", family);
+      body.set("file", file, file.name);
+      const res = await fetch("/api/me/profile/font", { method: "POST", credentials: "same-origin", body });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        toast(data.error || "No se pudo subir la fuente.");
+        return;
+      }
+      fillProfile(data.profile);
+      if (familyInput) familyInput.value = "";
+      toast("Fuente subida.");
+    } catch {
+      toast("API no disponible.");
+    } finally {
+      setUploadBusy(false);
+    }
+  }
+
+  async function deleteFont(fontId: string) {
+    const res = await fetch("/api/me/profile/font", {
+      method: "DELETE",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fontId }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo quitar la fuente.");
+      return;
+    }
+    fillProfile(data.profile);
+    toast("Fuente eliminada.");
+  }
+
+  function pickFontUpload() {
+    if (currentTier !== "pro") {
+      toast("Fuentes personalizadas solo en Pro.");
+      return;
+    }
+    if (currentFonts.length >= FONT_LIMITS.maxFonts) {
+      toast(`Máximo ${FONT_LIMITS.maxFonts} fuentes.`);
+      return;
+    }
+    const input = document.querySelector<HTMLInputElement>("[data-font-input]");
+    if (!input) return;
+    input.value = "";
+    input.click();
+  }
 
   function formatBytes(bytes: number) {
     if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
@@ -621,12 +757,14 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     if (blockedEl) blockedEl.classList.toggle("hidden", !uploadsBlocked);
     document
       .querySelectorAll<HTMLButtonElement>(
-        "[data-action='upload-cover'], [data-action='upload-avatar'], [data-action='gallery-upload'], [data-action='gallery-create']",
+        "[data-action='upload-cover'], [data-action='upload-avatar'], [data-action='gallery-upload'], [data-action='gallery-create'], [data-action='font-upload']",
       )
       .forEach((btn) => {
         btn.disabled = uploadsBlocked || btn.dataset.busy === "1";
       });
     renderGalleries(currentGalleries, currentTier);
+    renderFonts(currentFonts, currentTier);
+    applyProThemeGate(currentTier);
   }
 
   function galleryLimitsFor(tier: string) {
@@ -944,6 +1082,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           if (action === "logout") void logout();
           if (action === "upload-cover") pickUpload("cover");
           if (action === "upload-avatar") pickUpload("avatar");
+          if (action === "font-upload") pickFontUpload();
           if (action === "gallery-create") void createGallery();
         });
       });
@@ -973,6 +1112,25 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           },
           true,
         );
+      }
+
+      const fontList = document.querySelector<HTMLElement>("[data-font-list]");
+      if (fontList && !fontList.dataset.ready) {
+        fontList.dataset.ready = "1";
+        fontList.addEventListener("click", (e) => {
+          const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-action='font-delete']");
+          if (!btn?.dataset.fontId) return;
+          void deleteFont(btn.dataset.fontId);
+        });
+      }
+
+      const fontInput = document.querySelector<HTMLInputElement>("[data-font-input]");
+      if (fontInput && !fontInput.dataset.ready) {
+        fontInput.dataset.ready = "1";
+        fontInput.addEventListener("change", () => {
+          const file = fontInput.files?.[0];
+          if (file) void uploadFontFile(file);
+        });
       }
 
       const uploadInput = document.querySelector<HTMLInputElement>("[data-upload-input]");
