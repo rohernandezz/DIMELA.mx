@@ -1,0 +1,39 @@
+---
+const pathname = Astro.url.pathname;
+---
+
+<header class="border-b border-black/10 bg-dm-offblack text-dm-offwhite">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+    <a href="/" class="text-lg tracking-wide hover:opacity-80">DIMELA.mx</a>
+    <nav class="flex flex-wrap items-center gap-4 text-sm" aria-label="Principal">
+      <a
+        href="/directorio/"
+        class:list={["hover:underline", pathname.startsWith("/directorio") && "underline"]}
+        aria-current={pathname.startsWith("/directorio") ? "page" : undefined}
+      >
+        Todo
+      </a>
+      <a
+        href="/estado/"
+        class:list={["hover:underline", pathname.startsWith("/estado") && "underline"]}
+        aria-current={pathname.startsWith("/estado") ? "page" : undefined}
+      >
+        Locación
+      </a>
+      <a
+        href="/servicios/"
+        class:list={["hover:underline", pathname.startsWith("/servicios") && "underline"]}
+        aria-current={pathname.startsWith("/servicios") ? "page" : undefined}
+      >
+        Servicio
+      </a>
+      <a
+        href="/acerca-de/"
+        class:list={["hover:underline", pathname.startsWith("/acerca-de") && "underline"]}
+        aria-current={pathname.startsWith("/acerca-de") ? "page" : undefined}
+      >
+        Acerca de
+      </a>
+    </nav>
+  </div>
+</header>

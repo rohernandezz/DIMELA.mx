@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "OutpactVF";
+  src: url("/fonts/Outpact-VF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "OutpactVF", ui-sans-serif, system-ui, sans-serif;
+  --color-dm-offwhite: #e9ebee;
+  --color-dm-offblack: #383636;
+  --color-dm-pink: #f5c1df;
+  --color-dm-blue: #e8f2fb;
+  --color-dm-blue-strong: #cde7fe;
+  --color-dm-green: #d9f7d9;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  @apply min-h-screen bg-dm-offwhite text-dm-offblack antialiased;
+}
