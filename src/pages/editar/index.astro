@@ -255,6 +255,18 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
             data-upload-input
             tabindex="-1"
           />
+          <div
+            class="rounded border border-dm-offblack/15 bg-dm-offwhite/60 px-3 py-2.5 text-[11px] text-dm-offblack/65"
+            data-media-quota
+            hidden
+          >
+            <p class="font-medium text-dm-offblack/80">Uso de almacenamiento (directorio)</p>
+            <p class="mt-1" data-quota-storage>—</p>
+            <p class="mt-0.5" data-quota-ops>—</p>
+            <p class="mt-1 hidden text-dm-pink" data-quota-blocked>
+              Límite alcanzado. Las subidas están pausadas hasta liberar espacio o el próximo mes.
+            </p>
+          </div>
         </section>
 
         <section class="space-y-4" aria-labelledby="editor-bio">
@@ -499,16 +511,71 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   }
 
   let pendingUploadKind: "cover" | "avatar" | null = null;
+  let uploadsBlocked = false;
+
+  function formatBytes(bytes: number) {
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+  }
+
+  function applyMediaQuota(quota?: {
+    storageBytes: number;
+    storageLimitBytes: number;
+    classAOpsThisMonth: number;
+    classAOpsLimit: number;
+    uploadsBlocked?: boolean;
+  }) {
+    const wrap = document.querySelector<HTMLElement>("[data-media-quota]");
+    if (!wrap || !quota) {
+      if (wrap) wrap.hidden = true;
+      uploadsBlocked = false;
+      return;
+    }
+
+    wrap.hidden = false;
+    const storageEl = wrap.querySelector<HTMLElement>("[data-quota-storage]");
+    const opsEl = wrap.querySelector<HTMLElement>("[data-quota-ops]");
+    const blockedEl = wrap.querySelector<HTMLElement>("[data-quota-blocked]");
+    if (storageEl) {
+      storageEl.textContent = `Almacenamiento: ${formatBytes(quota.storageBytes)} / ${formatBytes(quota.storageLimitBytes)}`;
+    }
+    if (opsEl) {
+      opsEl.textContent = `Subidas este mes: ${quota.classAOpsThisMonth.toLocaleString("es-MX")} / ${quota.classAOpsLimit.toLocaleString("es-MX")}`;
+    }
+    uploadsBlocked = Boolean(quota.uploadsBlocked);
+    if (blockedEl) blockedEl.classList.toggle("hidden", !uploadsBlocked);
+    document.querySelectorAll<HTMLButtonElement>("[data-action='upload-cover'], [data-action='upload-avatar']").forEach(
+      (btn) => {
+        if (!btn.disabled) btn.disabled = uploadsBlocked;
+      },
+    );
+  }
+
+  async function loadMediaQuota() {
+    try {
+      const res = await fetch("/api/me/media/quota", { credentials: "same-origin" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.ok && data.quota) applyMediaQuota(data.quota);
+    } catch {
+      /* quota optional when API unavailable */
+    }
+  }
 
   function setUploadBusy(busy: boolean) {
     document.querySelectorAll<HTMLButtonElement>("[data-action='upload-cover'], [data-action='upload-avatar']").forEach(
       (btn) => {
-        btn.disabled = busy;
+        btn.disabled = busy || uploadsBlocked;
       },
     );
   }
 
   function pickUpload(kind: "cover" | "avatar") {
+    if (uploadsBlocked) {
+      toast("Límite de almacenamiento alcanzado. Contacta al equipo DIMELA.");
+      return;
+    }
     const input = document.querySelector<HTMLInputElement>("[data-upload-input]");
     if (!input) return;
     pendingUploadKind = kind;
@@ -538,6 +605,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
         return;
       }
       fillProfile(data.profile);
+      if (data.quota) applyMediaQuota(data.quota);
       toast(kind === "cover" ? "Portada actualizada." : "Avatar actualizado.");
     } catch {
       toast("API no disponible. Usa `wrangler dev` (proxy /api).");
@@ -562,6 +630,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       const emailEl = document.querySelector<HTMLElement>("[data-user-email]");
       if (emailEl) emailEl.textContent = data.user.email;
       fillProfile(data.profile);
+      void loadMediaQuota();
     } catch {
       showLogin(true);
     }
