@@ -8,14 +8,15 @@ const estados = [...MEXICO_ESTADOS];
 const servicios = [...SERVICIOS];
 ---
 
+<div data-filter-sentinel class="pointer-events-none h-px w-full" aria-hidden="true"></div>
 <section
-  class="directory-filter mb-6 md:relative"
+  class="directory-filter mb-6"
   data-directory-filter
   aria-label="Filtrar directorio"
 >
-  {/* On mobile, the real <header> is moved here so grey bar + search stick as one unit */}
-  <div data-sticky-stack class="md:contents">
-    <div class="filter-shell overflow-visible rounded border border-dm-offblack/15 bg-white md:rounded md:border">
+  {/* Header moves here when collapsed so grey bar + search stick as one unit */}
+  <div data-sticky-stack>
+    <div class="filter-shell overflow-visible rounded border border-dm-offblack/15 bg-white">
       {/* Top row — always visible */}
       <div class="filter-top flex items-center gap-2 px-3 py-2.5 md:flex-nowrap">
         <label class="filter-search relative min-w-0 flex-1 md:max-w-xs md:flex-none md:w-56">
@@ -226,50 +227,64 @@ const servicios = [...SERVICIOS];
   }
 
   /*
-   * Mobile: grey header + search are one sticky stack (same header element).
-   * Break out of main padding only (not 100vw) so logo aligns with cards.
+   * Collapsed (scroll): real header + search stick as one unit.
+   * At top of page: normal spacing — header in body, search as inset card.
    */
+  .directory-filter[data-collapsed] {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    margin-left: calc(-1 * var(--dm-page-px));
+    margin-right: calc(-1 * var(--dm-page-px));
+    background-color: var(--color-dm-offwhite);
+  }
+  .directory-filter[data-collapsed] [data-sticky-stack] {
+    display: flex;
+    flex-direction: column;
+  }
+  .directory-filter[data-collapsed] :global(header [data-header-inner]) {
+    max-width: none;
+    margin-inline: 0;
+    padding-left: var(--dm-page-px);
+    padding-right: var(--dm-page-px);
+  }
+  /* Desktop sticky: compact grey bar */
+  @media (min-width: 768px) {
+    .directory-filter[data-collapsed] :global(header [data-header-inner]) {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      min-height: 0;
+    }
+    .directory-filter[data-collapsed] :global(header [data-header-inner] a[data-filter-home]) {
+      font-size: 0.8125rem;
+      line-height: 1rem;
+      letter-spacing: 0.02em;
+    }
+  }
+  .directory-filter[data-collapsed] .filter-shell {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    width: 100%;
+    margin-inline: 0;
+    background-color: #fff;
+  }
+  .directory-filter[data-collapsed] .filter-top,
+  .directory-filter[data-collapsed] [data-mobile-filters],
+  .directory-filter[data-collapsed] .filter-shell > .border-t {
+    padding-left: var(--dm-page-px);
+    padding-right: var(--dm-page-px);
+  }
+  .directory-filter[data-collapsed] .filter-search {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
   @media (max-width: 767px) {
-    .directory-filter[data-mobile-stack] {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      margin-left: calc(-1 * var(--dm-page-px));
-      margin-right: calc(-1 * var(--dm-page-px));
-      margin-top: -1.5rem; /* cancel main py-6 top */
-      margin-bottom: 1.5rem;
-      background-color: var(--color-dm-offwhite);
-    }
-    .directory-filter[data-mobile-stack] [data-sticky-stack] {
-      display: flex;
-      flex-direction: column;
-    }
-    .directory-filter[data-mobile-stack] header [data-header-inner] {
-      max-width: none;
-      margin-inline: 0;
-      padding-left: var(--dm-page-px);
-      padding-right: var(--dm-page-px);
-    }
-    .directory-filter[data-mobile-stack] .filter-shell {
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      width: 100%;
-      margin-inline: 0;
-      background-color: #fff;
-    }
-    .directory-filter[data-mobile-stack] .filter-top,
-    .directory-filter[data-mobile-stack] [data-mobile-filters] {
-      padding-left: var(--dm-page-px);
-      padding-right: var(--dm-page-px);
-    }
-    .directory-filter[data-mobile-stack] .filter-search {
-      flex: 1 1 auto;
-      min-width: 0;
+    .directory-filter[data-collapsed] .filter-search {
       max-width: none;
     }
-    .directory-filter[data-mobile-stack] [data-filter-count] {
+    .directory-filter[data-collapsed] [data-filter-count] {
       display: none;
     }
   }
@@ -517,28 +532,30 @@ const servicios = [...SERVICIOS];
     const root = document.querySelector<HTMLElement>(".directory-filter[data-directory-filter]");
     if (!root) return;
 
-    const mobileMq = window.matchMedia("(max-width: 767px)");
     const stack = root.querySelector<HTMLElement>("[data-sticky-stack]");
     const main = document.querySelector("main");
+    const sentinel = document.querySelector("[data-filter-sentinel]");
 
-    const placeHeader = () => {
+    const setCollapsed = (collapsed: boolean) => {
       const header = document.querySelector<HTMLElement>("header");
       if (!header || !stack || !main) return;
-      if (mobileMq.matches) {
-        root.setAttribute("data-mobile-stack", "");
-        if (header.parentElement !== stack) {
-          stack.prepend(header);
-        }
-      } else {
-        root.removeAttribute("data-mobile-stack");
-        if (header.parentElement === stack) {
-          main.parentElement?.insertBefore(header, main);
-        }
+
+      root.toggleAttribute("data-collapsed", collapsed);
+
+      if (collapsed) {
+        if (header.parentElement !== stack) stack.prepend(header);
+      } else if (header.parentElement === stack) {
+        main.parentElement?.insertBefore(header, main);
       }
     };
 
-    placeHeader();
-    mobileMq.addEventListener("change", placeHeader);
+    if (sentinel) {
+      const collapsedObserver = new IntersectionObserver(
+        ([entry]) => setCollapsed(!entry.isIntersecting),
+        { threshold: 0 },
+      );
+      collapsedObserver.observe(sentinel);
+    }
 
     let state = readUrl();
     apply(root, state);

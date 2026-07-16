@@ -1,7 +1,7 @@
 ---
 /**
  * Site header variants for filter UI comparison.
- * A (path) & B (simple): filter-focused — site nav lives in the footer.
+ * A (path) & B (simple): filter-focused — site nav in hamburger + footer.
  * Mobile: DIMELA + active-filter breadcrumb in the top bar.
  */
 interface Props {
@@ -13,13 +13,19 @@ import DirectoryPathFilter from "./DirectoryPathFilter.astro";
 import DirectoryLabeledPath from "./DirectoryLabeledPath.astro";
 
 const { variant = "simple", homeHref = "/" } = Astro.props;
+
+const navLinks = [
+  { href: "/directorio/", label: "Todo" },
+  { href: "/estado/", label: "Locación" },
+  { href: "/servicios/", label: "Servicios" },
+  { href: "/acerca-de/", label: "Acerca" },
+] as const;
 ---
 
 <header class="border-b border-black/10 bg-dm-offblack text-dm-offwhite">
   {
     variant === "path" && (
       <div class="mx-auto max-w-7xl px-4 py-2.5 sm:px-6">
-        {/* Mobile: brand + filter breadcrumb */}
         <div class="mb-2 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 md:hidden">
           <a
             href="/"
@@ -47,18 +53,11 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
           class="flex shrink-0 flex-wrap items-center gap-3 text-xs text-dm-offwhite/70 sm:justify-end"
           aria-label="Principal"
         >
-          <a href="/directorio/" class="hover:text-dm-offwhite">
-            Todo
-          </a>
-          <a href="/estado/" class="hover:text-dm-offwhite">
-            Locación
-          </a>
-          <a href="/servicios/" class="hover:text-dm-offwhite">
-            Servicios
-          </a>
-          <a href="/acerca-de/" class="hover:text-dm-offwhite">
-            Acerca
-          </a>
+          {navLinks.map((link) => (
+            <a href={link.href} class="hover:text-dm-offwhite">
+              {link.label}
+            </a>
+          ))}
         </nav>
       </div>
     )
@@ -66,11 +65,11 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
   {
     variant === "simple" && (
       <div
-        class="mx-auto flex w-full max-w-7xl items-center py-3"
+        class="mx-auto flex w-full max-w-7xl items-center gap-3 py-3"
         style="padding-left: var(--dm-page-px); padding-right: var(--dm-page-px)"
         data-header-inner
       >
-        <div class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
+        <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-1.5 gap-y-1">
           <a
             href={homeHref}
             data-filter-home
@@ -84,6 +83,54 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
             class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-dm-offwhite/75 md:hidden"
             aria-label="Filtros activos"
           ></nav>
+        </div>
+
+        <div class="relative shrink-0" data-site-menu>
+          <button
+            type="button"
+            data-site-menu-toggle
+            class="site-menu-toggle flex h-9 w-9 items-center justify-center rounded text-dm-offwhite outline-none hover:bg-white/10 focus-visible:bg-white/10"
+            aria-expanded="false"
+            aria-controls="site-menu-panel"
+            aria-label="Menú"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+          </button>
+          <div
+            id="site-menu-panel"
+            data-site-menu-panel
+            hidden
+            class="absolute top-full right-0 z-50 mt-1 min-w-[11rem] rounded border border-black/15 bg-white py-1 text-dm-offblack shadow-lg"
+            role="menu"
+            aria-label="Principal"
+          >
+            {
+              navLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="block px-3 py-2 text-sm hover:bg-dm-offwhite"
+                  role="menuitem"
+                >
+                  {link.label}
+                </a>
+              ))
+            }
+            <a
+              href="https://tortilla.studio"
+              class="block border-t border-dm-offblack/10 px-3 py-2 text-sm hover:bg-dm-offwhite"
+              role="menuitem"
+              rel="noopener noreferrer"
+            >
+              Tortilla!
+            </a>
+          </div>
         </div>
       </div>
     )
@@ -121,4 +168,49 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
     border-color: var(--color-dm-offwhite);
     opacity: 1;
   }
+
+  /* Compact hamburger when grey bar is collapsed sticky on desktop */
+  @media (min-width: 768px) {
+    .directory-filter[data-collapsed] .site-menu-toggle {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+    .directory-filter[data-collapsed] .site-menu-toggle svg {
+      height: 0.875rem;
+      width: 0.875rem;
+    }
+  }
 </style>
+
+<script>
+  function initSiteMenu() {
+    document.querySelectorAll<HTMLElement>("[data-site-menu]").forEach((wrap) => {
+      if (wrap.dataset.menuReady) return;
+      wrap.dataset.menuReady = "1";
+
+      const toggle = wrap.querySelector<HTMLButtonElement>("[data-site-menu-toggle]");
+      const panel = wrap.querySelector<HTMLElement>("[data-site-menu-panel]");
+      if (!toggle || !panel) return;
+
+      const setOpen = (open: boolean) => {
+        panel.hidden = !open;
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setOpen(panel.hidden);
+      });
+
+      panel.addEventListener("click", (e) => e.stopPropagation());
+
+      document.addEventListener("click", () => setOpen(false));
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setOpen(false);
+      });
+    });
+  }
+
+  initSiteMenu();
+  document.addEventListener("astro:page-load", initSiteMenu);
+</script>
