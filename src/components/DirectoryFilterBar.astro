@@ -1,6 +1,6 @@
 ---
 /**
- * Option B filter bar — desktop chips; mobile “Filtros” bottom sheet.
+ * Option B filter bar — desktop chips; mobile dropdown under search.
  */
 import { MEXICO_ESTADOS, SERVICIOS } from "../data/taxonomy";
 
@@ -9,208 +9,175 @@ const servicios = [...SERVICIOS];
 ---
 
 <section
-  class="directory-filter mb-6"
+  class="directory-filter relative mb-6"
   data-directory-filter
   aria-label="Filtrar directorio"
 >
-  {/* Top row — always visible */}
-  <div
-    class="flex flex-wrap items-center gap-2 rounded border border-dm-offblack/15 bg-white px-3 py-2.5 md:rounded-b-none md:border-b-0"
-  >
-    <label class="relative min-w-0 flex-1 md:max-w-xs md:flex-none md:w-56">
-      <span class="sr-only">Buscar</span>
-      <input
-        type="search"
-        name="q"
-        data-filter-q
-        placeholder="Buscar…"
-        autocomplete="off"
-        class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-2 text-sm outline-none focus:border-dm-offblack/50 md:py-1.5"
-      />
-    </label>
+  <div class="overflow-visible rounded border border-dm-offblack/15 bg-white">
+    {/* Top row — always visible */}
+    <div class="flex flex-wrap items-center gap-2 px-3 py-2.5">
+      <label class="relative min-w-0 flex-1 md:max-w-xs md:flex-none md:w-56">
+        <span class="sr-only">Buscar</span>
+        <input
+          type="search"
+          name="q"
+          data-filter-q
+          placeholder="Buscar…"
+          autocomplete="off"
+          class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-2 text-sm outline-none focus:border-dm-offblack/50 md:py-1.5"
+        />
+      </label>
 
-    {/* Desktop ubicación */}
-    <div class="relative hidden md:block" data-estado-multi data-estado-desktop>
+      {/* Desktop ubicación */}
+      <div class="relative hidden md:block" data-estado-multi data-estado-desktop>
+        <button
+          type="button"
+          data-estado-toggle
+          class="flex max-w-[14rem] items-center gap-1 rounded border border-dm-offblack/20 bg-dm-blue/50 px-2 py-1.5 text-left text-sm text-dm-offblack"
+          aria-expanded="false"
+        >
+          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            >Ubicación</span
+          >
+          <span data-estado-label class="truncate">Todo México</span>
+          <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
+        </button>
+        <div
+          data-estado-panel
+          hidden
+          class="absolute top-full left-0 z-30 mt-1 max-h-64 w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+        >
+          {
+            estados.map((estado) => (
+              <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
+                <input type="checkbox" data-estado-option value={estado} class="rounded" />
+                <span>{estado}</span>
+              </label>
+            ))
+          }
+        </div>
+      </div>
+
+      <p class="hidden text-xs text-dm-offblack/50 md:inline" data-filter-count aria-live="polite"
+      ></p>
+
       <button
         type="button"
-        data-estado-toggle
-        class="flex max-w-[14rem] items-center gap-1 rounded border border-dm-offblack/20 bg-dm-blue/50 px-2 py-1.5 text-left text-sm text-dm-offblack"
-        aria-expanded="false"
+        data-filter-clear
+        class="hidden rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-white disabled:opacity-40 md:inline"
+        disabled
       >
-        <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-          >Ubicación</span
-        >
-        <span data-estado-label class="truncate">Todo México</span>
-        <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
+        Limpiar
       </button>
-      <div
-        data-estado-panel
-        hidden
-        class="absolute top-full left-0 z-30 mt-1 max-h-64 w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+
+      {/* Mobile: toggle dropdown under search */}
+      <button
+        type="button"
+        data-mobile-filters-toggle
+        class="relative shrink-0 rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-filters-dropdown"
       >
-        {
-          estados.map((estado) => (
-            <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
-              <input type="checkbox" data-estado-option value={estado} class="rounded" />
-              <span>{estado}</span>
-            </label>
-          ))
-        }
-      </div>
+        Filtros
+        <span aria-hidden="true" class="ml-0.5 opacity-70">▾</span>
+        <span
+          data-sheet-badge
+          hidden
+          class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-dm-pink px-1 text-[10px] font-bold text-dm-offblack"
+        ></span>
+      </button>
     </div>
 
-    <p class="hidden text-xs text-dm-offblack/50 md:inline" data-filter-count aria-live="polite"
-    ></p>
-
-    <button
-      type="button"
-      data-filter-clear
-      class="hidden rounded border border-dm-offblack/20 px-2 py-1 text-xs text-dm-offblack/60 hover:bg-dm-offblack hover:text-white disabled:opacity-40 md:inline"
-      disabled
-    >
-      Limpiar
-    </button>
-
-    {/* Mobile: open sheet */}
-    <button
-      type="button"
-      data-sheet-open
-      class="relative shrink-0 rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite md:hidden"
-      aria-haspopup="dialog"
-    >
-      Filtros
-      <span
-        data-sheet-badge
-        hidden
-        class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-dm-pink px-1 text-[10px] font-bold text-dm-offblack"
-      ></span>
-    </button>
-  </div>
-
-  {/* Desktop: servicio chips */}
-  <div
-    class="hidden rounded-b border border-dm-offblack/15 border-t-0 bg-white px-3 py-3 md:block"
-  >
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase"
-        >Servicio</span
-      >
-      <div class="flex flex-wrap gap-1.5">
-        {
-          servicios.map((servicio) => (
-            <button
-              type="button"
-              class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack hover:border-dm-offblack"
-              data-filter-chip
-              data-value={servicio}
-              aria-pressed="false"
-            >
-              {servicio}
-            </button>
-          ))
-        }
-      </div>
-    </div>
-  </div>
-
-  {/* Mobile bottom sheet */}
-  <div data-filter-sheet hidden class="md:hidden">
+    {/* Mobile dropdown — expands under the search row */}
     <div
-      data-sheet-backdrop
-      class="fixed inset-0 z-40 bg-dm-offblack/40"
-      aria-hidden="true"
+      id="mobile-filters-dropdown"
+      data-mobile-filters
+      hidden
+      class="border-t border-dm-offblack/10 px-3 py-3 md:hidden"
     >
-    </div>
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="filter-sheet-title"
-      class="fixed inset-x-0 bottom-0 z-50 flex max-h-[85vh] flex-col rounded-t-xl border border-dm-offblack/15 bg-white shadow-2xl"
-    >
-      <div class="flex items-center justify-between border-b border-dm-offblack/10 px-4 py-3">
-        <h2 id="filter-sheet-title" class="text-sm font-semibold tracking-wide uppercase">
-          Filtros
-        </h2>
+      <p class="mb-3 text-xs text-dm-offblack/50" data-filter-count-mobile aria-live="polite"></p>
+
+      <div class="relative mb-4" data-estado-multi data-estado-mobile>
+        <p class="mb-1.5 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
+          Ubicación
+        </p>
         <button
           type="button"
-          data-sheet-close
-          class="rounded px-2 py-1 text-sm text-dm-offblack/60 hover:bg-dm-offwhite"
+          data-estado-toggle
+          class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
+          aria-expanded="false"
         >
-          Cerrar
+          <span data-estado-label>Todo México</span>
+          <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
         </button>
-      </div>
-
-      <div class="overflow-y-auto px-4 py-4">
-        <p class="mb-3 text-xs text-dm-offblack/50" data-filter-count-mobile aria-live="polite"
-        ></p>
-
-        <div class="relative mb-5" data-estado-multi data-estado-mobile>
-          <p class="mb-2 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
-            Ubicación
-          </p>
-          <button
-            type="button"
-            data-estado-toggle
-            class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2.5 text-left text-sm"
-            aria-expanded="false"
-          >
-            <span data-estado-label>Todo México</span>
-            <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
-          </button>
-          <div
-            data-estado-panel
-            hidden
-            class="mt-1 max-h-48 overflow-auto rounded border border-dm-offblack/20 bg-white py-1"
-          >
-            {
-              estados.map((estado) => (
-                <label class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite">
-                  <input type="checkbox" data-estado-option value={estado} class="rounded" />
-                  <span>{estado}</span>
-                </label>
-              ))
-            }
-          </div>
-        </div>
-
-        <div>
-          <p class="mb-2 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
-            Servicio
-          </p>
-          <div class="flex flex-wrap gap-2">
-            {
-              servicios.map((servicio) => (
-                <button
-                  type="button"
-                  class="filter-chip rounded border border-dm-offblack/25 bg-white px-3 py-2 text-sm text-dm-offblack"
-                  data-filter-chip
-                  data-value={servicio}
-                  aria-pressed="false"
-                >
-                  {servicio}
-                </button>
-              ))
-            }
-          </div>
+        <div
+          data-estado-panel
+          hidden
+          class="mt-1 max-h-40 overflow-auto rounded border border-dm-offblack/20 bg-white py-1"
+        >
+          {
+            estados.map((estado) => (
+              <label class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite">
+                <input type="checkbox" data-estado-option value={estado} class="rounded" />
+                <span>{estado}</span>
+              </label>
+            ))
+          }
         </div>
       </div>
 
-      <div class="flex gap-2 border-t border-dm-offblack/10 px-4 py-3">
-        <button
-          type="button"
-          data-filter-clear
-          class="flex-1 rounded border border-dm-offblack/20 py-2.5 text-sm text-dm-offblack/70 disabled:opacity-40"
-          disabled
+      <div class="mb-4">
+        <p class="mb-1.5 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
+          Servicio
+        </p>
+        <div class="flex flex-wrap gap-2">
+          {
+            servicios.map((servicio) => (
+              <button
+                type="button"
+                class="filter-chip rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack"
+                data-filter-chip
+                data-value={servicio}
+                aria-pressed="false"
+              >
+                {servicio}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <button
+        type="button"
+        data-filter-clear
+        class="w-full rounded border border-dm-offblack/20 py-2 text-sm text-dm-offblack/70 disabled:opacity-40"
+        disabled
+      >
+        Limpiar filtros
+      </button>
+    </div>
+
+    {/* Desktop: servicio chips */}
+    <div class="hidden border-t border-dm-offblack/10 px-3 py-3 md:block">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase"
+          >Servicio</span
         >
-          Limpiar
-        </button>
-        <button
-          type="button"
-          data-sheet-close
-          class="flex-[2] rounded bg-dm-offblack py-2.5 text-sm text-dm-offwhite"
-        >
-          Ver resultados
-        </button>
+        <div class="flex flex-wrap gap-1.5">
+          {
+            servicios.map((servicio) => (
+              <button
+                type="button"
+                class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack hover:border-dm-offblack"
+                data-filter-chip
+                data-value={servicio}
+                aria-pressed="false"
+              >
+                {servicio}
+              </button>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>
@@ -221,9 +188,6 @@ const servicios = [...SERVICIOS];
     background-color: var(--color-dm-offblack);
     color: var(--color-dm-offwhite);
     border-color: var(--color-dm-offblack);
-  }
-  body.filter-sheet-open {
-    overflow: hidden;
   }
 </style>
 
@@ -299,11 +263,12 @@ const servicios = [...SERVICIOS];
     return true;
   }
 
-  function setSheetOpen(root: HTMLElement, open: boolean) {
-    const sheet = root.querySelector<HTMLElement>("[data-filter-sheet]");
-    if (!sheet) return;
-    sheet.hidden = !open;
-    document.body.classList.toggle("filter-sheet-open", open);
+  function setMobileFiltersOpen(root: HTMLElement, open: boolean) {
+    const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+    const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
+    if (!panel || !toggle) return;
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
   }
 
   function apply(root: HTMLElement, state: FilterState) {
@@ -365,7 +330,7 @@ const servicios = [...SERVICIOS];
 
     let state = readUrl();
     apply(root, state);
-    setSheetOpen(root, false);
+    setMobileFiltersOpen(root, false);
 
     root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
       const toggle = wrap.querySelector<HTMLButtonElement>("[data-estado-toggle]");
@@ -374,7 +339,6 @@ const servicios = [...SERVICIOS];
         e.stopPropagation();
         if (!panel || !toggle) return;
         const willOpen = panel.hidden;
-        // close other estado panels
         root.querySelectorAll<HTMLElement>("[data-estado-panel]").forEach((p) => {
           p.hidden = true;
         });
@@ -414,7 +378,6 @@ const servicios = [...SERVICIOS];
         const next = new Set(state.estado);
         if (box.checked) next.add(box.value);
         else next.delete(box.value);
-        // sync twin checkboxes (desktop + mobile lists)
         root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
           if (other.value === box.value) other.checked = box.checked;
         });
@@ -435,19 +398,19 @@ const servicios = [...SERVICIOS];
       });
     });
 
-    root.querySelector("[data-sheet-open]")?.addEventListener("click", () => {
-      setSheetOpen(root, true);
-    });
-    root.querySelectorAll("[data-sheet-close], [data-sheet-backdrop]").forEach((el) => {
-      el.addEventListener("click", () => setSheetOpen(root, false));
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") setSheetOpen(root, false);
+    const mobileToggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
+    mobileToggle?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+      const open = panel?.hidden ?? true;
+      setMobileFiltersOpen(root, open);
     });
 
     document.addEventListener("click", (e) => {
       const target = e.target as Node;
+      if (!root.contains(target)) {
+        setMobileFiltersOpen(root, false);
+      }
       root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
         const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
         if (panel && !wrap.contains(target)) panel.hidden = true;
