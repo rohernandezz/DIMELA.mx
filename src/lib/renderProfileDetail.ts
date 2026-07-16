@@ -1,11 +1,11 @@
 /**
  * Client-side profile detail HTML (matches directorio/[slug] layout).
  */
-import { estadoSlug, toSlug } from "./slugs";
+import { estadoSlug, servicioSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 import { renderBioHtml } from "./bio";
-import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
+import { websiteHref, websiteLabel, websiteCapsuleHtml, profileServicePillClass } from "./website";
 
 const STATUS_PREVIEW_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -39,8 +39,8 @@ export function renderProfileDetailHtml(
 
   const chips = (profile.servicios || [])
     .map((servicio) => {
-      const href = `/servicios/${toSlug(servicio)}/`;
-      return `<a href="${href}" class="rounded border border-dm-offblack/20 bg-white px-2.5 py-1 text-sm text-dm-offblack/80 hover:border-dm-offblack/40">${escapeHtml(servicio)}</a>`;
+      const href = `/servicios/${servicioSlug(servicio)}/`;
+      return `<a href="${href}" class="${profileServicePillClass}">${escapeHtml(servicio)}</a>`;
     })
     .join("");
 

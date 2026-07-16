@@ -4,9 +4,9 @@
  * (visual margin inside the same cell). Pro keeps badge + stronger border.
  */
 import type { MockProfile } from "../data/mockProfiles";
-import { estadoSlug } from "../lib/slugs";
+import { estadoSlug, servicioSlug } from "../lib/slugs";
 import { bioLeadPlainText, bioPlainText } from "../lib/bio";
-import { websiteHref, websiteLabel, websiteCapsuleClass } from "../lib/website";
+import { websiteHref, websiteLabel, websiteCapsuleClass, profileServicePillClass } from "../lib/website";
 
 interface Props {
   profile: MockProfile;
@@ -129,9 +129,12 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
     <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">
       {
         profile.servicios.map((servicio) => (
-          <span class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80">
+          <a
+            href={`/servicios/${servicioSlug(servicio)}/`}
+            class={profileServicePillClass}
+          >
             {servicio}
-          </span>
+          </a>
         ))
       }
     </div>

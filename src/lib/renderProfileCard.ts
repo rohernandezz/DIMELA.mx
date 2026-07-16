@@ -2,10 +2,10 @@
  * Client-side profile card HTML (matches ProfileCard.astro).
  * Used when the directory grid is filled from /api/search.
  */
-import { estadoSlug } from "./slugs";
+import { estadoSlug, servicioSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { bioLeadPlainText, bioPlainText } from "./bio";
-import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
+import { websiteHref, websiteLabel, websiteCapsuleHtml, profileServicePillClass } from "./website";
 
 export function escapeHtml(value: string): string {
   return value
@@ -45,7 +45,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const chips = (profile.servicios || [])
     .map(
       (servicio) =>
-        `<span class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80">${escapeHtml(servicio)}</span>`,
+        `<a href="/servicios/${servicioSlug(servicio)}/" class="${profileServicePillClass}">${escapeHtml(servicio)}</a>`,
     )
     .join("");
 
