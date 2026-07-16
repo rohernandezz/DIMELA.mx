@@ -1,7 +1,7 @@
 ---
 /**
- * Profile card mock — Free vs Pro on the same simple grid.
- * Pro is the same column span, slightly larger visually.
+ * Profile card — uniform grid size for Free and Pro.
+ * Pro fills the cell; Free is slightly inset. Same content dimensions.
  */
 import type { MockProfile } from "../data/mockProfiles";
 
@@ -16,10 +16,10 @@ const href = `#${profile.slug}`;
 
 <article
   class:list={[
-    "profile-card group relative flex h-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
+    "profile-card group relative flex h-full w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
     isPro
-      ? "profile-card--pro border-dm-offblack/30 shadow-lg"
-      : "border-dm-offblack/15",
+      ? "profile-card--pro border-dm-offblack/35 shadow-lg"
+      : "m-1.5 border-dm-offblack/15 sm:m-2",
   ]}
   data-profile-card
   data-name={profile.name}
@@ -35,12 +35,7 @@ const href = `#${profile.slug}`;
     )
   }
 
-  <div
-    class:list={[
-      "relative shrink-0 overflow-hidden bg-dm-blue",
-      isPro ? "aspect-[5/4]" : "aspect-[16/10]",
-    ]}
-  >
+  <div class="relative aspect-[16/10] shrink-0 overflow-hidden bg-dm-blue">
     {
       profile.cover ? (
         <img
@@ -61,31 +56,25 @@ const href = `#${profile.slug}`;
     }
   </div>
 
-  <div class:list={["flex flex-1 flex-col gap-3", isPro ? "p-5" : "p-4"]}>
+  <div class="flex flex-1 flex-col gap-3 p-4">
     <header class="flex items-center gap-3">
       {
         profile.avatar ? (
           <img
             src={profile.avatar}
             alt=""
-            class:list={[
-              "rounded-full object-cover shadow-md ring-2 ring-white",
-              isPro ? "h-14 w-14" : "h-12 w-12",
-            ]}
-            width={isPro ? 56 : 48}
-            height={isPro ? 56 : 48}
+            class="h-12 w-12 rounded-full object-cover shadow-md ring-2 ring-white"
+            width="48"
+            height="48"
             loading="lazy"
             decoding="async"
           />
         ) : (
           <div
-            class:list={[
-              "flex items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white",
-              isPro ? "h-14 w-14" : "h-12 w-12",
-            ]}
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
             aria-hidden="true"
           >
-            <svg class={isPro ? "h-8 w-8" : "h-7 w-7"} viewBox="0 0 24 24" fill="currentColor">
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="8" r="4"></circle>
               <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
             </svg>
@@ -95,10 +84,7 @@ const href = `#${profile.slug}`;
       <div class="min-w-0">
         <a
           href={href}
-          class:list={[
-            "block truncate font-bold text-dm-offblack underline-offset-2 hover:underline",
-            isPro ? "text-xl" : "text-lg",
-          ]}
+          class="block truncate text-lg font-bold text-dm-offblack underline-offset-2 hover:underline"
         >
           {profile.name}
         </a>
@@ -111,12 +97,7 @@ const href = `#${profile.slug}`;
       </div>
     </header>
 
-    <p
-      class:list={[
-        "leading-relaxed text-dm-offblack/75",
-        isPro ? "line-clamp-3 text-[15px]" : "line-clamp-2 text-sm",
-      ]}
-    >
+    <p class="line-clamp-2 text-sm leading-relaxed text-dm-offblack/75">
       {profile.description}
     </p>
 
