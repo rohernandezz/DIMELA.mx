@@ -877,7 +877,13 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           if (msg) msg.textContent = data.message || "Enlace listo.";
           if (data.verifyUrl && linkEl) {
             linkEl.classList.remove("hidden");
-            linkEl.innerHTML = `<a class="text-dm-offblack underline" href="${data.verifyUrl}">Abrir enlace mágico</a>`;
+            const href =
+              data.verifyPath ||
+              (() => {
+                const u = new URL(data.verifyUrl, window.location.origin);
+                return `${u.pathname}${u.search}`;
+              })();
+            linkEl.innerHTML = `<a class="text-dm-offblack underline" href="${href}">Abrir enlace mágico</a>`;
           }
         } catch {
           if (msg) {

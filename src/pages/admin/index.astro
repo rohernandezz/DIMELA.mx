@@ -271,7 +271,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           }
           if (msg) msg.textContent = data.message || "Enlace listo.";
           if (data.verifyUrl && linkEl) {
-            const url = new URL(data.verifyUrl);
+            const url = new URL(data.verifyUrl, window.location.origin);
             url.searchParams.set("next", "/admin/");
             linkEl.classList.remove("hidden");
             linkEl.innerHTML = `<a class="text-dm-offblack underline" href="${url.pathname}${url.search}">Abrir enlace mágico</a>`;

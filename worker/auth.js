@@ -21,6 +21,16 @@ function cookieSecure(url) {
   return url.protocol === "https:";
 }
 
+/** Browser-facing origin (respects Vite/Astro proxy headers in local dev). */
+export function requestPublicOrigin(request, url) {
+  const forwardedHost = request.headers.get("X-Forwarded-Host");
+  if (forwardedHost) {
+    const proto = request.headers.get("X-Forwarded-Proto") || "http";
+    return `${proto}://${forwardedHost}`;
+  }
+  return url.origin;
+}
+
 export function parseCookies(header) {
   const out = {};
   if (!header) return out;
@@ -132,9 +142,10 @@ export async function handleAuthRequest(request, env, url) {
     .bind(token, email, expiresAt)
     .run();
 
-  const verifyUrl = new URL("/api/auth/verify", url.origin);
+  const publicOrigin = requestPublicOrigin(request, url);
+  const verifyUrl = new URL("/api/auth/verify", publicOrigin);
   verifyUrl.searchParams.set("token", token);
-  verifyUrl.searchParams.set("next", "/editar/");
+  verifyUrl.searchParams.set("next", body.next || "/editar/");
 
   // Email provider later — for now return the link (dev/MVP).
   console.log(`Magic link for ${email}: ${verifyUrl.toString()}`);
@@ -144,6 +155,7 @@ export async function handleAuthRequest(request, env, url) {
     message: "Revisa tu correo (o usa el enlace de desarrollo).",
     expiresMinutes: MAGIC_MINUTES,
     verifyUrl: verifyUrl.toString(),
+    verifyPath: `${verifyUrl.pathname}${verifyUrl.search}`,
   });
 }
 
@@ -194,16 +206,19 @@ export async function handleAuthVerify(request, env, url) {
     .bind(sessionToken, user.id, isoInDays(SESSION_DAYS))
     .run();
 
-  const redirectTo = new URL(next, url.origin);
-  if (redirectTo.origin !== url.origin) {
-    redirectTo.href = new URL("/editar/", url.origin).href;
+  const publicOrigin = requestPublicOrigin(request, url);
+  const redirectTo = new URL(next, publicOrigin);
+  if (redirectTo.origin !== publicOrigin) {
+    redirectTo.href = new URL("/editar/", publicOrigin).href;
   }
+
+  const cookieUrl = new URL(publicOrigin);
 
   return new Response(null, {
     status: 302,
     headers: {
       Location: redirectTo.pathname + redirectTo.search,
-      "Set-Cookie": sessionCookie(sessionToken, url),
+      "Set-Cookie": sessionCookie(sessionToken, cookieUrl),
     },
   });
 }
