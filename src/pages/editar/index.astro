@@ -3,7 +3,7 @@
  * Member profile editor — magic-link auth + TipTap bio + D1 save.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
+import { MEXICO_ESTADOS } from "../../data/taxonomy";
 ---
 
 <BaseLayout
@@ -180,28 +180,14 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           </label>
           <fieldset>
             <legend
-              class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+              class="mb-1 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
             >
               Servicios
             </legend>
-            <div class="flex flex-wrap gap-1.5" data-servicios-host>
-              {
-                SERVICIOS.map((servicio) => (
-                  <label class="cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="servicios"
-                      value={servicio}
-                      class="peer sr-only"
-                      data-servicio={servicio}
-                    />
-                    <span class="inline-block rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack peer-checked:border-dm-offblack peer-checked:bg-dm-offblack peer-checked:text-dm-offwhite">
-                      {servicio}
-                    </span>
-                  </label>
-                ))
-              }
-            </div>
+            <p class="mb-2 text-xs text-dm-offblack/50">
+              Selecciona servicios; arrastra los seleccionados para ordenarlos en el perfil.
+            </p>
+            <div class="flex flex-wrap gap-1.5" data-servicios-host></div>
           </fieldset>
         </section>
 
@@ -425,11 +411,17 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   import { bindBioToolbar, mountBioEditor, type BioEditor } from "../../lib/bioEditor";
   import { openAvatarCropper } from "../../lib/imageCropper";
   import { requestMagicLink, renderDevMagicLink } from "../../lib/authClient";
+  import { normalizeServicios, SERVICIOS } from "../../data/taxonomy";
 
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
 
   type ProfileFont = { id: string; family: string; url: string; format: string };
+
+  /** Selected servicios in display order (drag order in the picker). */
+  let serviciosOrder: string[] = [];
+  let dragServicio: string | null = null;
+  let didServicioDrag = false;
 
   type Profile = {
     slug: string;
@@ -530,7 +522,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     const website = profile?.website || "";
     const description = profile?.description || "";
     const customCss = profile?.customCss || "";
-    const servicios = new Set(profile?.servicios || []);
+    serviciosOrder = normalizeServicios(profile?.servicios || []);
     const status = profile?.status || "draft";
 
     const set = (field: string, value: string) => {
@@ -556,9 +548,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       }
     }
 
-    form.querySelectorAll<HTMLInputElement>("[data-servicio]").forEach((box) => {
-      box.checked = servicios.has(box.value);
-    });
+    renderServiciosPicker();
 
     const badge = document.querySelector<HTMLElement>("[data-status-badge]");
     if (badge) {
@@ -629,11 +619,140 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     }
   }
 
+  function escapeHtmlText(s: string) {
+    return s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function servicioChipHtml(servicio: string, selected: boolean) {
+    const safe = escapeHtmlText(servicio);
+    const chipClass = selected
+      ? "inline-block rounded border border-dm-offblack bg-dm-offblack px-2.5 py-1 text-sm text-dm-offwhite"
+      : "inline-block rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack";
+    const labelClass = selected ? "cursor-grab active:cursor-grabbing" : "cursor-pointer";
+    return `<label class="${labelClass}" data-servicio-chip="${safe}" ${selected ? 'draggable="true"' : ""}>
+      <input type="checkbox" name="servicios" value="${safe}" class="sr-only" data-servicio="${safe}" ${selected ? "checked" : ""} />
+      <span class="${chipClass}">${safe}</span>
+    </label>`;
+  }
+
+  function renderServiciosPicker() {
+    const host = document.querySelector<HTMLElement>("[data-servicios-host]");
+    if (!host) return;
+    const selected = new Set(serviciosOrder);
+    const unselected = SERVICIOS.filter((s) => !selected.has(s));
+    host.innerHTML = [
+      ...serviciosOrder.map((s) => servicioChipHtml(s, true)),
+      ...unselected.map((s) => servicioChipHtml(s, false)),
+    ].join("");
+  }
+
+  function reorderServicio(from: string, to: string) {
+    if (from === to) return;
+    const fromIdx = serviciosOrder.indexOf(from);
+    const toIdx = serviciosOrder.indexOf(to);
+    if (fromIdx < 0 || toIdx < 0) return;
+    const next = [...serviciosOrder];
+    next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, from);
+    serviciosOrder = next;
+    renderServiciosPicker();
+  }
+
+  function bindServiciosPicker() {
+    const host = document.querySelector<HTMLElement>("[data-servicios-host]");
+    if (!host || host.dataset.ready) return;
+    host.dataset.ready = "1";
+    renderServiciosPicker();
+
+    host.addEventListener("change", (e) => {
+      const box = e.target as HTMLInputElement;
+      if (!box.matches?.("[data-servicio]")) return;
+      const value = box.value;
+      if (box.checked) {
+        if (!serviciosOrder.includes(value)) serviciosOrder = [...serviciosOrder, value];
+      } else {
+        serviciosOrder = serviciosOrder.filter((s) => s !== value);
+      }
+      renderServiciosPicker();
+    });
+
+    // After a drag, the browser may fire a click that would toggle the chip — block it.
+    host.addEventListener(
+      "click",
+      (e) => {
+        if (!didServicioDrag) return;
+        e.preventDefault();
+        e.stopPropagation();
+        didServicioDrag = false;
+      },
+      true,
+    );
+
+    host.addEventListener("dragstart", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      if (!chip?.draggable || !chip.dataset.servicioChip) {
+        e.preventDefault();
+        return;
+      }
+      dragServicio = chip.dataset.servicioChip;
+      didServicioDrag = false;
+      chip.classList.add("opacity-60");
+      e.dataTransfer?.setData("text/plain", dragServicio);
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+    });
+
+    host.addEventListener("drag", () => {
+      if (dragServicio) didServicioDrag = true;
+    });
+
+    host.addEventListener("dragend", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      chip?.classList.remove("opacity-60");
+      host.querySelectorAll("[data-servicio-chip].ring-2").forEach((el) => {
+        el.classList.remove("ring-2", "ring-dm-pink");
+      });
+      dragServicio = null;
+    });
+
+    host.addEventListener("dragover", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      if (!dragServicio || !chip?.draggable) return;
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      host.querySelectorAll("[data-servicio-chip].ring-2").forEach((el) => {
+        el.classList.remove("ring-2", "ring-dm-pink");
+      });
+      if (chip.dataset.servicioChip !== dragServicio) {
+        chip.classList.add("ring-2", "ring-dm-pink");
+      }
+    });
+
+    host.addEventListener("dragleave", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      chip?.classList.remove("ring-2", "ring-dm-pink");
+    });
+
+    host.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const chip = (e.target as HTMLElement).closest<HTMLElement>("[data-servicio-chip]");
+      const to = chip?.dataset.servicioChip;
+      const from = dragServicio || e.dataTransfer?.getData("text/plain") || "";
+      host.querySelectorAll("[data-servicio-chip].ring-2").forEach((el) => {
+        el.classList.remove("ring-2", "ring-dm-pink");
+      });
+      if (!from || !to || !chip?.draggable) return;
+      didServicioDrag = true;
+      reorderServicio(from, to);
+    });
+  }
+
   function readForm(): Partial<Profile> & { customCss?: string } {
     const form = document.querySelector<HTMLFormElement>("[data-profile-editor]")!;
-    const servicios = [...form.querySelectorAll<HTMLInputElement>("[data-servicio]:checked")].map(
-      (el) => el.value,
-    );
+    const servicios = normalizeServicios(serviciosOrder);
     const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
     if (bio && hidden) hidden.value = bio.getHTML();
     return {
@@ -1150,6 +1269,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
 
     if (editorForm && !editorForm.dataset.ready) {
       editorForm.dataset.ready = "1";
+      bindServiciosPicker();
       editorForm.addEventListener("submit", (e) => {
         e.preventDefault();
         void saveDraft();

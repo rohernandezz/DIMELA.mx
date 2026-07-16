@@ -7,6 +7,7 @@ import { sanitizeCustomCss } from "./customCss.js";
 import { sendMagicLinkEmail } from "./email.js";
 import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
 import { markProfileDraftForEdit } from "./publications.js";
+import { normalizeServicios } from "./taxonomy.js";
 
 export { DEMO_ACCOUNTS };
 
@@ -643,9 +644,7 @@ export async function handleMeProfilePut(request, env) {
   const estado = String(body.estado || "").trim();
   const website = body.website ? String(body.website).trim() : null;
   const description = sanitizeBio(body.description || "");
-  const servicios = Array.isArray(body.servicios)
-    ? body.servicios.map(String)
-    : [];
+  const servicios = normalizeServicios(body.servicios);
 
   if (!name || !estado) {
     return json({ ok: false, error: "Nombre y ubicación son obligatorios." }, 400);
