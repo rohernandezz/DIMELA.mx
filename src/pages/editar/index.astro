@@ -4,6 +4,7 @@
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
+import { MAX_PROFILE_TAGS, PROFILE_TAGS } from "../../data/tags";
 ---
 
 <BaseLayout
@@ -164,7 +165,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
         <section class="space-y-4" aria-labelledby="editor-facets">
           <div>
             <h2 id="editor-facets" class="text-lg tracking-wide">Directorio</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">Ubicación y servicios.</p>
+            <p class="mt-1 text-sm text-dm-offblack/60">Ubicación, servicios y etiquetas.</p>
           </div>
           <label class="block space-y-1.5">
             <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
@@ -202,6 +203,35 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
                 ))
               }
             </div>
+          </fieldset>
+          <fieldset>
+            <legend
+              class="mb-1 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            >
+              Etiquetas
+            </legend>
+            <p class="mb-2 text-xs text-dm-offblack/50">
+              Subespecialidades (máx. {MAX_PROFILE_TAGS}). Aparecen en búsqueda, no como filtros.
+            </p>
+            <div class="flex flex-wrap gap-1.5" data-tags-host>
+              {
+                PROFILE_TAGS.map((tag) => (
+                  <label class="cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="tags"
+                      value={tag}
+                      class="peer sr-only"
+                      data-tag={tag}
+                    />
+                    <span class="inline-block rounded border border-dashed border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack peer-checked:border-dm-offblack peer-checked:bg-dm-blue/50 peer-checked:border-solid">
+                      {tag}
+                    </span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="mt-1.5 text-xs text-dm-offblack/45" data-tags-count></p>
           </fieldset>
         </section>
 
@@ -425,6 +455,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
   import { bindBioToolbar, mountBioEditor, type BioEditor } from "../../lib/bioEditor";
   import { openAvatarCropper } from "../../lib/imageCropper";
   import { requestMagicLink, renderDevMagicLink } from "../../lib/authClient";
+  import { MAX_PROFILE_TAGS } from "../../data/tags";
 
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
@@ -436,6 +467,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     name: string;
     estado: string;
     servicios: string[];
+    tags?: string[];
     description: string;
     website?: string;
     tier: string;
@@ -531,6 +563,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     const description = profile?.description || "";
     const customCss = profile?.customCss || "";
     const servicios = new Set(profile?.servicios || []);
+    const tags = new Set(profile?.tags || []);
     const status = profile?.status || "draft";
 
     const set = (field: string, value: string) => {
@@ -559,6 +592,11 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     form.querySelectorAll<HTMLInputElement>("[data-servicio]").forEach((box) => {
       box.checked = servicios.has(box.value);
     });
+
+    form.querySelectorAll<HTMLInputElement>("[data-tag]").forEach((box) => {
+      box.checked = tags.has(box.value);
+    });
+    updateTagsCount();
 
     const badge = document.querySelector<HTMLElement>("[data-status-badge]");
     if (badge) {
@@ -629,11 +667,37 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     }
   }
 
+  function updateTagsCount() {
+    const form = document.querySelector<HTMLFormElement>("[data-profile-editor]");
+    const countEl = document.querySelector<HTMLElement>("[data-tags-count]");
+    if (!form || !countEl) return;
+    const n = form.querySelectorAll<HTMLInputElement>("[data-tag]:checked").length;
+    countEl.textContent = `${n} / ${MAX_PROFILE_TAGS} seleccionadas`;
+  }
+
+  function bindTagLimit() {
+    const form = document.querySelector<HTMLFormElement>("[data-profile-editor]");
+    if (!form) return;
+    form.querySelectorAll<HTMLInputElement>("[data-tag]").forEach((box) => {
+      box.addEventListener("change", () => {
+        const checked = [...form.querySelectorAll<HTMLInputElement>("[data-tag]:checked")];
+        if (checked.length > MAX_PROFILE_TAGS) {
+          box.checked = false;
+          toast(`Máximo ${MAX_PROFILE_TAGS} etiquetas.`);
+        }
+        updateTagsCount();
+      });
+    });
+  }
+
   function readForm(): Partial<Profile> & { customCss?: string } {
     const form = document.querySelector<HTMLFormElement>("[data-profile-editor]")!;
     const servicios = [...form.querySelectorAll<HTMLInputElement>("[data-servicio]:checked")].map(
       (el) => el.value,
     );
+    const tags = [...form.querySelectorAll<HTMLInputElement>("[data-tag]:checked")]
+      .map((el) => el.value)
+      .slice(0, MAX_PROFILE_TAGS);
     const hidden = form.querySelector<HTMLInputElement>("[data-bio-html]");
     if (bio && hidden) hidden.value = bio.getHTML();
     return {
@@ -643,6 +707,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       customCss: form.querySelector<HTMLTextAreaElement>('[data-field="customCss"]')?.value || "",
       description: hidden?.value || "",
       servicios,
+      tags,
     };
   }
 
@@ -1150,6 +1215,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
 
     if (editorForm && !editorForm.dataset.ready) {
       editorForm.dataset.ready = "1";
+      bindTagLimit();
       editorForm.addEventListener("submit", (e) => {
         e.preventDefault();
         void saveDraft();

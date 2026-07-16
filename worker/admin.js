@@ -27,7 +27,7 @@ export async function handleAdminQueue(request, env) {
   const filter = allowed.has(status) ? status : "pending_review";
 
   const { results } = await env.DB.prepare(
-    `SELECT p.slug, p.name, p.estado, p.servicios, p.description, p.website, p.tier,
+    `SELECT p.slug, p.name, p.estado, p.servicios, p.tags, p.description, p.website, p.tier,
             p.featured, p.cover, p.avatar, p.custom_css, p.custom_fonts,
             p.status, p.user_id, p.galleries,
             p.invite_email, p.updated_at, u.email AS owner_email,

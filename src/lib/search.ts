@@ -23,6 +23,8 @@ export type SearchableProfile = {
   name: string;
   estado: string;
   servicios: string[];
+  /** Curated subespecialidades — searchable via `q`, not filter chips. */
+  tags?: string[];
   description: string;
   tier: string;
   cover: string | null;
@@ -67,7 +69,8 @@ export function filterProfiles<T extends SearchableProfile>(
 
   return profiles.filter((p) => {
     if (q) {
-      const hay = `${p.name} ${bioPlainText(p.description)}`.toLowerCase();
+      const tags = Array.isArray(p.tags) ? p.tags.join(" ") : "";
+      const hay = `${p.name} ${bioPlainText(p.description)} ${tags}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     if (servicios.size && ![...servicios].some((s) => p.servicios.includes(s))) {

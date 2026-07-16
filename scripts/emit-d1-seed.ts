@@ -24,12 +24,14 @@ const lines = [
 for (const p of MOCK_PROFILES) {
   const customCss = p.customCss?.trim() ? sqlStr(p.customCss) : "NULL";
   const customFonts = p.customFonts?.length ? sqlStr(JSON.stringify(p.customFonts)) : "'[]'";
+  const tags = sqlStr(JSON.stringify(p.tags ?? []));
   lines.push(
-    `INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES (${[
+    `INSERT INTO profiles (slug, name, estado, servicios, tags, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES (${[
       sqlStr(p.slug),
       sqlStr(p.name),
       sqlStr(p.estado),
       sqlStr(JSON.stringify(p.servicios)),
+      tags,
       sqlStr(p.description),
       sqlStr(p.website ?? null),
       sqlStr(p.tier),
@@ -46,11 +48,11 @@ for (const p of MOCK_PROFILES) {
 lines.push(
   "",
   `INSERT INTO profile_publications (
-  slug, name, estado, servicios, description, website, tier, featured,
+  slug, name, estado, servicios, tags, description, website, tier, featured,
   cover, avatar, custom_css, custom_fonts, galleries
 )
 SELECT
-  slug, name, estado, servicios, description, website, tier, featured,
+  slug, name, estado, servicios, tags, description, website, tier, featured,
   cover, avatar, custom_css, custom_fonts, galleries
 FROM profiles
 WHERE status = 'published';`,

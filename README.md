@@ -46,6 +46,7 @@ Demo logins (after D1 seed): member `romina@tortilla.studio` → `/editar/` · a
 | `npm run deploy` | Build + `wrangler deploy` |
 | `npm run db:migrate:local` / `:remote` | Apply D1 schema |
 | `npm run db:migrate:media:local` / `:remote` | Apply media quota tables |
+| `npm run db:migrate:tags:local` / `:remote` | Add searchable `tags` columns |
 | `npm run db:seed:local` / `:remote` | Seed profiles + auth demos |
 | `npm run astro` | Astro CLI passthrough |
 
@@ -80,6 +81,10 @@ DIMELA.mx/
 The **Ubicación** autocomplete in `src/components/DirectoryFilterBar.astro` uses the central alias map in `src/data/locationAliases.ts`. Matching ignores accents and case; for example, `cdmx` → Ciudad de México, `edomex` → Estado de México, `guadalajara` → Jalisco, and `monterrey` → Nuevo León.
 
 To add an alias, edit `LOCATION_ALIASES` with `alias: "Canonical estado"`, using the exact estado string from `MEXICO_ESTADOS` in `src/data/taxonomy.ts`. URL slugs such as `cdmx` and `edomex` are configured separately in `src/lib/slugs.ts`; location aliases only affect filter text search.
+
+### Profile tags (searchable)
+
+Curated subespecialidades live in `src/data/tags.ts` (keep `worker/tags.js` in sync). They are editable in `/editar/`, shown as dashed pills on cards/detail, and matched by directory search `q` — they are **not** filter chips. Cap is 8 per profile. Local migrate: `npm run db:migrate:tags:local` (also included in `db:sync:local`).
 
 ## Docs
 

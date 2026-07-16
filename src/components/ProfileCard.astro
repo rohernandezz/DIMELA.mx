@@ -126,12 +126,22 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
       {leadPlain}
     </p>
 
-    <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">
+    <div class="mt-auto flex min-h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">
       {
         profile.servicios.map((servicio) => (
           <span class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80">
             {servicio}
           </span>
+        ))
+      }
+      {
+        (profile.tags || []).map((tag) => (
+          <a
+            href={`/directorio/?q=${encodeURIComponent(tag)}`}
+            class="relative z-10 rounded border border-dashed border-dm-offblack/25 bg-white px-2 py-0.5 text-[11px] text-dm-offblack/65 hover:border-dm-offblack/45 hover:text-dm-offblack"
+          >
+            {tag}
+          </a>
         ))
       }
     </div>

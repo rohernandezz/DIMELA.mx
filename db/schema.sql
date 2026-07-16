@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   name TEXT NOT NULL,
   estado TEXT NOT NULL,
   servicios TEXT NOT NULL, -- JSON array of service labels
+  tags TEXT NOT NULL DEFAULT '[]', -- JSON array of curated subespecialidad labels
   description TEXT NOT NULL DEFAULT '',
   website TEXT,
   tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'pro')),
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS profile_publications (
   name TEXT NOT NULL,
   estado TEXT NOT NULL,
   servicios TEXT NOT NULL,
+  tags TEXT NOT NULL DEFAULT '[]',
   description TEXT NOT NULL DEFAULT '',
   website TEXT,
   tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'pro')),

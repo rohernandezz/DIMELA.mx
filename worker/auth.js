@@ -7,6 +7,7 @@ import { sanitizeCustomCss } from "./customCss.js";
 import { sendMagicLinkEmail } from "./email.js";
 import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
 import { markProfileDraftForEdit } from "./publications.js";
+import { normalizeProfileTags } from "./tags.js";
 
 export { DEMO_ACCOUNTS };
 
@@ -548,7 +549,7 @@ export async function handleMeProfileClaim(request, env) {
   return json({ ok: true, profile: mapProfileRow(profile) });
 }
 
-export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier,
+export const PROFILE_COLUMNS = `slug, name, estado, servicios, tags, description, website, tier,
   featured, cover, avatar, custom_css, custom_fonts, status, user_id, galleries,
   EXISTS(SELECT 1 FROM profile_publications pp WHERE pp.slug = profiles.slug) AS has_publication`;
 
@@ -585,11 +586,19 @@ export function mapProfileRow(row) {
   } catch {
     servicios = [];
   }
+  let tags = [];
+  try {
+    tags = JSON.parse(row.tags || "[]");
+  } catch {
+    tags = [];
+  }
+  if (!Array.isArray(tags)) tags = [];
   return {
     slug: row.slug,
     name: row.name,
     estado: row.estado,
     servicios,
+    tags,
     description: row.description || "",
     website: row.website || undefined,
     tier: row.tier,
@@ -646,6 +655,7 @@ export async function handleMeProfilePut(request, env) {
   const servicios = Array.isArray(body.servicios)
     ? body.servicios.map(String)
     : [];
+  const tags = normalizeProfileTags(body.tags);
 
   if (!name || !estado) {
     return json({ ok: false, error: "Nombre y ubicación son obligatorios." }, 400);
@@ -690,26 +700,37 @@ export async function handleMeProfilePut(request, env) {
   }
 
   const serviciosJson = JSON.stringify(servicios);
+  const tagsJson = JSON.stringify(tags);
 
   if (existing) {
     await markProfileDraftForEdit(env, user.id);
     await env.DB.prepare(
       `UPDATE profiles SET
-        name = ?, estado = ?, servicios = ?, description = ?, website = ?,
+        name = ?, estado = ?, servicios = ?, tags = ?, description = ?, website = ?,
         custom_css = COALESCE(?, custom_css),
         updated_at = datetime('now')
        WHERE user_id = ?`,
     )
-      .bind(name, estado, serviciosJson, description, website, customCss, user.id)
+      .bind(name, estado, serviciosJson, tagsJson, description, website, customCss, user.id)
       .run();
   } else {
     await env.DB.prepare(
       `INSERT INTO profiles (
-        slug, name, estado, servicios, description, website, tier, featured,
+        slug, name, estado, servicios, tags, description, website, tier, featured,
         cover, avatar, custom_css, custom_fonts, user_id, status
-      ) VALUES (?, ?, ?, ?, ?, ?, 'free', 0, NULL, NULL, ?, '[]', ?, 'draft')`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'free', 0, NULL, NULL, ?, '[]', ?, 'draft')`,
     )
-      .bind(slug, name, estado, serviciosJson, description, website, customCss || "", user.id)
+      .bind(
+        slug,
+        name,
+        estado,
+        serviciosJson,
+        tagsJson,
+        description,
+        website,
+        customCss || "",
+        user.id,
+      )
       .run();
   }
 

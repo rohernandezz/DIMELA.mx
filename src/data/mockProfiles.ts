@@ -3,6 +3,7 @@
  * Intentional dummy set for local dev and profiles.json fallback.
  */
 import { MEXICO_ESTADOS, SERVICIOS, type MexicoEstado, type Servicio } from "./taxonomy";
+import { PROFILE_TAGS, type ProfileTag } from "./tags";
 
 export type MockTier = "free" | "pro";
 
@@ -18,6 +19,7 @@ export interface MockProfile {
   name: string;
   estado: MexicoEstado;
   servicios: Servicio[];
+  tags?: ProfileTag[];
   description: string;
   website?: string;
   tier: MockTier;
@@ -78,6 +80,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Romina Hernández",
     estado: "Ciudad de México",
     servicios: ["Diseño de Tipografía", "Lettering", "Ingeniería de Fuentes"],
+    tags: ["Tipografía custom", "Tipo para marca", "Packaging", "Talleres"],
     description:
       "<p>Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.</p><h2>Tipografía con raíz</h2><p>Trabajo con estudios, marcas y editoriales que buscan una voz tipográfica clara y con raíz mexicana — desde logotipos hasta familias completas para texto corrido, UI y packaging.</p><p>Me importa el oficio: boceto, revisión, kerning, pruebas en contexto real. Cada proyecto empieza con escucha y termina con archivos listos para producción.</p><h2>Colaboración</h2><p>Talleres, charlas y colaboraciones con el Colegio de Diseñadores, TMX y equipos creativos en CDMX y remoto. Si tienes un proyecto — editorial, marca o fuente propia — escríbeme.</p>",
     website: "https://tortilla.studio",
@@ -92,6 +95,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Cristóbal Henestrosa",
     estado: "Ciudad de México",
     servicios: ["Diseño de Tipografía", "Diseño Editorial"],
+    tags: ["Tipografía custom", "Editorial", "Tipo para marca"],
     description:
       "<p>Diseñador tipográfico y editorial. Fuentes para prensa, libros e identidad cultural mexicana.</p><h2>Editorial y prensa</h2><p>He diseñado tipos para periódicos, museos y sellos independientes. Me interesa la legibilidad, el detalle y la historia detrás de cada letra — cómo una familia tipográfica sostiene un tono editorial durante años.</p><p>Desde revistas culturales hasta catálogos de museo, busco sistemas que funcionen en titulares y en notas al pie con la misma voz.</p>",
     website: "https://henestrosatype.com",
@@ -104,6 +108,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Miguel Contreras",
     estado: "Puebla",
     servicios: ["Lettering", "Branding", "Diseño de Tipografía", "Caligrafía"],
+    tags: ["Murales", "Packaging", "Brush", "Logotipo"],
     description:
       "<p>Lettering, caligrafía y tipografía para marcas. Proyectos de identidad con trazo propio.</p><h2>Marcas con carácter</h2><p>Desde Puebla trabajo con restaurantes, cervecerías y proyectos culturales que necesitan letras con carácter — mural, empaque o sistema completo.</p><p>El proceso mezcla boceto a mano, refinamiento digital y entrega lista para impresión o pantalla. Me gusta cuando la tipografía se siente hecha para ese negocio, no sacada de un catálogo.</p><p>Disponible para colaboraciones en México y remoto.</p>",
     website: "https://miglconts.com",
@@ -116,6 +121,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Cecilia del Castillo",
     estado: "Fuera de México",
     servicios: ["Diseño de Tipografía", "Caligrafía"],
+    tags: ["Grabado caligráfico", "Editorial"],
     description:
       "<p>Mexican type designer &amp; calligrapher. Fuentes y caligrafía para editorial e identidad.</p><h2>Caligrafía y fuentes</h2><p>Vivo entre proyectos editoriales y encargos de caligrafía para invitaciones, libros de artista y piezas de colección.</p><p>Investigo la relación entre trazo manual y sistemas tipográficos digitales — a veces la caligrafía guía una familia completa; otras, la fuente nace directo del lápiz.</p>",
     website: "https://www.instagram.com/ceci_dcd",
@@ -128,6 +134,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Antonio Mejía Lechuga",
     estado: "Querétaro",
     servicios: ["Diseño Editorial"],
+    tags: ["Editorial", "Packaging"],
     description:
       "<p>Diseño editorial y tipografía aplicada a libros, revistas y publicaciones independientes.</p><p>En Cuatro Ojos armamos publicaciones con ritmo, jerarquía y cuidado en cada página. Nos gusta el papel, la encuadernación y el detalle que se nota al hojear.</p>",
     website: "https://cuatroojos.com.mx",
@@ -140,6 +147,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Giovanni Bautista",
     estado: "Oaxaca",
     servicios: ["Rotulación Manual", "Lettering"],
+    tags: ["Murales", "Gran formato", "Fachada", "Señalética"],
     description:
       "<p>Rotulación a mano y lettering para comercio local, fachadas y espacios públicos en Oaxaca.</p><p>Pintura, pincel y color para negocios de barrio, mercados y festivales. Cada letrero cuenta la historia del lugar.</p>",
     tier: "free",
@@ -151,6 +159,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Mara Osman",
     estado: "Ciudad de México",
     servicios: ["Branding", "Diseño de Tipografía", "Lettering", "Caligrafía"],
+    tags: ["Tipo para marca", "Activaciones", "Neon", "Logotipo"],
     description:
       "<p>Identidad tipográfica, lettering y caligrafía para marcas culturales y editoriales.</p><h2>Sistema y voz</h2><p>Combino investigación, boceto y sistema para que la voz de una marca se sienta coherente en impreso y pantalla.</p><p>Proyectos recientes: festivales, sellos discográficos y identidad para espacios culturales en CDMX.</p><p>Trabajo en paquetes que incluyen logotipo, lettering, selección tipográfica y guías de uso para equipos internos.</p>",
     tier: "pro",
@@ -162,6 +171,7 @@ const FEATURED_REALISTIC: MockProfile[] = [
     name: "Sandra Morales",
     estado: "Puebla",
     servicios: ["Rotulación Manual"],
+    tags: ["Pizarras", "Fachada", "Señalética", "Retail"],
     description:
       "<p>Rotulación manual para negocios, letreros y piezas de señalética con carácter local.</p><p>Trabajo con comercios de Puebla que quieren verse auténticos — sin plantillas, con letra hecha a mano.</p>",
     tier: "free",
@@ -274,6 +284,17 @@ function pickServicios(i: number): Servicio[] {
   return [primary];
 }
 
+function pickTags(i: number): ProfileTag[] {
+  const a = PROFILE_TAGS[i % PROFILE_TAGS.length];
+  const b = PROFILE_TAGS[(i + 5) % PROFILE_TAGS.length];
+  if (i % 4 === 0) return a === b ? [a] : [a, b];
+  if (i % 5 === 0) {
+    const c = PROFILE_TAGS[(i + 9) % PROFILE_TAGS.length];
+    return [...new Set([a, b, c])];
+  }
+  return [a];
+}
+
 const BLURB_MORE: Record<Servicio, string[]> = {
   Lettering: [
     "Colaboro con estudios de diseño y marcas que buscan letras con personalidad.",
@@ -312,6 +333,7 @@ function makePlaceholder(
 ): MockProfile {
   const name = `${FIRST_NAMES[index % FIRST_NAMES.length]} ${LAST_NAMES[(index * 3) % LAST_NAMES.length]}`;
   const servicios = pickServicios(index);
+  const tags = pickTags(index);
   const primary = servicios[0];
   const lead =
     BLURBS[primary][index % BLURBS[primary].length] +
@@ -322,6 +344,7 @@ function makePlaceholder(
     name,
     estado,
     servicios,
+    tags,
     description: `<p>${lead}</p><p>${more}</p>`,
     tier: index % 7 === 0 ? "pro" : "free",
     cover: coverFor(index),

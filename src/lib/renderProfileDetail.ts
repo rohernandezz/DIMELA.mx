@@ -44,13 +44,21 @@ export function renderProfileDetailHtml(
     })
     .join("");
 
+  const tagPills = (profile.tags || [])
+    .map((tag) => {
+      const href = `/directorio/?q=${encodeURIComponent(tag)}`;
+      return `<a href="${href}" class="rounded border border-dashed border-dm-offblack/25 bg-dm-offwhite/80 px-2.5 py-1 text-sm text-dm-offblack/65 hover:border-dm-offblack/45 hover:text-dm-offblack">${escapeHtml(tag)}</a>`;
+    })
+    .join("");
+
   const site = siteHref
     ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel, "lg")
     : "";
 
-  const servicesBlock = chips
-    ? `<div class="mb-6 flex flex-wrap gap-2">${chips}</div>`
-    : "";
+  const servicesAndTags =
+    chips || tagPills
+      ? `<div class="mb-6 flex flex-wrap gap-2">${chips}${tagPills}</div>`
+      : "";
 
   const galleries = (profile.galleries || []).filter((g) => g.images?.length);
   const galleryHtml = galleries.length
@@ -106,7 +114,7 @@ export function renderProfileDetailHtml(
         </div>
       </div>
     </header>
-    ${servicesBlock}
+    ${servicesAndTags}
     ${descriptionHtml ? `<div class="profile-bio mb-6 text-base leading-relaxed text-dm-offblack/80">${descriptionHtml}</div>` : ""}
     ${galleryHtml}
     <p class="text-sm text-dm-offblack/45">

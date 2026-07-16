@@ -5,7 +5,7 @@
  * admin-approved version and is the only D1 source used by public reads.
  */
 
-export const PUBLICATION_COLUMNS = `slug, name, estado, servicios, description, website,
+export const PUBLICATION_COLUMNS = `slug, name, estado, servicios, tags, description, website,
   tier, featured, cover, avatar, custom_css, custom_fonts,
   'published' AS status, NULL AS user_id, galleries`;
 
@@ -29,11 +29,11 @@ export async function publishProfile(env, slug) {
   return env.DB.batch([
     env.DB.prepare(
       `INSERT INTO profile_publications (
-         slug, name, estado, servicios, description, website, tier, featured,
+         slug, name, estado, servicios, tags, description, website, tier, featured,
          cover, avatar, custom_css, custom_fonts, galleries, published_at
        )
        SELECT
-         slug, name, estado, servicios, description, website, tier, featured,
+         slug, name, estado, servicios, tags, description, website, tier, featured,
          cover, avatar, custom_css, custom_fonts, galleries, datetime('now')
        FROM profiles
        WHERE slug = ?
@@ -41,6 +41,7 @@ export async function publishProfile(env, slug) {
          name = excluded.name,
          estado = excluded.estado,
          servicios = excluded.servicios,
+         tags = excluded.tags,
          description = excluded.description,
          website = excluded.website,
          tier = excluded.tier,
@@ -70,6 +71,7 @@ export async function rejectPublishedRevision(env, slug) {
      SET name = (SELECT name FROM profile_publications WHERE slug = ?),
          estado = (SELECT estado FROM profile_publications WHERE slug = ?),
          servicios = (SELECT servicios FROM profile_publications WHERE slug = ?),
+         tags = (SELECT tags FROM profile_publications WHERE slug = ?),
          description = (SELECT description FROM profile_publications WHERE slug = ?),
          website = (SELECT website FROM profile_publications WHERE slug = ?),
          tier = (SELECT tier FROM profile_publications WHERE slug = ?),
@@ -86,7 +88,7 @@ export async function rejectPublishedRevision(env, slug) {
          SELECT 1 FROM profile_publications WHERE slug = ?
        )`,
   )
-    .bind(...Array(12).fill(slug), slug, slug)
+    .bind(...Array(13).fill(slug), slug, slug)
     .run();
 }
 

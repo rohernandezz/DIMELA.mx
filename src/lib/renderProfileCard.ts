@@ -49,9 +49,20 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
     )
     .join("");
 
+  const tagPills = (profile.tags || [])
+    .map(
+      (tag) =>
+        `<a href="/directorio/?q=${encodeURIComponent(tag)}" class="relative z-10 rounded border border-dashed border-dm-offblack/25 bg-white px-2 py-0.5 text-[11px] text-dm-offblack/65 hover:border-dm-offblack/45 hover:text-dm-offblack">${escapeHtml(tag)}</a>`,
+    )
+    .join("");
+
   const siteHref = profile.website ? websiteHref(profile.website) : "";
   const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
   const site = siteHref ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel) : "";
+
+  const facetRow = chips || tagPills
+    ? `<div class="mt-auto flex min-h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">${chips}${tagPills}</div>`
+    : `<div class="mt-auto h-12 shrink-0"></div>`;
 
   return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-profile-theme="${escapeHtml(profile.slug)}" data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
   ${proBadge}
@@ -68,7 +79,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
       </div>
     </header>
     <p class="bio-lead line-clamp-3 shrink-0 text-sm font-medium leading-relaxed text-dm-offblack/85">${lead}</p>
-    <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">${chips}</div>
+    ${facetRow}
   </div>
   <a href="${href}" class="absolute inset-0 z-0" aria-hidden="true" tabindex="-1"></a>
 </article>`;
