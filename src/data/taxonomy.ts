@@ -49,3 +49,27 @@ export const SERVICIOS = [
 ] as const;
 
 export type Servicio = (typeof SERVICIOS)[number];
+
+const SERVICIO_SET = new Set<string>(SERVICIOS);
+
+export function isServicio(value: string): value is Servicio {
+  return SERVICIO_SET.has(value);
+}
+
+/**
+ * Keep only allowlisted servicios, dedupe, preserve caller order.
+ * Array order is the display order on cards and detail pages.
+ * Keep worker/taxonomy.js in sync.
+ */
+export function normalizeServicios(raw: unknown): Servicio[] {
+  if (!Array.isArray(raw)) return [];
+  const out: Servicio[] = [];
+  const seen = new Set<string>();
+  for (const item of raw) {
+    const s = String(item || "").trim();
+    if (!isServicio(s) || seen.has(s)) continue;
+    seen.add(s);
+    out.push(s);
+  }
+  return out;
+}

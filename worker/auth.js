@@ -8,6 +8,7 @@ import { sendMagicLinkEmail } from "./email.js";
 import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
 import { markProfileDraftForEdit } from "./publications.js";
 import { normalizeProfileTags } from "./tags.js";
+import { normalizeServicios } from "./taxonomy.js";
 
 export { DEMO_ACCOUNTS };
 
@@ -652,9 +653,7 @@ export async function handleMeProfilePut(request, env) {
   const estado = String(body.estado || "").trim();
   const website = body.website ? String(body.website).trim() : null;
   const description = sanitizeBio(body.description || "");
-  const servicios = Array.isArray(body.servicios)
-    ? body.servicios.map(String)
-    : [];
+  const servicios = normalizeServicios(body.servicios);
   const tags = normalizeProfileTags(body.tags);
 
   if (!name || !estado) {
