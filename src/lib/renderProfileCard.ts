@@ -52,7 +52,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const tagPills = (profile.tags || [])
     .map(
       (tag) =>
-        `<a href="/directorio/?q=${encodeURIComponent(tag)}" class="relative z-10 rounded border border-dashed border-dm-offblack/25 bg-white px-1.5 py-0.5 text-[10px] text-dm-offblack/65 hover:border-dm-offblack/45 hover:text-dm-offblack">${escapeHtml(tag)}</a>`,
+        `<a href="/directorio/?q=${encodeURIComponent(tag)}" class="relative z-10 rounded border border-dm-offblack/15 bg-white px-1.5 py-0.5 text-[10px] text-dm-offblack/65 hover:border-dm-offblack/35 hover:text-dm-offblack">${escapeHtml(tag)}</a>`,
     )
     .join("");
 
