@@ -73,14 +73,35 @@ const servicios = [...SERVICIOS];
             <div
               data-estado-panel
               hidden
-              class="absolute top-full left-0 z-30 mt-1 max-h-64 w-full min-w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+              class="absolute top-full left-0 z-30 mt-1 w-full min-w-56 rounded border border-dm-offblack/20 bg-white shadow-lg"
             >
-              {estados.map((estado) => (
-                <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
-                  <input type="checkbox" data-estado-option value={estado} class="rounded" />
-                  <span>{estado}</span>
-                </label>
-              ))}
+              <div class="sticky top-0 border-b border-dm-offblack/10 bg-white p-1.5">
+                <input
+                  type="text"
+                  data-estado-search
+                  placeholder="Filtrar por estado…"
+                  autocomplete="off"
+                  class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 text-xs outline-none focus:border-dm-offblack/50"
+                />
+              </div>
+              <div class="max-h-56 overflow-auto py-1" data-estado-options>
+                {estados.map((estado) => (
+                  <label
+                    data-estado-row
+                    class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite"
+                  >
+                    <input type="checkbox" data-estado-option value={estado} class="rounded" />
+                    <span>{estado}</span>
+                  </label>
+                ))}
+                <p
+                  data-estado-noresults
+                  hidden
+                  class="px-2.5 py-2 text-xs text-dm-offblack/45"
+                >
+                  Sin coincidencias
+                </p>
+              </div>
             </div>
           </div>
         )
@@ -150,14 +171,35 @@ const servicios = [...SERVICIOS];
             <div
               data-estado-panel
               hidden
-              class="mt-1 max-h-40 overflow-auto rounded border border-dm-offblack/20 bg-white py-1"
+              class="mt-1 rounded border border-dm-offblack/20 bg-white"
             >
-              {estados.map((estado) => (
-                <label class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite">
-                  <input type="checkbox" data-estado-option value={estado} class="rounded" />
-                  <span>{estado}</span>
-                </label>
-              ))}
+              <div class="sticky top-0 border-b border-dm-offblack/10 bg-white p-1.5">
+                <input
+                  type="text"
+                  data-estado-search
+                  placeholder="Filtrar por estado…"
+                  autocomplete="off"
+                  class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-2.5 py-2 text-sm outline-none focus:border-dm-offblack/50"
+                />
+              </div>
+              <div class="max-h-40 overflow-auto py-1" data-estado-options>
+                {estados.map((estado) => (
+                  <label
+                    data-estado-row
+                    class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite"
+                  >
+                    <input type="checkbox" data-estado-option value={estado} class="rounded" />
+                    <span>{estado}</span>
+                  </label>
+                ))}
+                <p
+                  data-estado-noresults
+                  hidden
+                  class="px-3 py-2 text-sm text-dm-offblack/45"
+                >
+                  Sin coincidencias
+                </p>
+              </div>
             </div>
           </div>
         )
@@ -601,10 +643,6 @@ const servicios = [...SERVICIOS];
           : "No hay perfiles en el directorio.";
       }
     }
-
-    document.querySelectorAll<HTMLElement>("[data-taxonomy-count]").forEach((el) => {
-      if (!hasFilters(effective, root)) el.textContent = String(visible);
-    });
   }
 
   function paintGrid(results: SearchableProfile[]) {
@@ -765,9 +803,34 @@ const servicios = [...SERVICIOS];
       }, 100);
     });
 
+    const normalizeText = (s: string) =>
+      s
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+
     root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
       const toggle = wrap.querySelector<HTMLButtonElement>("[data-estado-toggle]");
       const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
+      const search = wrap.querySelector<HTMLInputElement>("[data-estado-search]");
+      const rows = Array.from(wrap.querySelectorAll<HTMLElement>("[data-estado-row]"));
+      const noResults = wrap.querySelector<HTMLElement>("[data-estado-noresults]");
+
+      const runSearch = () => {
+        const q = normalizeText((search?.value || "").trim());
+        let visible = 0;
+        rows.forEach((row) => {
+          const opt = row.querySelector<HTMLInputElement>("[data-estado-option]");
+          const name = opt?.value || "";
+          const match = !q || normalizeText(name).includes(q);
+          row.hidden = !match;
+          if (match) visible += 1;
+        });
+        if (noResults) noResults.hidden = visible > 0;
+      };
+
+      search?.addEventListener("input", runSearch);
+
       toggle?.addEventListener("click", (e) => {
         e.stopPropagation();
         if (!panel || !toggle) return;
@@ -780,6 +843,13 @@ const servicios = [...SERVICIOS];
         });
         panel.hidden = !willOpen;
         toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        if (willOpen && search) {
+          if (search.value) {
+            search.value = "";
+            runSearch();
+          }
+          requestAnimationFrame(() => search.focus());
+        }
       });
     });
 
