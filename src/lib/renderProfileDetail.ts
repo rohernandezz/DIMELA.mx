@@ -5,7 +5,16 @@ import { toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 
-export function renderProfileDetailHtml(profile: SearchableProfile): string {
+const STATUS_PREVIEW_LABEL: Record<string, string> = {
+  draft: "Borrador",
+  pending_review: "En revisión",
+  rejected: "Rechazado",
+};
+
+export function renderProfileDetailHtml(
+  profile: SearchableProfile,
+  opts: { preview?: boolean } = {},
+): string {
   const isPro = profile.tier === "pro";
   const name = escapeHtml(profile.name);
   const estado = escapeHtml(profile.estado);
@@ -39,7 +48,13 @@ export function renderProfileDetailHtml(profile: SearchableProfile): string {
     ? `<p class="mb-8"><a href="${website}" class="text-dm-offblack underline underline-offset-2 hover:opacity-70" rel="noopener noreferrer" target="_blank">${websiteLabel}</a></p>`
     : "";
 
-  return `<p class="mb-4 text-sm text-dm-offblack/50">
+  const statusKey = profile.status || "";
+  const previewBanner =
+    opts.preview && statusKey && statusKey !== "published"
+      ? `<p class="mb-4 rounded border border-dm-offblack/15 bg-dm-offblack/[0.04] px-3 py-2 text-sm text-dm-offblack/70" role="status">Vista previa · ${escapeHtml(STATUS_PREVIEW_LABEL[statusKey] || statusKey)} — no es público.</p>`
+      : "";
+
+  return `${previewBanner}<p class="mb-4 text-sm text-dm-offblack/50">
       <a href="/" class="hover:underline">Inicio</a>
       <span class="mx-1.5" aria-hidden="true">›</span>
       <a href="/directorio/" class="hover:underline">Directorio</a>

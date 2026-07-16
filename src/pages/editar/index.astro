@@ -198,7 +198,9 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
         <section class="space-y-4" aria-labelledby="editor-media">
           <div>
             <h2 id="editor-media" class="text-lg tracking-wide">Medios</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">Portada y avatar → R2 próximamente.</p>
+            <p class="mt-1 text-sm text-dm-offblack/60">
+              Portada y avatar se guardan en R2. Guarda el borrador al menos una vez antes de subir.
+            </p>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
@@ -212,13 +214,14 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
                 <div class="relative z-10 w-full bg-gradient-to-t from-dm-offblack/50 to-transparent p-3">
                   <button
                     type="button"
-                    class="rounded border border-white/40 bg-white/90 px-2.5 py-1 text-xs text-dm-offblack"
+                    class="rounded border border-white/40 bg-white/90 px-2.5 py-1 text-xs text-dm-offblack disabled:opacity-50"
                     data-action="upload-cover"
                   >
                     Subir portada
                   </button>
                 </div>
               </div>
+              <p class="text-[11px] text-dm-offblack/50">JPEG, PNG, WebP o GIF · máx. 5 MB</p>
             </div>
             <div class="space-y-2">
               <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
@@ -226,17 +229,32 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
               </p>
               <div
                 class="flex aspect-square max-w-[12rem] flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dm-offblack/25 bg-white p-4"
+                data-avatar-preview
               >
+                <div
+                  class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-dm-blue text-sm text-dm-offblack/40"
+                  data-avatar-fallback
+                >
+                  Aa
+                </div>
                 <button
                   type="button"
-                  class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80"
+                  class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80 disabled:opacity-50"
                   data-action="upload-avatar"
                 >
                   Subir avatar
                 </button>
               </div>
+              <p class="text-[11px] text-dm-offblack/50">JPEG, PNG, WebP o GIF · máx. 2 MB</p>
             </div>
           </div>
+          <input
+            type="file"
+            class="sr-only"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            data-upload-input
+            tabindex="-1"
+          />
         </section>
 
         <section class="space-y-4" aria-labelledby="editor-bio">
@@ -371,7 +389,10 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     if (badge) badge.textContent = STATUS_LABEL[status] || status;
 
     const pub = document.querySelector<HTMLAnchorElement>("[data-public-link]");
-    if (pub) pub.href = slug ? `/directorio/${slug}/` : "/directorio/";
+    if (pub) {
+      pub.href = slug ? `/directorio/${slug}/` : "/directorio/";
+      pub.textContent = status === "published" ? "Vista pública" : "Vista previa";
+    }
 
     const cover = document.querySelector<HTMLElement>("[data-cover-preview]");
     if (cover) {
@@ -383,6 +404,23 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
         img.dataset.coverImg = "1";
         img.className = "absolute inset-0 h-full w-full object-cover";
         cover.prepend(img);
+      }
+    }
+
+    const avatarWrap = document.querySelector<HTMLElement>("[data-avatar-preview]");
+    if (avatarWrap) {
+      avatarWrap.querySelector("img[data-avatar-img]")?.remove();
+      const fallback = avatarWrap.querySelector<HTMLElement>("[data-avatar-fallback]");
+      if (profile?.avatar) {
+        if (fallback) fallback.hidden = true;
+        const img = document.createElement("img");
+        img.src = profile.avatar;
+        img.alt = "";
+        img.dataset.avatarImg = "1";
+        img.className = "h-20 w-20 rounded-full object-cover ring-2 ring-dm-offblack/10";
+        avatarWrap.insertBefore(img, avatarWrap.firstChild);
+      } else if (fallback) {
+        fallback.hidden = false;
       }
     }
 
@@ -460,6 +498,54 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     toast("Sesión cerrada.");
   }
 
+  let pendingUploadKind: "cover" | "avatar" | null = null;
+
+  function setUploadBusy(busy: boolean) {
+    document.querySelectorAll<HTMLButtonElement>("[data-action='upload-cover'], [data-action='upload-avatar']").forEach(
+      (btn) => {
+        btn.disabled = busy;
+      },
+    );
+  }
+
+  function pickUpload(kind: "cover" | "avatar") {
+    const input = document.querySelector<HTMLInputElement>("[data-upload-input]");
+    if (!input) return;
+    pendingUploadKind = kind;
+    input.value = "";
+    input.click();
+  }
+
+  async function uploadSelectedFile(file: File) {
+    const kind = pendingUploadKind;
+    pendingUploadKind = null;
+    if (!kind) return;
+
+    setUploadBusy(true);
+    toast(kind === "cover" ? "Subiendo portada…" : "Subiendo avatar…");
+    try {
+      const body = new FormData();
+      body.set("kind", kind);
+      body.set("file", file, file.name || `${kind}.jpg`);
+      const res = await fetch("/api/me/profile/upload", {
+        method: "POST",
+        credentials: "same-origin",
+        body,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        toast(data.error || "No se pudo subir la imagen.");
+        return;
+      }
+      fillProfile(data.profile);
+      toast(kind === "cover" ? "Portada actualizada." : "Avatar actualizado.");
+    } catch {
+      toast("API no disponible. Usa `wrangler dev` (proxy /api).");
+    } finally {
+      setUploadBusy(false);
+    }
+  }
+
   async function loadSession() {
     try {
       const res = await fetch("/api/auth/me", { credentials: "same-origin" });
@@ -533,11 +619,18 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           if (action === "save") void saveDraft();
           if (action === "submit") void submitReview();
           if (action === "logout") void logout();
-          if (action === "upload-cover" || action === "upload-avatar") {
-            toast("Subida a R2 — próximamente.");
-          }
+          if (action === "upload-cover") pickUpload("cover");
+          if (action === "upload-avatar") pickUpload("avatar");
         });
       });
+      const uploadInput = document.querySelector<HTMLInputElement>("[data-upload-input]");
+      if (uploadInput && !uploadInput.dataset.ready) {
+        uploadInput.dataset.ready = "1";
+        uploadInput.addEventListener("change", () => {
+          const file = uploadInput.files?.[0];
+          if (file) void uploadSelectedFile(file);
+        });
+      }
     }
 
     void loadSession();

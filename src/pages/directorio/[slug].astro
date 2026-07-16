@@ -1,8 +1,10 @@
 ---
 /**
  * Profile detail — content from /api/profile (D1); paths from emitted profiles.json.
+ * Unknown D1 slugs are served via Worker rewrite → /directorio/ver/ (same client shell).
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProfileDetailClient from "../../components/ProfileDetailClient.astro";
 import { readEmittedProfiles } from "../../lib/emittedProfiles";
 
 export function getStaticPaths() {
@@ -15,35 +17,5 @@ const { slug } = Astro.params;
 ---
 
 <BaseLayout title="Perfil — DIMELA.mx" headerVariant="simple" homeHref="/">
-  <article class="mx-auto max-w-3xl" data-profile-detail data-slug={slug}>
-    <p class="text-sm text-dm-offblack/55" data-profile-detail-status>Cargando perfil…</p>
-  </article>
+  <ProfileDetailClient slug={slug} />
 </BaseLayout>
-
-<script>
-  import { fetchProfile } from "../../lib/fetchDirectory";
-  import { renderProfileDetailHtml } from "../../lib/renderProfileDetail";
-
-  async function init() {
-    const host = document.querySelector<HTMLElement>("[data-profile-detail]");
-    if (!host) return;
-    const slug = host.dataset.slug || "";
-    const status = host.querySelector<HTMLElement>("[data-profile-detail-status]");
-
-    try {
-      const profile = await fetchProfile(slug);
-      if (!profile) {
-        if (status) status.textContent = "Perfil no encontrado.";
-        document.title = "No encontrado — DIMELA.mx";
-        return;
-      }
-      host.innerHTML = renderProfileDetailHtml(profile);
-      document.title = `${profile.name} — DIMELA.mx`;
-    } catch {
-      if (status) status.textContent = "No se pudo cargar el perfil.";
-    }
-  }
-
-  init();
-  document.addEventListener("astro:page-load", init);
-</script>

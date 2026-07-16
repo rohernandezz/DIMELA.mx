@@ -19,6 +19,8 @@ export type SearchableProfile = {
   avatar: string | null;
   website?: string;
   featured?: boolean;
+  /** Present for owner/admin preview of unpublished profiles. */
+  status?: string;
 };
 
 export function parseSearchParams(params: URLSearchParams): SearchQuery {

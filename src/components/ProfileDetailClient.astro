@@ -1,0 +1,63 @@
+---
+/**
+ * Client-hydrated profile detail shell.
+ * Slug comes from the URL path (so Worker can serve this HTML for any D1 slug).
+ */
+interface Props {
+  /** Optional build-time slug; client prefers pathname. */
+  slug?: string;
+}
+
+const { slug = "" } = Astro.props;
+---
+
+<article class="mx-auto max-w-3xl" data-profile-detail data-slug={slug || undefined}>
+  <p class="text-sm text-dm-offblack/55" data-profile-detail-status>Cargando perfil…</p>
+</article>
+
+<script>
+  import { fetchProfile } from "../lib/fetchDirectory";
+  import { renderProfileDetailHtml } from "../lib/renderProfileDetail";
+
+  function slugFromPath(): string {
+    const m = location.pathname.match(/^\/directorio\/([^/]+)\/?$/);
+    if (!m?.[1] || m[1] === "ver") return "";
+    try {
+      return decodeURIComponent(m[1]);
+    } catch {
+      return m[1];
+    }
+  }
+
+  async function init() {
+    const host = document.querySelector<HTMLElement>("[data-profile-detail]");
+    if (!host) return;
+    const slug = slugFromPath() || host.dataset.slug || "";
+    const status = host.querySelector<HTMLElement>("[data-profile-detail-status]");
+
+    if (!slug) {
+      if (status) status.textContent = "Perfil no encontrado.";
+      document.title = "No encontrado — DIMELA.mx";
+      return;
+    }
+
+    try {
+      const result = await fetchProfile(slug);
+      if (!result) {
+        if (status) status.textContent = "Perfil no encontrado.";
+        document.title = "No encontrado — DIMELA.mx";
+        return;
+      }
+      const { profile, preview } = result;
+      host.innerHTML = renderProfileDetailHtml(profile, { preview });
+      document.title = preview
+        ? `Vista previa · ${profile.name} — DIMELA.mx`
+        : `${profile.name} — DIMELA.mx`;
+    } catch {
+      if (status) status.textContent = "No se pudo cargar el perfil.";
+    }
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

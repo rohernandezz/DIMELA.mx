@@ -27,20 +27,33 @@ export async function fetchSearchResults(
   }
 }
 
-export async function fetchProfile(slug: string): Promise<SearchableProfile | null> {
+export type FetchProfileResult = {
+  profile: SearchableProfile;
+  /** True when owner/admin is viewing an unpublished profile. */
+  preview?: boolean;
+};
+
+export async function fetchProfile(slug: string): Promise<FetchProfileResult | null> {
   try {
-    const res = await fetch(`/api/profile?slug=${encodeURIComponent(slug)}`);
+    const res = await fetch(`/api/profile?slug=${encodeURIComponent(slug)}`, {
+      credentials: "same-origin",
+    });
     // Astro dev has no Worker — /api/* is an HTML 404. Fall through to profiles.json.
     if (!isJsonResponse(res)) throw new Error("api unavailable");
 
-    const data = (await res.json()) as { ok?: boolean; profile?: SearchableProfile };
+    const data = (await res.json()) as {
+      ok?: boolean;
+      profile?: SearchableProfile;
+      preview?: boolean;
+    };
     if (res.status === 404 || data.ok === false) return null;
     if (!res.ok || !data.profile) throw new Error(`profile ${res.status}`);
-    return data.profile;
+    return { profile: data.profile, preview: Boolean(data.preview) };
   } catch {
     try {
       const profiles = await loadProfilesJson();
-      return profiles.find((p) => p.slug === slug) ?? null;
+      const profile = profiles.find((p) => p.slug === slug);
+      return profile ? { profile } : null;
     } catch {
       return null;
     }
