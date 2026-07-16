@@ -1,8 +1,8 @@
 ---
 /**
  * DirectoryFilterBar — compact mock.
- * Servicios: chips (≤10). Estados: select (32 + Fuera de México).
- * OR within servicios, AND with estado + text. URL: ?q=&servicio=&estado=
+ * Servicios: chips. Estados: multi-select dropdown (OR within facet).
+ * URL: ?q=&servicio=&estado=CDMX,Puebla
  */
 interface Props {
   servicios: string[];
@@ -30,16 +30,42 @@ const { servicios, estados } = Astro.props;
       />
     </label>
 
-    <label class="flex items-center gap-1.5 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-      Ubicación
-      <select
-        data-filter-estado
-        class="max-w-[11rem] rounded border border-dm-offblack/20 bg-dm-blue/50 px-1.5 py-1 text-[11px] font-normal normal-case tracking-normal text-dm-offblack outline-none focus:border-dm-offblack/50"
+    <div class="relative" data-estado-multi>
+      <button
+        type="button"
+        data-estado-toggle
+        class="flex max-w-[14rem] items-center gap-1 rounded border border-dm-offblack/20 bg-dm-blue/50 px-2 py-1 text-left text-[11px] text-dm-offblack"
+        aria-expanded="false"
+        aria-haspopup="listbox"
       >
-        <option value="">Todo México</option>
-        {estados.map((estado) => <option value={estado}>{estado}</option>)}
-      </select>
-    </label>
+        <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          >Ubicación</span
+        >
+        <span data-estado-label class="truncate font-normal">Todo México</span>
+        <span aria-hidden="true" class="text-dm-offblack/40">▾</span>
+      </button>
+      <div
+        data-estado-panel
+        hidden
+        class="absolute top-full left-0 z-30 mt-1 max-h-64 w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+        role="listbox"
+        aria-multiselectable="true"
+      >
+        {
+          estados.map((estado) => (
+            <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1 text-xs text-dm-offblack hover:bg-dm-offwhite">
+              <input
+                type="checkbox"
+                data-estado-option
+                value={estado}
+                class="rounded border-dm-offblack/30"
+              />
+              <span>{estado}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
 
     <p class="text-xs text-dm-offblack/50" data-filter-count aria-live="polite"></p>
     <button
@@ -87,8 +113,7 @@ const { servicios, estados } = Astro.props;
   type FilterState = {
     q: string;
     servicio: Set<string>;
-    /** Single estado for the select (32 options); empty = all */
-    estado: string;
+    estado: Set<string>;
   };
 
   function parseList(param: string | null): string[] {
@@ -101,11 +126,10 @@ const { servicios, estados } = Astro.props;
 
   function readUrl(): FilterState {
     const params = new URLSearchParams(window.location.search);
-    const estados = parseList(params.get("estado"));
     return {
       q: (params.get("q") || "").trim(),
       servicio: new Set(parseList(params.get("servicio"))),
-      estado: estados[0] || "",
+      estado: new Set(parseList(params.get("estado"))),
     };
   }
 
@@ -113,14 +137,22 @@ const { servicios, estados } = Astro.props;
     const params = new URLSearchParams();
     if (state.q) params.set("q", state.q);
     if (state.servicio.size) params.set("servicio", [...state.servicio].join(","));
-    if (state.estado) params.set("estado", state.estado);
+    if (state.estado.size) params.set("estado", [...state.estado].join(","));
     const qs = params.toString();
     const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
     window.history.replaceState({}, "", next);
   }
 
   function hasFilters(state: FilterState) {
-    return Boolean(state.q || state.servicio.size || state.estado);
+    return Boolean(state.q || state.servicio.size || state.estado.size);
+  }
+
+  function estadoLabel(state: FilterState) {
+    if (!state.estado.size) return "Todo México";
+    const list = [...state.estado];
+    if (list.length === 1) return list[0];
+    if (list.length === 2) return `${list[0]}, ${list[1]}`;
+    return `${list[0]} +${list.length - 1}`;
   }
 
   function matches(card: HTMLElement, state: FilterState) {
@@ -144,7 +176,8 @@ const { servicios, estados } = Astro.props;
       if (!hit) return false;
     }
 
-    if (state.estado && estado !== state.estado) return false;
+    // OR within estados
+    if (state.estado.size && !state.estado.has(estado)) return false;
 
     return true;
   }
@@ -160,17 +193,18 @@ const { servicios, estados } = Astro.props;
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
       const value = chip.dataset.value || "";
-      const active = state.servicio.has(value);
-      chip.setAttribute("aria-pressed", active ? "true" : "false");
+      chip.setAttribute("aria-pressed", state.servicio.has(value) ? "true" : "false");
     });
+
+    root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
+      box.checked = state.estado.has(box.value);
+    });
+
+    const label = root.querySelector<HTMLElement>("[data-estado-label]");
+    if (label) label.textContent = estadoLabel(state);
 
     const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
     if (qInput && qInput.value !== state.q) qInput.value = state.q;
-
-    const estadoSelect = root.querySelector<HTMLSelectElement>("[data-filter-estado]");
-    if (estadoSelect && estadoSelect.value !== state.estado) {
-      estadoSelect.value = state.estado;
-    }
 
     const clearBtn = root.querySelector<HTMLButtonElement>("[data-filter-clear]");
     if (clearBtn) clearBtn.disabled = !hasFilters(state);
@@ -184,12 +218,21 @@ const { servicios, estados } = Astro.props;
     }
   }
 
+  function setEstadoOpen(root: HTMLElement, open: boolean) {
+    const panel = root.querySelector<HTMLElement>("[data-estado-panel]");
+    const toggle = root.querySelector<HTMLButtonElement>("[data-estado-toggle]");
+    if (!panel || !toggle) return;
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
   function init() {
     const root = document.querySelector<HTMLElement>("[data-directory-filter]");
     if (!root) return;
 
     let state = readUrl();
     apply(root, state);
+    setEstadoOpen(root, false);
 
     const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
     let debounce: number | undefined;
@@ -214,17 +257,34 @@ const { servicios, estados } = Astro.props;
       });
     });
 
-    root.querySelector<HTMLSelectElement>("[data-filter-estado]")?.addEventListener("change", (e) => {
-      const value = (e.target as HTMLSelectElement).value;
-      state = { ...state, estado: value };
-      writeUrl(state);
-      apply(root, state);
+    root.querySelector<HTMLButtonElement>("[data-estado-toggle]")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const toggle = e.currentTarget as HTMLButtonElement;
+      const open = toggle.getAttribute("aria-expanded") === "true";
+      setEstadoOpen(root, !open);
+    });
+
+    root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
+      box.addEventListener("change", () => {
+        const next = new Set(state.estado);
+        if (box.checked) next.add(box.value);
+        else next.delete(box.value);
+        state = { ...state, estado: next };
+        writeUrl(state);
+        apply(root, state);
+      });
     });
 
     root.querySelector<HTMLButtonElement>("[data-filter-clear]")?.addEventListener("click", () => {
-      state = { q: "", servicio: new Set(), estado: "" };
+      state = { q: "", servicio: new Set(), estado: new Set() };
       writeUrl(state);
       apply(root, state);
+      setEstadoOpen(root, false);
+    });
+
+    document.addEventListener("click", (e) => {
+      const wrap = root.querySelector("[data-estado-multi]");
+      if (wrap && !wrap.contains(e.target as Node)) setEstadoOpen(root, false);
     });
   }
 
