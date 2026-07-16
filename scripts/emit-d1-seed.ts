@@ -21,8 +21,10 @@ const lines = [
 ];
 
 for (const p of MOCK_PROFILES) {
+  const customCss = p.customCss?.trim() ? sqlStr(p.customCss) : "NULL";
+  const customFonts = p.customFonts?.length ? sqlStr(JSON.stringify(p.customFonts)) : "'[]'";
   lines.push(
-    `INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, status) VALUES (${[
+    `INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES (${[
       sqlStr(p.slug),
       sqlStr(p.name),
       sqlStr(p.estado),
@@ -33,6 +35,8 @@ for (const p of MOCK_PROFILES) {
       p.featured ? "1" : "0",
       sqlStr(p.cover),
       sqlStr(p.avatar),
+      customCss,
+      customFonts,
       sqlStr("published"),
     ].join(", ")});`,
   );
