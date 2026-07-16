@@ -351,6 +351,7 @@ const servicios = [...SERVICIOS];
 <script>
   import { filterProfiles, type SearchableProfile } from "../lib/search";
   import { renderProfileCardHtml } from "../lib/renderProfileCard";
+  import { injectDirectoryThemes } from "../lib/profileTheme";
 
   type FilterState = {
     q: string;
@@ -638,6 +639,7 @@ const servicios = [...SERVICIOS];
     const grid = document.querySelector<HTMLElement>("[data-profile-grid]");
     if (!grid) return;
     grid.innerHTML = results.map((profile) => renderProfileCardHtml(profile)).join("");
+    injectDirectoryThemes(results);
   }
 
   async function loadResults(root: HTMLElement, state: FilterState): Promise<SearchableProfile[]> {

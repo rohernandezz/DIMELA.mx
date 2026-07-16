@@ -53,7 +53,7 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
   const site = siteHref ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel) : "";
 
-  return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
+  return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-profile-theme="${escapeHtml(profile.slug)}" data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
   ${proBadge}
   <div class="relative aspect-[16/10] shrink-0 overflow-hidden bg-dm-blue">${cover}</div>
   <div class="flex min-h-0 flex-1 flex-col gap-3 p-4">

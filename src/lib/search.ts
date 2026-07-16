@@ -32,6 +32,16 @@ export type SearchableProfile = {
   /** Present for owner/admin preview of unpublished profiles. */
   status?: string;
   galleries?: ProfileGallery[];
+  /** Pro — scoped CSS for card + detail */
+  customCss?: string;
+  customFonts?: ProfileFont[];
+};
+
+export type ProfileFont = {
+  id: string;
+  family: string;
+  url: string;
+  format: string;
 };
 
 export function parseSearchParams(params: URLSearchParams): SearchQuery {
