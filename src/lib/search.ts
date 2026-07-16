@@ -1,6 +1,4 @@
-/**
- * Shared filter shape for client + /api/search (mock today, D1 later).
- */
+import { bioPlainText } from "./bio";
 
 export type SearchQuery = {
   q: string;
@@ -59,7 +57,7 @@ export function filterProfiles<T extends SearchableProfile>(
 
   return profiles.filter((p) => {
     if (q) {
-      const hay = `${p.name} ${p.description}`.toLowerCase();
+      const hay = `${p.name} ${bioPlainText(p.description)}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     if (servicios.size && ![...servicios].some((s) => p.servicios.includes(s))) {

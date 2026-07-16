@@ -12,6 +12,7 @@ import {
   json,
   mapProfileRow,
   PROFILE_COLUMNS,
+  bioPlainText,
 } from "./worker/auth.js";
 import { handleAdminDecide, handleAdminQueue, handleAdminProfilePatch } from "./worker/admin.js";
 import { handleMeProfileUpload, handleMediaGet, handleMediaQuotaGet } from "./worker/media.js";
@@ -38,7 +39,7 @@ function filterProfiles(profiles, query) {
 
   return profiles.filter((p) => {
     if (q) {
-      const hay = `${p.name} ${p.description}`.toLowerCase();
+      const hay = `${p.name} ${bioPlainText(p.description)}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     if (servicios.size && ![...servicios].some((s) => (p.servicios || []).includes(s))) {

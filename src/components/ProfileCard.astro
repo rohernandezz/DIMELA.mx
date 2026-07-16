@@ -5,12 +5,17 @@
  */
 import type { MockProfile } from "../data/mockProfiles";
 import { estadoSlug } from "../lib/slugs";
+import { bioPlainText } from "../lib/bio";
+import { websiteHref, websiteLabel, websiteCapsuleClass } from "../lib/website";
 
 interface Props {
   profile: MockProfile;
 }
 
 const { profile } = Astro.props;
+const descriptionPlain = bioPlainText(profile.description);
+const siteHref = profile.website ? websiteHref(profile.website) : "";
+const siteLabel = profile.website ? websiteLabel(profile.website) : "";
 const isPro = profile.tier === "pro";
 const href = `/directorio/${profile.slug}/`;
 const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
@@ -26,7 +31,7 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
   data-profile-card
   data-slug={profile.slug}
   data-name={profile.name}
-  data-description={profile.description}
+  data-description={descriptionPlain}
   data-estado={profile.estado}
   data-servicios={JSON.stringify(profile.servicios)}
 >
@@ -91,17 +96,32 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
         >
           {profile.name}
         </a>
-        <a
-          href={estadoHref}
-          class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline"
-        >
-          {profile.estado}
-        </a>
+        <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <a
+            href={estadoHref}
+            class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline"
+          >
+            {profile.estado}
+          </a>
+          {
+            siteHref && (
+              <a
+                href={siteHref}
+                class={websiteCapsuleClass}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span class="truncate">{siteLabel}</span>
+                <span aria-hidden="true" class="shrink-0 opacity-60">↗</span>
+              </a>
+            )
+          }
+        </div>
       </div>
     </header>
 
     <p class="line-clamp-2 shrink-0 text-sm leading-relaxed text-dm-offblack/75">
-      {profile.description}
+      {descriptionPlain}
     </p>
 
     <div class="mt-auto flex h-12 shrink-0 flex-wrap content-start gap-1.5 overflow-hidden pt-1">

@@ -4,6 +4,8 @@
  */
 import { toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
+import { bioPlainText } from "./bio";
+import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
 
 export function escapeHtml(value: string): string {
   return value
@@ -19,7 +21,8 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const estadoHref = `/estado/${toSlug(profile.estado)}/`;
   const name = escapeHtml(profile.name);
   const estado = escapeHtml(profile.estado);
-  const description = escapeHtml(profile.description || "");
+  const descriptionPlain = bioPlainText(profile.description || "");
+  const description = escapeHtml(descriptionPlain);
   const serviciosJson = escapeHtml(JSON.stringify(profile.servicios || []));
   const shell = isPro
     ? "border-dm-offblack/35 shadow-lg"
@@ -44,6 +47,10 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
     )
     .join("");
 
+  const siteHref = profile.website ? websiteHref(profile.website) : "";
+  const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
+  const site = siteHref ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel) : "";
+
   return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
   ${proBadge}
   <div class="relative aspect-[16/10] shrink-0 overflow-hidden bg-dm-blue">${cover}</div>
@@ -52,7 +59,10 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
       ${avatar}
       <div class="min-w-0">
         <a href="${href}" class="block truncate text-lg font-bold text-dm-offblack underline-offset-2 hover:underline">${name}</a>
-        <a href="${estadoHref}" class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline">${estado}</a>
+        <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <a href="${estadoHref}" class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline">${estado}</a>
+          ${site}
+        </div>
       </div>
     </header>
     <p class="line-clamp-2 shrink-0 text-sm leading-relaxed text-dm-offblack/75">${description}</p>

@@ -61,3 +61,24 @@ const { slug = "" } = Astro.props;
   init();
   document.addEventListener("astro:page-load", init);
 </script>
+
+<style is:global>
+  .profile-bio p {
+    margin: 0.35rem 0;
+  }
+  .profile-bio h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0.5rem 0 0.35rem;
+  }
+  .profile-bio ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0.35rem 0;
+  }
+  .profile-bio a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>

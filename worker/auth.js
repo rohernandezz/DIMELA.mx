@@ -305,6 +305,18 @@ export function sanitizeBio(html) {
     .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "");
 }
 
+export function bioPlainText(html) {
+  return sanitizeBio(html)
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<\/p>\s*/gi, " ")
+    .replace(/<\/h[1-6]>\s*/gi, " ")
+    .replace(/<li>/gi, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export async function handleMeProfilePut(request, env) {
   if (request.method !== "PUT" && request.method !== "PATCH") {
     return json({ ok: false, error: "Método no permitido." }, 405);

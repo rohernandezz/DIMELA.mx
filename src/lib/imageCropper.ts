@@ -119,8 +119,12 @@ export function openImageCropper(file: File, options: ImageCropperOptions = {}):
     heading.style.cssText =
       "margin:0 0 0.75rem;font-size:1.05rem;letter-spacing:0.02em;color:var(--color-dm-offblack,#383636);";
 
-    const viewport = document.createElement("div");
-    viewport.style.cssText = `position:relative;width:${VIEWPORT_PX}px;height:${VIEWPORT_PX}px;margin:0 auto;overflow:hidden;touch-action:none;cursor:grab;background:var(--color-dm-blue,#c5d4e8);border-radius:${mask === "circle" ? "9999px" : "0.375rem"};`;
+    const wrap = document.createElement("div");
+    wrap.style.cssText = `position:relative;width:${VIEWPORT_PX}px;height:${VIEWPORT_PX}px;margin:0 auto;touch-action:none;cursor:grab;`;
+
+    const clip = document.createElement("div");
+    clip.style.cssText =
+      "position:absolute;inset:0;border-radius:50%;overflow:hidden;clip-path:circle(50% at 50% 50%);isolation:isolate;";
 
     const imageEl = document.createElement("img");
     imageEl.alt = "";
@@ -128,11 +132,23 @@ export function openImageCropper(file: File, options: ImageCropperOptions = {}):
     imageEl.style.cssText =
       "position:absolute;left:50%;top:50%;max-width:none;user-select:none;pointer-events:none;transform-origin:center center;will-change:transform;";
 
+    const dim = document.createElement("div");
+    dim.setAttribute("aria-hidden", "true");
+    const radius = VIEWPORT_PX / 2;
+    dim.style.cssText = [
+      "pointer-events:none",
+      "position:absolute",
+      "inset:0",
+      `background:color-mix(in oklab,var(--color-dm-offblack,#383636) 45%,transparent)`,
+      `-webkit-mask-image:radial-gradient(circle at center,transparent ${radius - 1}px,black ${radius}px)`,
+      `mask-image:radial-gradient(circle at center,transparent ${radius - 1}px,black ${radius}px)`,
+    ].join(";");
+
     const ring = document.createElement("div");
     ring.setAttribute("aria-hidden", "true");
     ring.style.cssText =
       mask === "circle"
-        ? `pointer-events:none;position:absolute;inset:0;border-radius:9999px;box-shadow:0 0 0 9999px color-mix(in oklab,var(--color-dm-offblack,#383636) 45%,transparent),inset 0 0 0 2px color-mix(in oklab,white 70%,transparent);`
+        ? "pointer-events:none;position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px color-mix(in oklab,white 70%,transparent);"
         : "pointer-events:none;position:absolute;inset:0;border:2px solid color-mix(in oklab,white 70%,transparent);";
 
     const hint = document.createElement("p");
@@ -219,17 +235,17 @@ export function openImageCropper(file: File, options: ImageCropperOptions = {}):
       applyTransform();
     });
 
-    viewport.addEventListener("pointerdown", (e) => {
+    wrap.addEventListener("pointerdown", (e) => {
       dragging = true;
-      viewport.setPointerCapture(e.pointerId);
-      viewport.style.cursor = "grabbing";
+      wrap.setPointerCapture(e.pointerId);
+      wrap.style.cursor = "grabbing";
       dragStartX = e.clientX;
       dragStartY = e.clientY;
       panStartX = state.panX;
       panStartY = state.panY;
     });
 
-    viewport.addEventListener("pointermove", (e) => {
+    wrap.addEventListener("pointermove", (e) => {
       if (!dragging) return;
       state.panX = panStartX + (e.clientX - dragStartX);
       state.panY = panStartY + (e.clientY - dragStartY);
@@ -239,15 +255,15 @@ export function openImageCropper(file: File, options: ImageCropperOptions = {}):
     const endDrag = (e: PointerEvent) => {
       if (!dragging) return;
       dragging = false;
-      viewport.style.cursor = "grab";
+      wrap.style.cursor = "grab";
       try {
-        viewport.releasePointerCapture(e.pointerId);
+        wrap.releasePointerCapture(e.pointerId);
       } catch {
         /* ignore */
       }
     };
-    viewport.addEventListener("pointerup", endDrag);
-    viewport.addEventListener("pointercancel", endDrag);
+    wrap.addEventListener("pointerup", endDrag);
+    wrap.addEventListener("pointercancel", endDrag);
 
     img.onload = () => {
       imageEl.src = objectUrl;
@@ -259,12 +275,14 @@ export function openImageCropper(file: File, options: ImageCropperOptions = {}):
     img.onerror = () => finish(null);
 
     zoomLabel.appendChild(zoomInput);
-    viewport.appendChild(imageEl);
-    viewport.appendChild(ring);
+    clip.appendChild(imageEl);
+    wrap.appendChild(clip);
+    wrap.appendChild(dim);
+    wrap.appendChild(ring);
     actions.appendChild(cancelBtn);
     actions.appendChild(confirmBtn);
     panel.appendChild(heading);
-    panel.appendChild(viewport);
+    panel.appendChild(wrap);
     panel.appendChild(hint);
     panel.appendChild(zoomLabel);
     panel.appendChild(actions);

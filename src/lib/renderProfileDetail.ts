@@ -4,6 +4,8 @@
 import { toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
+import { renderBioHtml } from "./bio";
+import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
 
 const STATUS_PREVIEW_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -19,11 +21,9 @@ export function renderProfileDetailHtml(
   const name = escapeHtml(profile.name);
   const estado = escapeHtml(profile.estado);
   const estadoHref = `/estado/${toSlug(profile.estado)}/`;
-  const description = escapeHtml(profile.description || "");
-  const website = profile.website ? escapeHtml(profile.website) : "";
-  const websiteLabel = profile.website
-    ? escapeHtml(profile.website.replace(/^https?:\/\//, ""))
-    : "";
+  const descriptionHtml = renderBioHtml(profile.description || "");
+  const siteHref = profile.website ? websiteHref(profile.website) : "";
+  const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
 
   const cover = profile.cover
     ? `<div class="mb-6 aspect-[16/9] overflow-hidden rounded-md bg-dm-blue"><img src="${escapeHtml(profile.cover)}" alt="" class="h-full w-full object-cover" decoding="async" /></div>`
@@ -44,8 +44,12 @@ export function renderProfileDetailHtml(
     })
     .join("");
 
-  const site = website
-    ? `<p class="mb-8"><a href="${website}" class="text-dm-offblack underline underline-offset-2 hover:opacity-70" rel="noopener noreferrer" target="_blank">${websiteLabel}</a></p>`
+  const site = siteHref
+    ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel, "lg")
+    : "";
+
+  const servicesBlock = chips
+    ? `<div class="mb-8 flex flex-wrap gap-2">${chips}</div>`
     : "";
 
   const galleries = (profile.galleries || []).filter((g) => g.images?.length);
@@ -95,13 +99,15 @@ export function renderProfileDetailHtml(
           <h1 class="text-3xl font-bold tracking-tight">${name}</h1>
           ${proBadge}
         </div>
-        <p class="mt-1"><a href="${estadoHref}" class="text-dm-offblack/60 hover:underline">${estado}</a></p>
+        <div class="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+          <a href="${estadoHref}" class="text-sm text-dm-offblack/60 hover:underline">${estado}</a>
+          ${site}
+        </div>
       </div>
     </header>
-    <p class="mb-6 text-base leading-relaxed text-dm-offblack/80">${description}</p>
-    <div class="mb-8 flex flex-wrap gap-2">${chips}</div>
+    ${descriptionHtml ? `<div class="profile-bio mb-6 text-base leading-relaxed text-dm-offblack/80">${descriptionHtml}</div>` : ""}
+    ${servicesBlock}
     ${galleryHtml}
-    ${site}
     <p class="text-sm text-dm-offblack/45">
       <a href="/directorio/" class="hover:underline">← Volver al directorio</a>
     </p>`;
