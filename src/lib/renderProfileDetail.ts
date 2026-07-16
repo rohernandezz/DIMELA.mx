@@ -5,7 +5,7 @@ import { estadoSlug, toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 import { renderBioHtml } from "./bio";
-import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
+import { websiteHref, websiteLabel, websiteCapsuleHtml, profileTagPillClassLg } from "./website";
 
 const STATUS_PREVIEW_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -47,7 +47,7 @@ export function renderProfileDetailHtml(
   const tagPills = (profile.tags || [])
     .map((tag) => {
       const href = `/directorio/?q=${encodeURIComponent(tag)}`;
-      return `<a href="${href}" class="rounded border border-dm-offblack/15 bg-dm-offwhite/80 px-2 py-0.5 text-xs text-dm-offblack/65 hover:border-dm-offblack/35 hover:text-dm-offblack">${escapeHtml(tag)}</a>`;
+      return `<a href="${href}" class="${profileTagPillClassLg}">${escapeHtml(tag)}</a>`;
     })
     .join("");
 

@@ -6,7 +6,7 @@
 import type { MockProfile } from "../data/mockProfiles";
 import { estadoSlug } from "../lib/slugs";
 import { bioLeadPlainText, bioPlainText } from "../lib/bio";
-import { websiteHref, websiteLabel, websiteCapsuleClass } from "../lib/website";
+import { websiteHref, websiteLabel, websiteCapsuleClass, profileTagPillClass } from "../lib/website";
 
 interface Props {
   profile: MockProfile;
@@ -142,7 +142,7 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
             {(profile.tags || []).map((tag) => (
               <a
                 href={`/directorio/?q=${encodeURIComponent(tag)}`}
-                class="relative z-10 rounded border border-dm-offblack/15 bg-white px-1.5 py-0.5 text-[10px] text-dm-offblack/65 hover:border-dm-offblack/35 hover:text-dm-offblack"
+                class={profileTagPillClass}
               >
                 {tag}
               </a>
