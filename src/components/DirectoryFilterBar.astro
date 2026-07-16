@@ -60,10 +60,14 @@ const servicios = [...SERVICIOS];
 
       {/* Count: end of bar, before Limpiar / Filtros */}
       <p
-        class="shrink-0 text-xs text-dm-offblack/50 tabular-nums md:ml-1"
+        class="flex shrink-0 items-baseline gap-1.5 md:ml-1"
         data-filter-count
         aria-live="polite"
       >
+        <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          >Resultados</span
+        >
+        <span class="text-xs text-dm-offblack/60 tabular-nums" data-filter-count-value></span>
       </p>
 
       <button
@@ -110,7 +114,7 @@ const servicios = [...SERVICIOS];
           class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
           aria-expanded="false"
         >
-          <span data-estado-label>Todo México</span>
+          <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
           <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
         </button>
         <div
@@ -239,11 +243,105 @@ const servicios = [...SERVICIOS];
     return state.servicio.size + state.estado.size;
   }
 
-  function shortList(values: string[], empty: string) {
+  function estadoListLabel(values: string[], empty: string) {
     if (!values.length) return empty;
-    if (values.length === 1) return values[0];
-    if (values.length === 2) return `${values[0]}, ${values[1]}`;
-    return `${values[0]} +${values.length - 1}`;
+    return values.join(", ");
+  }
+
+  /** Full list when it fits; otherwise show as many names as fit, then +N. */
+  function fitEstadoLabel(label: HTMLElement, values: string[], empty: string) {
+    const full = estadoListLabel(values, empty);
+    label.title = values.length ? full : "";
+    label.textContent = full;
+    if (values.length <= 1) return;
+    if (label.scrollWidth <= label.clientWidth + 1) return;
+
+    let lo = 1;
+    let hi = values.length - 1;
+    let best = 1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      const remaining = values.length - mid;
+      label.textContent = `${values.slice(0, mid).join(", ")} +${remaining}`;
+      if (label.scrollWidth <= label.clientWidth + 1) {
+        best = mid;
+        lo = mid + 1;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    const remaining = values.length - best;
+    label.textContent = `${values.slice(0, best).join(", ")} +${remaining}`;
+  }
+
+  function syncEstadoLabels(root: HTMLElement, state: FilterState) {
+    const values = [...state.estado];
+    root.querySelectorAll<HTMLElement>("[data-estado-label]").forEach((label) => {
+      fitEstadoLabel(label, values, "Todo México");
+    });
+  }
+
+  function crumbSep() {
+    const sep = document.createElement("span");
+    sep.className = "text-dm-offwhite/35";
+    sep.setAttribute("aria-hidden", "true");
+    sep.textContent = "›";
+    return sep;
+  }
+
+  function crumbPipe() {
+    const sep = document.createElement("span");
+    sep.className = "text-dm-offwhite/40";
+    sep.setAttribute("aria-hidden", "true");
+    sep.textContent = "|";
+    return sep;
+  }
+
+  function crumbPill(label: string, facet: "estado" | "servicio" | "q", value: string) {
+    const wrap = document.createElement("span");
+    wrap.className = "active-crumb";
+    const text = document.createElement("span");
+    text.textContent = label;
+    text.title = label;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.removeFacet = facet;
+    btn.dataset.removeValue = value;
+    btn.setAttribute("aria-label", `Quitar ${label}`);
+    btn.textContent = "×";
+    wrap.append(text, btn);
+    return wrap;
+  }
+
+  function appendCrumbGroup(
+    nodes: Node[],
+    values: string[],
+    facet: "estado" | "servicio",
+  ) {
+    if (!values.length) return;
+    nodes.push(crumbSep());
+    values.forEach((value, i) => {
+      if (i > 0) nodes.push(crumbPipe());
+      nodes.push(crumbPill(value, facet, value));
+    });
+  }
+
+  function renderActiveCrumbs(state: FilterState) {
+    const host = document.querySelector<HTMLElement>("[data-active-crumbs]");
+    if (!host) return;
+    if (!hasFilters(state)) {
+      host.hidden = true;
+      host.replaceChildren();
+      return;
+    }
+    host.hidden = false;
+    const nodes: Node[] = [];
+    appendCrumbGroup(nodes, [...state.estado], "estado");
+    appendCrumbGroup(nodes, [...state.servicio], "servicio");
+    if (state.q) {
+      nodes.push(crumbSep(), crumbPill(`“${state.q}”`, "q", state.q));
+    }
+    host.replaceChildren(...nodes);
   }
 
   function matches(card: HTMLElement, state: FilterState) {
@@ -292,9 +390,10 @@ const servicios = [...SERVICIOS];
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
       box.checked = state.estado.has(box.value);
     });
-    root.querySelectorAll<HTMLElement>("[data-estado-label]").forEach((label) => {
-      label.textContent = shortList([...state.estado], "Todo México");
-    });
+    syncEstadoLabels(root, state);
+    // Remeasure after layout so we only abbreviate when the full list overflows.
+    requestAnimationFrame(() => syncEstadoLabels(root, state));
+    renderActiveCrumbs(state);
 
     const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
     if (qInput && qInput.value !== state.q) qInput.value = state.q;
@@ -304,11 +403,12 @@ const servicios = [...SERVICIOS];
     });
 
     const countText = hasFilters(state)
-      ? `${visible}/${cards.length}`
+      ? `${visible} de ${cards.length}`
       : `${cards.length}`;
     const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
+    const countValue = root.querySelector<HTMLElement>("[data-filter-count-value]");
+    if (countValue) countValue.textContent = countText;
     if (countEl) {
-      countEl.textContent = countText;
       countEl.title = hasFilters(state)
         ? `${visible} de ${cards.length} perfiles`
         : `${cards.length} perfiles`;
@@ -336,6 +436,12 @@ const servicios = [...SERVICIOS];
     let state = readUrl();
     apply(root, state);
     setMobileFiltersOpen(root, false);
+
+    let resizeTimer: number | undefined;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => syncEstadoLabels(root, state), 100);
+    });
 
     root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
       const toggle = wrap.querySelector<HTMLButtonElement>("[data-estado-toggle]");
@@ -400,6 +506,33 @@ const servicios = [...SERVICIOS];
         root.querySelectorAll<HTMLElement>("[data-estado-panel]").forEach((p) => {
           p.hidden = true;
         });
+      });
+    });
+
+    document.querySelector<HTMLElement>("[data-active-crumbs]")?.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
+      if (!btn) return;
+      e.stopPropagation();
+      const facet = btn.dataset.removeFacet as "estado" | "servicio" | "q";
+      const value = btn.dataset.removeValue || "";
+      if (facet === "q") {
+        state = { ...state, q: "" };
+      } else {
+        const next = new Set(state[facet]);
+        next.delete(value);
+        state = { ...state, [facet]: next };
+      }
+      writeUrl(state);
+      apply(root, state);
+    });
+
+    document.querySelectorAll<HTMLAnchorElement>("[data-filter-home]").forEach((home) => {
+      home.addEventListener("click", (e) => {
+        if (!hasFilters(state)) return;
+        e.preventDefault();
+        state = { q: "", servicio: new Set(), estado: new Set() };
+        writeUrl(state);
+        apply(root, state);
       });
     });
 

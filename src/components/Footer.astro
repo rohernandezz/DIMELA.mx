@@ -4,19 +4,32 @@ const year = new Date().getFullYear();
 
 <footer class="mt-auto border-t border-black/10 bg-dm-offblack text-dm-offwhite">
   <div
-    class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 text-sm"
+    class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-6"
   >
-    <p>© {year} DIMELA.mx</p>
-    <nav class="flex gap-4" aria-label="Pie">
-      <a href="/" class="hover:underline">A Path</a>
-      <a href="/bar/" class="hover:underline">B Bar</a>
-      <a href="/labeled/" class="hover:underline">C Labeled</a>
-      <a href="/trail/" class="hover:underline">D Trail</a>
-      <a href="/estado/" class="hover:underline">Estados</a>
-      <a href="/servicios/" class="hover:underline">Servicios</a>
-      <a href="https://tortilla.studio" class="hover:underline" rel="noopener noreferrer"
+    <p class="text-dm-offwhite/70">© {year} DIMELA.mx</p>
+    <nav
+      class="flex flex-wrap gap-x-5 gap-y-2 text-dm-offwhite/80"
+      aria-label="Principal"
+    >
+      <a href="/directorio/" class="hover:text-dm-offwhite">Todo</a>
+      <a href="/estado/" class="hover:text-dm-offwhite">Locación</a>
+      <a href="/servicios/" class="hover:text-dm-offwhite">Servicios</a>
+      <a href="/acerca-de/" class="hover:text-dm-offwhite">Acerca</a>
+      <a
+        href="https://tortilla.studio"
+        class="hover:text-dm-offwhite"
+        rel="noopener noreferrer"
         >Tortilla!</a
       >
+    </nav>
+    <nav
+      class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-dm-offwhite/45"
+      aria-label="Comparar UI"
+    >
+      <a href="/" class="hover:text-dm-offwhite/70">A Path</a>
+      <a href="/bar/" class="hover:text-dm-offwhite/70">B Bar</a>
+      <a href="/labeled/" class="hover:text-dm-offwhite/70">C Labeled</a>
+      <a href="/trail/" class="hover:text-dm-offwhite/70">D Trail</a>
     </nav>
   </div>
 </footer>

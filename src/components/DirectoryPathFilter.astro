@@ -1,7 +1,8 @@
 ---
 /**
- * Path-style directory filter in the site header.
- * DIMELA.mx › Ubicación ▾ › Servicio ▾  [Buscar]
+ * Option A — path filters in the dark header.
+ * Desktop: DIMELA.mx › Ubicación ▾ › Servicio ▾ [Buscar]
+ * Mobile: brand + search + Filtros dropdown (same pattern as Option B).
  */
 import { MEXICO_ESTADOS, SERVICIOS } from "../data/taxonomy";
 
@@ -9,124 +10,249 @@ const estados = [...MEXICO_ESTADOS];
 const servicios = [...SERVICIOS];
 ---
 
-<div
-  class="directory-path flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-2 text-sm"
-  data-directory-filter
-  aria-label="Filtrar directorio"
->
-  <a
-    href="/"
-    data-filter-home
-    class="shrink-0 text-base tracking-wide text-dm-offwhite hover:opacity-80"
-  >
-    DIMELA.mx
-  </a>
-
-  <span class="text-dm-offwhite/35" aria-hidden="true">›</span>
-
-  {/* Ubicación multi */}
-  <div class="relative" data-menu="estado">
-    <button
-      type="button"
-      data-menu-toggle
-      class="flex max-w-[12rem] items-center gap-1 rounded px-1.5 py-0.5 text-dm-offwhite hover:bg-white/10"
-      aria-expanded="false"
-      aria-haspopup="listbox"
+<div class="directory-path min-w-0 flex-1" data-directory-filter aria-label="Filtrar directorio">
+  {/* ── Desktop path row ─────────────────────────────────────────── */}
+  <div class="hidden min-w-0 flex-wrap items-center gap-x-1 gap-y-2 text-sm md:flex">
+    <a
+      href="/"
+      data-filter-home
+      class="shrink-0 text-base tracking-wide text-dm-offwhite hover:opacity-80"
     >
-      <span data-estado-label class="truncate">Todo México</span>
-      <span class="text-dm-offwhite/50" aria-hidden="true">▾</span>
-    </button>
-    <div
-      data-menu-panel
-      hidden
-      class="absolute top-full left-0 z-40 mt-1 max-h-64 w-56 overflow-auto rounded border border-black/20 bg-white py-1 text-dm-offblack shadow-lg"
-      role="listbox"
-      aria-multiselectable="true"
-    >
-      {
-        estados.map((estado) => (
-          <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
-            <input
-              type="checkbox"
-              data-estado-option
-              value={estado}
-              class="rounded border-dm-offblack/30"
-            />
-            <span>{estado}</span>
-          </label>
-        ))
-      }
-    </div>
-  </div>
+      DIMELA.mx
+    </a>
 
-  <span class="text-dm-offwhite/35" aria-hidden="true">›</span>
+    <span class="text-dm-offwhite/35" aria-hidden="true">›</span>
 
-  {/* Servicio multi — large chips in panel */}
-  <div class="relative" data-menu="servicio">
-    <button
-      type="button"
-      data-menu-toggle
-      class="flex max-w-[14rem] items-center gap-1 rounded px-1.5 py-0.5 text-dm-offwhite hover:bg-white/10"
-      aria-expanded="false"
-      aria-haspopup="listbox"
-    >
-      <span data-servicio-label class="truncate">Todos los servicios</span>
-      <span class="text-dm-offwhite/50" aria-hidden="true">▾</span>
-    </button>
-    <div
-      data-menu-panel
-      hidden
-      class="absolute top-full left-0 z-40 mt-1 w-[min(100vw-2rem,22rem)] rounded border border-black/20 bg-white p-3 text-dm-offblack shadow-lg"
-      role="listbox"
-      aria-multiselectable="true"
-    >
-      <div class="flex flex-wrap gap-2">
+    <div class="relative min-w-0 max-w-[min(100%,20rem)]" data-menu="estado" data-estado-desktop>
+      <button
+        type="button"
+        data-menu-toggle
+        class="flex w-full min-w-0 items-center gap-1 rounded px-1.5 py-0.5 text-dm-offwhite hover:bg-white/10"
+        aria-expanded="false"
+        aria-haspopup="listbox"
+      >
+        <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+        <span class="shrink-0 text-dm-offwhite/50" aria-hidden="true">▾</span>
+      </button>
+      <div
+        data-menu-panel
+        hidden
+        class="absolute top-full left-0 z-40 mt-1 max-h-64 w-56 overflow-auto rounded border border-black/20 bg-white py-1 text-dm-offblack shadow-lg"
+        role="listbox"
+        aria-multiselectable="true"
+      >
         {
-          servicios.map((servicio) => (
-            <button
-              type="button"
-              class="filter-chip rounded border border-dm-offblack/25 bg-dm-offwhite px-3 py-1.5 text-sm text-dm-offblack transition hover:border-dm-offblack"
-              data-filter-chip
-              data-value={servicio}
-              aria-pressed="false"
-            >
-              {servicio}
-            </button>
+          estados.map((estado) => (
+            <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
+              <input
+                type="checkbox"
+                data-estado-option
+                value={estado}
+                class="rounded border-dm-offblack/30"
+              />
+              <span>{estado}</span>
+            </label>
           ))
         }
       </div>
     </div>
+
+    <span class="text-dm-offwhite/35" aria-hidden="true">›</span>
+
+    <div class="relative" data-menu="servicio" data-servicio-desktop>
+      <button
+        type="button"
+        data-menu-toggle
+        class="flex max-w-[14rem] items-center gap-1 rounded px-1.5 py-0.5 text-dm-offwhite hover:bg-white/10"
+        aria-expanded="false"
+        aria-haspopup="listbox"
+      >
+        <span data-servicio-label class="truncate">Todos los servicios</span>
+        <span class="text-dm-offwhite/50" aria-hidden="true">▾</span>
+      </button>
+      <div
+        data-menu-panel
+        hidden
+        class="absolute top-full left-0 z-40 mt-1 w-[min(100vw-2rem,22rem)] rounded border border-black/20 bg-white p-3 text-dm-offblack shadow-lg"
+        role="listbox"
+        aria-multiselectable="true"
+      >
+        <div class="flex flex-wrap gap-2">
+          {
+            servicios.map((servicio) => (
+              <button
+                type="button"
+                class="filter-chip rounded border border-dm-offblack/25 bg-dm-offwhite px-3 py-1.5 text-sm text-dm-offblack transition hover:border-dm-offblack"
+                data-filter-chip
+                data-value={servicio}
+                aria-pressed="false"
+              >
+                {servicio}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <label class="relative ml-1 w-40 shrink-0 sm:ml-2">
+      <span class="sr-only">Buscar</span>
+      <input
+        type="search"
+        name="q"
+        data-filter-q
+        placeholder="Buscar…"
+        autocomplete="off"
+        class="w-full rounded border border-white/20 bg-white/10 px-2 py-1 text-sm text-dm-offwhite outline-none placeholder:text-dm-offwhite/40 focus:border-white/50 focus:bg-white/15"
+      />
+    </label>
+
+    <p
+      class="ml-1 flex shrink-0 items-baseline gap-1.5"
+      data-filter-count
+      aria-live="polite"
+    >
+      <span class="text-[10px] font-semibold tracking-wide text-dm-offwhite/40 uppercase"
+        >Resultados</span
+      >
+      <span class="text-xs text-dm-offwhite/55 tabular-nums" data-filter-count-value></span>
+    </p>
+
+    <button
+      type="button"
+      data-filter-clear
+      class="rounded border border-white/20 px-2 py-0.5 text-xs text-dm-offwhite/70 hover:bg-white/10 disabled:cursor-default disabled:opacity-30"
+      disabled
+    >
+      Limpiar
+    </button>
   </div>
 
-  <label class="relative ml-1 w-full max-w-[11rem] sm:ml-2 sm:w-40">
-    <span class="sr-only">Buscar</span>
-    <input
-      type="search"
-      name="q"
-      data-filter-q
-      placeholder="Buscar…"
-      autocomplete="off"
-      class="w-full rounded border border-white/20 bg-white/10 px-2 py-1 text-sm text-dm-offwhite outline-none placeholder:text-dm-offwhite/40 focus:border-white/50 focus:bg-white/15"
-    />
-  </label>
+  {/* ── Mobile chrome ────────────────────────────────────────────── */}
+  <div class="md:hidden">
+    <div class="flex items-center gap-2">
+      <label class="relative min-w-0 flex-1">
+        <span class="sr-only">Buscar</span>
+        <input
+          type="search"
+          name="q"
+          data-filter-q
+          placeholder="Buscar…"
+          autocomplete="off"
+          class="w-full rounded border border-white/20 bg-white/10 px-2.5 py-2 text-sm text-dm-offwhite outline-none placeholder:text-dm-offwhite/40 focus:border-white/50 focus:bg-white/15"
+        />
+      </label>
 
-  <p class="text-xs text-dm-offwhite/45" data-filter-count aria-live="polite"></p>
+      <p class="flex shrink-0 flex-col items-end leading-tight" data-filter-count aria-live="polite">
+        <span class="text-[9px] font-semibold tracking-wide text-dm-offwhite/40 uppercase"
+          >Resultados</span
+        >
+        <span class="text-xs text-dm-offwhite/55 tabular-nums" data-filter-count-value></span>
+      </p>
 
-  <button
-    type="button"
-    data-filter-clear
-    class="rounded border border-white/20 px-2 py-0.5 text-xs text-dm-offwhite/70 hover:bg-white/10 disabled:cursor-default disabled:opacity-30"
-    disabled
-  >
-    Limpiar
-  </button>
+      <button
+        type="button"
+        data-mobile-filters-toggle
+        class="relative shrink-0 rounded border border-white/30 bg-white/10 px-3 py-2 text-sm text-dm-offwhite"
+        aria-expanded="false"
+        aria-controls="path-mobile-filters"
+      >
+        Filtros
+        <span aria-hidden="true" class="ml-0.5 opacity-70">▾</span>
+        <span
+          data-sheet-badge
+          hidden
+          class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-dm-pink px-1 text-[10px] font-bold text-dm-offblack"
+        ></span>
+      </button>
+    </div>
+
+    <div
+      id="path-mobile-filters"
+      data-mobile-filters
+      hidden
+      class="mt-3 rounded border border-white/15 bg-white/5 px-3 py-3"
+    >
+      <div class="relative mb-4" data-menu="estado" data-estado-mobile>
+        <p class="mb-1.5 text-[10px] font-semibold tracking-wide text-dm-offwhite/45 uppercase">
+          Ubicación
+        </p>
+        <button
+          type="button"
+          data-menu-toggle
+          class="flex w-full min-w-0 items-center justify-between gap-2 rounded border border-white/20 bg-white/10 px-3 py-2 text-left text-sm text-dm-offwhite"
+          aria-expanded="false"
+        >
+          <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+          <span class="shrink-0 text-dm-offwhite/50" aria-hidden="true">▾</span>
+        </button>
+        <div
+          data-menu-panel
+          hidden
+          class="mt-1 max-h-40 overflow-auto rounded border border-black/20 bg-white py-1 text-dm-offblack"
+        >
+          {
+            estados.map((estado) => (
+              <label class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite">
+                <input
+                  type="checkbox"
+                  data-estado-option
+                  value={estado}
+                  class="rounded border-dm-offblack/30"
+                />
+                <span>{estado}</span>
+              </label>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <p class="mb-1.5 text-[10px] font-semibold tracking-wide text-dm-offwhite/45 uppercase">
+          Servicio
+        </p>
+        <div class="flex flex-wrap gap-2">
+          {
+            servicios.map((servicio) => (
+              <button
+                type="button"
+                class="filter-chip rounded border border-white/25 bg-white/10 px-3 py-1.5 text-sm text-dm-offwhite"
+                data-filter-chip
+                data-value={servicio}
+                aria-pressed="false"
+              >
+                {servicio}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <button
+        type="button"
+        data-filter-clear
+        class="w-full rounded border border-white/20 py-2 text-sm text-dm-offwhite/70 disabled:opacity-40"
+        disabled
+      >
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
 </div>
 
 <style>
   .filter-chip[aria-pressed="true"] {
-    background-color: var(--color-dm-offblack);
-    color: var(--color-dm-offwhite);
-    border-color: var(--color-dm-offblack);
+    background-color: var(--color-dm-offwhite);
+    color: var(--color-dm-offblack);
+    border-color: var(--color-dm-offwhite);
+  }
+
+  @media (min-width: 768px) {
+    .filter-chip[aria-pressed="true"] {
+      background-color: var(--color-dm-offblack);
+      color: var(--color-dm-offwhite);
+      border-color: var(--color-dm-offblack);
+    }
   }
 </style>
 
@@ -161,7 +287,6 @@ const servicios = [...SERVICIOS];
     if (state.estado.size) params.set("estado", [...state.estado].join(","));
     const qs = params.toString();
     const path = window.location.pathname;
-    // Keep filters on home / directorio; elsewhere jump to home with query
     const onDirectory = path === "/" || path === "/directorio" || path === "/directorio/";
     const targetPath = onDirectory ? path : "/";
     const next = qs ? `${targetPath}?${qs}` : targetPath;
@@ -176,7 +301,112 @@ const servicios = [...SERVICIOS];
     return Boolean(state.q || state.servicio.size || state.estado.size);
   }
 
-  function shortList(values: string[], empty: string) {
+  function facetCount(state: FilterState) {
+    return state.servicio.size + state.estado.size;
+  }
+
+  function listLabel(values: string[], empty: string) {
+    if (!values.length) return empty;
+    return values.join(", ");
+  }
+
+  /** Full list when it fits; otherwise show as many names as fit, then +N. */
+  function fitLabel(label: HTMLElement, values: string[], empty: string) {
+    const full = listLabel(values, empty);
+    label.title = values.length ? full : "";
+    label.textContent = full;
+    if (values.length <= 1) return;
+    if (label.scrollWidth <= label.clientWidth + 1) return;
+
+    let lo = 1;
+    let hi = values.length - 1;
+    let best = 1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      const remaining = values.length - mid;
+      label.textContent = `${values.slice(0, mid).join(", ")} +${remaining}`;
+      if (label.scrollWidth <= label.clientWidth + 1) {
+        best = mid;
+        lo = mid + 1;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    const remaining = values.length - best;
+    label.textContent = `${values.slice(0, best).join(", ")} +${remaining}`;
+  }
+
+  function syncEstadoLabels(root: HTMLElement, state: FilterState) {
+    const values = [...state.estado];
+    root.querySelectorAll<HTMLElement>("[data-estado-label]").forEach((label) => {
+      fitLabel(label, values, "Todo México");
+    });
+  }
+
+  function crumbSep() {
+    const sep = document.createElement("span");
+    sep.className = "text-dm-offwhite/35";
+    sep.setAttribute("aria-hidden", "true");
+    sep.textContent = "›";
+    return sep;
+  }
+
+  function crumbPipe() {
+    const sep = document.createElement("span");
+    sep.className = "text-dm-offwhite/40";
+    sep.setAttribute("aria-hidden", "true");
+    sep.textContent = "|";
+    return sep;
+  }
+
+  function crumbPill(label: string, facet: "estado" | "servicio" | "q", value: string) {
+    const wrap = document.createElement("span");
+    wrap.className = "active-crumb";
+    const text = document.createElement("span");
+    text.textContent = label;
+    text.title = label;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.removeFacet = facet;
+    btn.dataset.removeValue = value;
+    btn.setAttribute("aria-label", `Quitar ${label}`);
+    btn.textContent = "×";
+    wrap.append(text, btn);
+    return wrap;
+  }
+
+  function appendCrumbGroup(
+    nodes: Node[],
+    values: string[],
+    facet: "estado" | "servicio",
+  ) {
+    if (!values.length) return;
+    nodes.push(crumbSep());
+    values.forEach((value, i) => {
+      if (i > 0) nodes.push(crumbPipe());
+      nodes.push(crumbPill(value, facet, value));
+    });
+  }
+
+  function renderActiveCrumbs(state: FilterState) {
+    const host = document.querySelector<HTMLElement>("[data-active-crumbs]");
+    if (!host) return;
+    if (!hasFilters(state)) {
+      host.hidden = true;
+      host.replaceChildren();
+      return;
+    }
+    host.hidden = false;
+    const nodes: Node[] = [];
+    appendCrumbGroup(nodes, [...state.estado], "estado");
+    appendCrumbGroup(nodes, [...state.servicio], "servicio");
+    if (state.q) {
+      nodes.push(crumbSep(), crumbPill(`“${state.q}”`, "q", state.q));
+    }
+    host.replaceChildren(...nodes);
+  }
+
+  function shortServicio(values: string[], empty: string) {
     if (!values.length) return empty;
     if (values.length === 1) return values[0];
     if (values.length === 2) return `${values[0]}, ${values[1]}`;
@@ -209,9 +439,18 @@ const servicios = [...SERVICIOS];
     root.querySelectorAll<HTMLElement>("[data-menu-panel]").forEach((p) => {
       p.hidden = true;
     });
-    root.querySelectorAll<HTMLButtonElement>("[data-menu-toggle]").forEach((t) => {
+    root.querySelectorAll("[data-menu-toggle]").forEach((t) => {
       t.setAttribute("aria-expanded", "false");
     });
+  }
+
+  function setMobileFiltersOpen(root: HTMLElement, open: boolean) {
+    const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+    const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
+    if (!panel || !toggle) return;
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (!open) closeMenus(root);
   }
 
   function apply(root: HTMLElement, state: FilterState) {
@@ -232,28 +471,48 @@ const servicios = [...SERVICIOS];
       box.checked = state.estado.has(box.value);
     });
 
-    const estadoLabel = root.querySelector<HTMLElement>("[data-estado-label]");
-    if (estadoLabel) estadoLabel.textContent = shortList([...state.estado], "Todo México");
+    syncEstadoLabels(root, state);
+    requestAnimationFrame(() => syncEstadoLabels(root, state));
+    renderActiveCrumbs(state);
 
-    const servicioLabel = root.querySelector<HTMLElement>("[data-servicio-label]");
-    if (servicioLabel)
-      servicioLabel.textContent = shortList([...state.servicio], "Todos los servicios");
+    root.querySelectorAll<HTMLElement>("[data-servicio-label]").forEach((label) => {
+      label.textContent = shortServicio([...state.servicio], "Todos los servicios");
+    });
 
-    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
-    if (qInput && qInput.value !== state.q) qInput.value = state.q;
+    root.querySelectorAll<HTMLInputElement>("[data-filter-q]").forEach((qInput) => {
+      if (qInput.value !== state.q) qInput.value = state.q;
+    });
 
-    const clearBtn = root.querySelector<HTMLButtonElement>("[data-filter-clear]");
-    if (clearBtn) clearBtn.disabled = !hasFilters(state);
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-clear]").forEach((btn) => {
+      btn.disabled = !hasFilters(state);
+    });
 
-    const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
-    if (countEl) {
-      if (!cards.length) {
-        countEl.textContent = hasFilters(state) ? "Filtros activos" : "";
+    const countText = !cards.length
+      ? hasFilters(state)
+        ? "—"
+        : ""
+      : hasFilters(state)
+        ? `${visible} de ${cards.length}`
+        : `${cards.length}`;
+    root.querySelectorAll<HTMLElement>("[data-filter-count-value]").forEach((el) => {
+      el.textContent = countText;
+    });
+    root.querySelectorAll<HTMLElement>("[data-filter-count]").forEach((el) => {
+      el.title = cards.length
+        ? hasFilters(state)
+          ? `${visible} de ${cards.length} perfiles`
+          : `${cards.length} perfiles`
+        : "";
+    });
+
+    const badge = root.querySelector<HTMLElement>("[data-sheet-badge]");
+    if (badge) {
+      const n = facetCount(state);
+      if (n > 0) {
+        badge.hidden = false;
+        badge.textContent = String(n);
       } else {
-        const total = cards.length;
-        countEl.textContent = hasFilters(state)
-          ? `${visible} de ${total}`
-          : `${total}`;
+        badge.hidden = true;
       }
     }
 
@@ -270,6 +529,13 @@ const servicios = [...SERVICIOS];
     let state = readUrl();
     apply(root, state);
     closeMenus(root);
+    setMobileFiltersOpen(root, false);
+
+    let resizeTimer: number | undefined;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => syncEstadoLabels(root, state), 100);
+    });
 
     root.querySelectorAll<HTMLButtonElement>("[data-menu-toggle]").forEach((toggle) => {
       toggle.addEventListener("click", (e) => {
@@ -284,15 +550,19 @@ const servicios = [...SERVICIOS];
       });
     });
 
-    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
-    let debounce: number | undefined;
-    qInput?.addEventListener("input", () => {
-      window.clearTimeout(debounce);
-      debounce = window.setTimeout(() => {
-        state = { ...state, q: (qInput.value || "").trim() };
-        writeUrl(state);
-        apply(root, state);
-      }, 150);
+    root.querySelectorAll<HTMLInputElement>("[data-filter-q]").forEach((qInput) => {
+      let debounce: number | undefined;
+      qInput.addEventListener("input", () => {
+        window.clearTimeout(debounce);
+        debounce = window.setTimeout(() => {
+          state = { ...state, q: (qInput.value || "").trim() };
+          root.querySelectorAll<HTMLInputElement>("[data-filter-q]").forEach((other) => {
+            if (other !== qInput) other.value = qInput.value;
+          });
+          writeUrl(state);
+          apply(root, state);
+        }, 150);
+      });
     });
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
@@ -313,6 +583,9 @@ const servicios = [...SERVICIOS];
         const next = new Set(state.estado);
         if (box.checked) next.add(box.value);
         else next.delete(box.value);
+        root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((other) => {
+          if (other.value === box.value) other.checked = box.checked;
+        });
         state = { ...state, estado: next };
         writeUrl(state);
         apply(root, state);
@@ -326,17 +599,50 @@ const servicios = [...SERVICIOS];
       closeMenus(root);
     };
 
-    root.querySelector<HTMLButtonElement>("[data-filter-clear]")?.addEventListener("click", clear);
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-clear]").forEach((btn) => {
+      btn.addEventListener("click", clear);
+    });
 
-    root.querySelector<HTMLAnchorElement>("[data-filter-home]")?.addEventListener("click", (e) => {
-      if (!hasFilters(state)) return;
-      e.preventDefault();
-      clear();
-      if (window.location.pathname !== "/") window.location.assign("/");
+    document.querySelector<HTMLElement>("[data-active-crumbs]")?.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-remove-facet]");
+      if (!btn) return;
+      e.stopPropagation();
+      const facet = btn.dataset.removeFacet as "estado" | "servicio" | "q";
+      const value = btn.dataset.removeValue || "";
+      if (facet === "q") {
+        state = { ...state, q: "" };
+      } else {
+        const next = new Set(state[facet]);
+        next.delete(value);
+        state = { ...state, [facet]: next };
+      }
+      writeUrl(state);
+      apply(root, state);
+    });
+
+    document.querySelectorAll<HTMLAnchorElement>("[data-filter-home]").forEach((home) => {
+      home.addEventListener("click", (e) => {
+        if (!hasFilters(state)) return;
+        e.preventDefault();
+        clear();
+        if (window.location.pathname !== "/") window.location.assign("/");
+      });
+    });
+
+    const mobileToggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
+    mobileToggle?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
+      const open = panel?.hidden ?? true;
+      setMobileFiltersOpen(root, open);
     });
 
     document.addEventListener("click", (e) => {
-      if (!root.contains(e.target as Node)) closeMenus(root);
+      const target = e.target as Node;
+      if (!root.contains(target)) {
+        closeMenus(root);
+        setMobileFiltersOpen(root, false);
+      }
     });
   }
 

@@ -1,6 +1,8 @@
 ---
 /**
  * Site header variants for filter UI comparison.
+ * A (path) & B (simple): filter-focused — site nav lives in the footer.
+ * Mobile: DIMELA + active-filter breadcrumb in the top bar.
  */
 interface Props {
   variant?: "path" | "labeled" | "simple";
@@ -16,25 +18,24 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
 <header class="border-b border-black/10 bg-dm-offblack text-dm-offwhite">
   {
     variant === "path" && (
-      <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+      <div class="mx-auto max-w-7xl px-4 py-2.5 sm:px-6">
+        {/* Mobile: brand + filter breadcrumb */}
+        <div class="mb-2 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 md:hidden">
+          <a
+            href="/"
+            data-filter-home
+            class="shrink-0 text-lg tracking-wide text-dm-offwhite hover:opacity-80"
+          >
+            DIMELA.mx
+          </a>
+          <nav
+            data-active-crumbs
+            hidden
+            class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-dm-offwhite/75"
+            aria-label="Filtros activos"
+          ></nav>
+        </div>
         <DirectoryPathFilter />
-        <nav
-          class="flex shrink-0 flex-wrap items-center gap-3 text-xs text-dm-offwhite/70 sm:justify-end"
-          aria-label="Principal"
-        >
-          <a href="/directorio/" class="hover:text-dm-offwhite">
-            Todo
-          </a>
-          <a href="/estado/" class="hover:text-dm-offwhite">
-            Locación
-          </a>
-          <a href="/servicios/" class="hover:text-dm-offwhite">
-            Servicios
-          </a>
-          <a href="/acerca-de/" class="hover:text-dm-offwhite">
-            Acerca
-          </a>
-        </nav>
       </div>
     )
   }
@@ -64,50 +65,56 @@ const { variant = "simple", homeHref = "/" } = Astro.props;
   }
   {
     variant === "simple" && (
-      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <a href={homeHref} class="text-lg tracking-wide hover:opacity-80">
-          DIMELA.mx
-        </a>
-        <nav
-          class="hidden flex-wrap items-center gap-4 text-sm text-dm-offwhite/80 sm:flex"
-          aria-label="Principal"
-        >
-          <a href="/directorio/" class="hover:text-dm-offwhite">
-            Todo
-          </a>
-          <a href="/estado/" class="hover:text-dm-offwhite">
-            Locación
-          </a>
-          <a href="/servicios/" class="hover:text-dm-offwhite">
-            Servicios
-          </a>
-          <a href="/acerca-de/" class="hover:text-dm-offwhite">
-            Acerca
-          </a>
-        </nav>
-        <details class="relative sm:hidden">
-          <summary
-            class="cursor-pointer list-none rounded border border-white/25 px-2.5 py-1.5 text-sm text-dm-offwhite/90"
-            aria-label="Menú"
+      <div class="mx-auto flex max-w-7xl items-center px-4 py-3 sm:px-6">
+        <div class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
+          <a
+            href={homeHref}
+            data-filter-home
+            class="shrink-0 text-lg tracking-wide hover:opacity-80"
           >
-            Menú
-          </summary>
-          <div class="absolute top-full right-0 z-40 mt-1 min-w-[10rem] rounded border border-black/20 bg-white py-1 text-dm-offblack shadow-lg">
-            <a href="/directorio/" class="block px-3 py-2 text-sm hover:bg-dm-offwhite">
-              Todo
-            </a>
-            <a href="/estado/" class="block px-3 py-2 text-sm hover:bg-dm-offwhite">
-              Locación
-            </a>
-            <a href="/servicios/" class="block px-3 py-2 text-sm hover:bg-dm-offwhite">
-              Servicios
-            </a>
-            <a href="/acerca-de/" class="block px-3 py-2 text-sm hover:bg-dm-offwhite">
-              Acerca
-            </a>
-          </div>
-        </details>
+            DIMELA.mx
+          </a>
+          <nav
+            data-active-crumbs
+            hidden
+            class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-dm-offwhite/75 md:hidden"
+            aria-label="Filtros activos"
+          ></nav>
+        </div>
       </div>
     )
   }
 </header>
+
+<style>
+  .active-crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    max-width: 11rem;
+    color: var(--color-dm-offwhite);
+    font-weight: 500;
+  }
+  .active-crumb span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .active-crumb button {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 1px solid color-mix(in oklab, var(--color-dm-offwhite) 40%, transparent);
+    border-radius: 9999px;
+    line-height: 1;
+    font-size: 0.65rem;
+    opacity: 0.85;
+  }
+  .active-crumb button:hover {
+    border-color: var(--color-dm-offwhite);
+    opacity: 1;
+  }
+</style>
