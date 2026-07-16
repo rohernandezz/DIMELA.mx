@@ -34,15 +34,16 @@ export function scopeCustomCss(slug, css) {
     if (!trimmed) return match;
     const scoped = trimmed
       .split(",")
-      .map((sel) => {
-        const s = sel.trim();
-        if (!s) return s;
-        if (!/\.profile-(card|detail)/.test(s)) return s;
-        return `${scope} ${s}`;
-      })
+      .map((sel) => scopeSelector(scope, sel.trim()))
       .join(", ");
     return `${brace} ${scoped} {`;
   });
+}
+
+function scopeSelector(scope, sel) {
+  if (!sel) return sel;
+  if (!/\.profile-(card|detail)/.test(sel)) return sel;
+  return sel.replace(/\.profile-(card|detail)\b/, (m) => `${scope}${m}`);
 }
 
 export function buildFontFaceCss(fonts) {

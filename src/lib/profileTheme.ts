@@ -36,15 +36,17 @@ export function scopeCustomCss(slug: string, css: string): string {
     if (!trimmed) return match;
     const scoped = trimmed
       .split(",")
-      .map((sel) => {
-        const s = sel.trim();
-        if (!s) return s;
-        if (!/\.profile-(card|detail)/.test(s)) return s;
-        return `${scope} ${s}`;
-      })
+      .map((sel) => scopeSelector(scope, sel.trim()))
       .join(", ");
     return `${brace} ${scoped} {`;
   });
+}
+
+function scopeSelector(scope: string, sel: string): string {
+  if (!sel) return sel;
+  if (!/\.profile-(card|detail)/.test(sel)) return sel;
+  // Theme attr lives on the same node as .profile-card / .profile-detail.
+  return sel.replace(/\.profile-(card|detail)\b/, (m) => `${scope}${m}`);
 }
 
 export function buildFontFaceCss(fonts: ProfileFont[] | undefined): string {
@@ -86,6 +88,28 @@ export function buildProfileThemeStyleTag(
   const css = buildProfileThemeCss(slug, customCss, fonts);
   if (!css) return "";
   return `<style data-profile-theme="${slug}">${css}</style>`;
+}
+
+/** Inject Pro theme into document.head (innerHTML style tags do not apply). */
+export function injectProfileTheme(
+  slug: string,
+  customCss?: string,
+  fonts?: ProfileFont[],
+): void {
+  document
+    .querySelectorAll<HTMLStyleElement>(`style[data-profile-theme="${CSS.escape(slug)}"]`)
+    .forEach((el) => {
+      if (el.dataset.directoryThemes === "1") return;
+      el.remove();
+    });
+
+  const css = buildProfileThemeCss(slug, customCss, fonts);
+  if (!css) return;
+
+  const el = document.createElement("style");
+  el.dataset.profileTheme = slug;
+  el.textContent = css;
+  document.head.appendChild(el);
 }
 
 export function injectDirectoryThemes(

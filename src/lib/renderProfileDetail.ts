@@ -6,7 +6,6 @@ import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 import { renderBioHtml } from "./bio";
 import { websiteHref, websiteLabel, websiteCapsuleHtml } from "./website";
-import { buildProfileThemeStyleTag } from "./profileTheme";
 
 const STATUS_PREVIEW_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -85,12 +84,8 @@ export function renderProfileDetailHtml(
       ? `<p class="mb-4 rounded border border-dm-offblack/15 bg-dm-offblack/[0.04] px-3 py-2 text-sm text-dm-offblack/70" role="status">Vista previa · ${escapeHtml(STATUS_PREVIEW_LABEL[statusKey] || statusKey)} — no es público.</p>`
       : "";
 
-  const themeStyle =
-    profile.tier === "pro"
-      ? buildProfileThemeStyleTag(profile.slug, profile.customCss, profile.customFonts)
-      : "";
 
-  return `${themeStyle}<div class="profile-detail" data-profile-theme="${escapeHtml(profile.slug)}">${previewBanner}<p class="mb-4 text-sm text-dm-offblack/50">
+  return `<div class="profile-detail" data-profile-theme="${escapeHtml(profile.slug)}">${previewBanner}<p class="mb-4 text-sm text-dm-offblack/50">
       <a href="/" class="hover:underline">Inicio</a>
       <span class="mx-1.5" aria-hidden="true">›</span>
       <a href="/directorio/" class="hover:underline">Directorio</a>
