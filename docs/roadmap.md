@@ -43,8 +43,13 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 ## Next
 
 1. **Email provider** for magic links (stop returning `verifyUrl` in JSON)
-2. **Pro / Stripe** → cutover from Hugo
+2. **Pro / Stripe**
 3. Homepage **Destacados** (admin-curated among Pro; deferred)
+
+## Cutover (in progress)
+
+- [x] Remove Decap `static/admin/`, `netlify.toml`, GitHub Pages Hugo workflow
+- [ ] Netlify dashboard: disable test site if still running — [cutover.md](cutover.md)
 
 ## Notes
 

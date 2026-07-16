@@ -10,9 +10,9 @@ Until DNS cutover, several Hugo/Netlify artifacts remain. They are **not** used 
 | `layouts/` | Blowfish overrides (cards, avatars, home) | Reference for UI port; do not edit for production |
 | `config/` | Hugo + Blowfish params, menus, taxonomies | Reference for servicios/estado lists and nav |
 | `themes/blowfish` | Git submodule | Often uninitialized locally; CI used to fetch it |
-| `assets/`, `static/` | Theme CSS/JS, Decap `/admin`, fonts | Fonts copied to `public/fonts/`; Decap admin retired by Astro `/admin/` |
-| `netlify.toml` | Netlify Hugo build | Legacy deploy |
-| `.github/workflows/hugo.yaml` | GitHub Pages Hugo build | Legacy |
+| `assets/`, `static/` | Theme CSS/JS, Decap `/admin`, fonts | Fonts in `public/fonts/`; Decap removed — use Astro `/admin/` |
+| `netlify.toml` | Netlify Hugo build | **Removed from main** — see [cutover.md](cutover.md) |
+| `.github/workflows/hugo.yaml` | GitHub Pages Hugo build | **Removed** |
 
 ## Old production
 
@@ -36,6 +36,7 @@ That discovery model (filter vs explore) informs the new `DirectoryFilterBar` �
 
 - [ ] Delete Hugo `layouts/`, `config/`, `themes/`, `archetypes/`, `data/`, `resources/`
 - [ ] Delete or archive `content/` (D1 is already live source; claim/import from Hugo TBD)
-- [ ] Remove `netlify.toml`, Decap `static/admin/`, Hugo workflow
+- [x] Remove `netlify.toml`, Decap `static/admin/`, Hugo workflow — see [cutover.md](cutover.md)
 - [ ] Remove `.gitmodules` / Blowfish submodule
-- [ ] Point DNS to Cloudflare Worker; shut down Netlify site
+- [x] Point DNS to Cloudflare Worker (`dimela.mx` live)
+- [ ] Disable Netlify test site (optional) — [cutover.md](cutover.md)
