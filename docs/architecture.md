@@ -14,6 +14,7 @@ Browser → Cloudflare Worker (worker.js)
               ├─ PUT  /api/me/profile             → save draft to D1
               ├─ POST /api/me/profile/submit      → pending_review
               ├─ POST /api/me/profile/upload      → R2 cover|avatar + D1 URL
+              ├─ GET  /api/me/media/quota         → storage + Class A usage vs cap
               ├─ GET  /media/*                    → serve R2 objects
               ├─ GET  /api/admin/queue
               ├─ POST /api/admin/profiles/:slug/approve|reject
@@ -37,8 +38,9 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 | `worker.js` | Fetch router + search/profile + asset rewrite |
 | `worker/auth.js` | Magic link, session, member profile put/submit |
 | `worker/admin.js` | Admin queue / approve / reject |
-| `worker/media.js` | R2 upload + `/media/*` serve |
-| `db/schema.sql` | D1 users, sessions, magic_links, profiles |
+| `worker/media.js` | R2 upload + quota guard + `/media/*` serve |
+| `db/schema.sql` | D1 users, sessions, magic_links, profiles, media quota |
+| `db/migrations/004_media_quota.sql` | `media_objects` + `media_quota` tables |
 | `db/seed.sql` / `seed-auth.sql` | Mock profiles + demo member/admin |
 | `src/styles/global.css` | `@import "tailwindcss"` + `@theme` tokens (`--max-width-dm-page: 96rem`) |
 | `src/layouts/BaseLayout.astro` | Shared shell |
@@ -68,6 +70,7 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - `PUT /api/me/profile` → create/update owned profile in D1
 - `POST /api/me/profile/submit` → `status = pending_review`
 - `POST /api/me/profile/upload` → multipart `kind` + `file` → R2; writes `/media/...` on `cover`/`avatar`
+- `GET /api/me/media/quota` → platform storage + monthly Class A ops vs ~60% free-tier cap
 - Demo: `romina@tortilla.studio` owns `romina-hernandez`; admin `hola@dimela.mx` (`db/seed-auth.sql`)
 
 ### R2 media
@@ -77,6 +80,7 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - Allowed: JPEG/PNG/WebP/GIF · cover ≤ 5 MB · avatar ≤ 2 MB
 - Keys: `profiles/{userId}/{cover|avatar}/{uuid}.{ext}`
 - `GET /media/profiles/...` serves public bytes (relative URLs in D1)
+- **Quota guard:** D1 `media_objects` tracks bytes per key; `media_quota` tracks monthly Class A ops. Uploads rejected at ~60% of R2 free tier (6 GB storage, 600k ops/month).
 - Local `wrangler dev` simulates R2; remote deploy needs R2 enabled + bucket created
 - Gallery: not implemented (no schema column yet)
 
@@ -87,6 +91,8 @@ npm run db:migrate:local          # schema
 npm run db:migrate:remote
 npm run db:migrate:auth:local     # users / magic_links / sessions (+ owner columns)
 npm run db:migrate:auth:remote
+npm run db:migrate:media:local    # media_objects + media_quota
+npm run db:migrate:media:remote
 npm run db:seed:local             # profiles + auth demo
 npm run db:seed:remote
 npm run db:seed:auth:local        # auth demo only

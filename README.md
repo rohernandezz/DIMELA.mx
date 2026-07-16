@@ -47,6 +47,7 @@ Demo logins (after D1 seed): member `romina@tortilla.studio` → `/editar/` · a
 | `npm run preview` | Preview production build locally |
 | `npm run deploy` | Build + `wrangler deploy` |
 | `npm run db:migrate:local` / `:remote` | Apply D1 schema |
+| `npm run db:migrate:media:local` / `:remote` | Apply media quota tables |
 | `npm run db:seed:local` / `:remote` | Seed profiles + auth demos |
 | `npm run astro` | Astro CLI passthrough |
 

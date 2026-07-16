@@ -22,14 +22,9 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 - [x] Admin queue `/admin/` — approve / reject
 - [x] Demo users: member `romina@tortilla.studio` → `romina-hernandez`; admin `hola@dimela.mx`
 - [x] Magic link returned in JSON (no email provider yet)
-
-## In progress (working tree)
-
-- [ ] **Local / unpublished profile preview** — owner/admin can load draft|pending|rejected via `/api/profile` (`preview: true`); Worker rewrites missing `/directorio/{slug}/` → `/directorio/ver/` client shell. Landing on this branch; verify on `:8787` for new slugs (e.g. `try1`).
-
-## Recently landed (working tree)
-
-- [x] **R2 cover / avatar** — `POST /api/me/profile/upload`, `GET /media/*`, binding `MEDIA` → `dimela-mx-media`, `/editar/` Medios wired. Gallery not started. Remote bucket needs R2 enabled in Dashboard then `wrangler r2 bucket create dimela-mx-media`.
+- [x] **Unpublished profile preview** — owner/admin via `/api/profile` (`preview: true`); Worker rewrites missing `/directorio/{slug}/` → `/directorio/ver/` shell
+- [x] **R2 cover / avatar** — `POST /api/me/profile/upload`, `GET /media/*`, binding `MEDIA` → `dimela-mx-media`, `/editar/` Medios wired
+- [x] **R2 free-tier quota guard** — D1 tracks storage + Class A ops; uploads blocked at ~60% of free tier; `GET /api/me/media/quota`
 
 ## UI prototypes (kept for reference)
 
@@ -48,9 +43,8 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 
 1. **Gallery uploads** (R2 + schema; Free/Pro caps)
 2. **Email provider** for magic links (stop returning `verifyUrl` in JSON)
-3. Finish / harden unpublished profile preview locally + on deploy
-4. **Pro / Stripe** → cutover from Hugo
-5. Homepage **Destacados** (admin-curated among Pro; deferred)
+3. **Pro / Stripe** → cutover from Hugo
+4. Homepage **Destacados** (admin-curated among Pro; deferred)
 
 ## Notes
 
