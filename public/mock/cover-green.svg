@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#d9f7d9"/>
+  <path d="M60 400 L220 120 L380 400 Z" fill="#383636" opacity="0.12"/>
+  <path d="M360 400 L560 160 L760 400 Z" fill="#383636" opacity="0.08"/>
+  <text x="40" y="60" fill="#383636" font-family="system-ui,sans-serif" font-size="28" font-weight="700">mano</text>
+</svg>

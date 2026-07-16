@@ -9,11 +9,12 @@ Phased delivery on branch `AstroPort`. Commit and push each meaningful step.
 - [x] Cloudflare Worker + `wrangler.toml` (assets + `/api/*` stub)
 - [x] Placeholder routes: home, directorio, estado, servicios, acerca-de, 404
 - [x] README + docs
+- [x] Homepage profile card mockup (Free / Pro / Destacados)
 
 ## Next
 
 1. **FilterBar visual prototype** — homepage search + servicio/ubicación chips with mock data (for design review)
-2. **Profile cards UI** — Free card layout (Blowfish-inspired, simplified)
+2. **Iterate card UI** from mockup feedback
 3. **Content migration** — normalize Hugo `content/Directorio` → seed data / D1; preserve URL slugs
 4. **`/api/search`** — real faceted search over published profiles
 5. **Accounts** — magic-link auth, create/edit TipTap, submit for approval, admin queue

@@ -1,0 +1,121 @@
+---
+/**
+ * Profile card mock — Free vs Pro visual variants for homepage review.
+ */
+import type { MockProfile } from "../data/mockProfiles";
+
+interface Props {
+  profile: MockProfile;
+}
+
+const { profile } = Astro.props;
+const isPro = profile.tier === "pro";
+const href = `#${profile.slug}`;
+---
+
+<article
+  class:list={[
+    "profile-card group relative flex h-full flex-col overflow-hidden rounded-md border-2 border-dm-offblack/15 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
+    isPro && "profile-card--pro border-dm-offblack/25 sm:col-span-2 sm:flex-row",
+  ]}
+>
+  {
+    profile.featured && (
+      <span class="absolute top-3 left-3 z-10 rounded bg-dm-offblack px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offwhite uppercase">
+        Destacado
+      </span>
+    )
+  }
+  {
+    isPro && (
+      <span class="absolute top-3 right-3 z-10 rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">
+        Pro
+      </span>
+    )
+  }
+
+  <div
+    class:list={[
+      "relative shrink-0 overflow-hidden bg-dm-blue",
+      isPro ? "aspect-[16/10] sm:aspect-auto sm:w-[42%] sm:min-h-[220px]" : "aspect-[16/10]",
+    ]}
+  >
+    {
+      profile.cover ? (
+        <img
+          src={profile.cover}
+          alt=""
+          class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div
+          class="absolute inset-0 flex items-end bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-offwhite p-4"
+          aria-hidden="true"
+        >
+          <span class="text-3xl font-bold text-dm-offblack/25 select-none">Aa</span>
+        </div>
+      )
+    }
+  </div>
+
+  <div class:list={["flex flex-1 flex-col gap-3 p-4", isPro && "sm:p-5 sm:justify-center"]}>
+    <header class="flex items-center gap-3">
+      {
+        profile.avatar ? (
+          <img
+            src={profile.avatar}
+            alt=""
+            class="h-12 w-12 rounded-full object-cover shadow-md ring-2 ring-white"
+            width="48"
+            height="48"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
+            aria-hidden="true"
+          >
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
+            </svg>
+          </div>
+        )
+      }
+      <div class="min-w-0">
+        <a
+          href={href}
+          class="block truncate text-lg font-bold text-dm-offblack underline-offset-2 hover:underline"
+        >
+          {profile.name}
+        </a>
+        <a
+          href={`/estado/#${profile.estado}`}
+          class="relative z-10 text-sm text-dm-offblack/60 hover:underline"
+        >
+          {profile.estado}
+        </a>
+      </div>
+    </header>
+
+    <p class:list={["text-sm leading-relaxed text-dm-offblack/75", isPro ? "line-clamp-3" : "line-clamp-2"]}>
+      {profile.description}
+    </p>
+
+    <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
+      {
+        profile.servicios.map((servicio) => (
+          <span class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80">
+            {servicio}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+
+  {/* Stretch hit-target for the whole card without breaking nested links */}
+  <a href={href} class="absolute inset-0 z-0" aria-hidden="true" tabindex="-1"></a>
+</article>

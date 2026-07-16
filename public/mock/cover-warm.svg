@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#faf0e6"/>
+  <rect x="80" y="80" width="280" height="340" rx="8" fill="#383636" opacity="0.15"/>
+  <rect x="400" y="140" width="320" height="220" rx="8" fill="#d97757" opacity="0.35"/>
+  <text x="40" y="60" fill="#383636" font-family="system-ui,sans-serif" font-size="28" font-weight="700">tipo</text>
+</svg>

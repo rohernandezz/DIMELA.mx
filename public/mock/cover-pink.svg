@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#f5c1df"/>
+  <circle cx="200" cy="250" r="140" fill="#ffffff" opacity="0.35"/>
+  <circle cx="520" cy="180" r="100" fill="#383636" opacity="0.1"/>
+  <text x="40" y="60" fill="#383636" font-family="system-ui,sans-serif" font-size="28" font-weight="700">brand</text>
+</svg>
