@@ -294,13 +294,13 @@
     "avatar": null
   },
   {
-    "slug": "oscar-ruiz-mexico-base",
+    "slug": "oscar-ruiz-estado-de-mexico-base",
     "name": "Oscar Ruiz",
-    "estado": "México",
+    "estado": "Estado de México",
     "servicios": [
       "Lettering"
     ],
-    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en México.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
+    "description": "<p>Lettering para marca, empaques y piezas editoriales. Basada en Estado de México.</p><p>Colaboro con estudios de diseño y marcas que buscan letras con personalidad.</p>",
     "tier": "pro",
     "cover": "/mock/cover-warm.svg",
     "avatar": null

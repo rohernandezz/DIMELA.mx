@@ -23,7 +23,8 @@ const {
   lockServicio,
 } = Astro.props;
 
-const estados = [...MEXICO_ESTADOS];
+const OUTSIDE_MEXICO = "Fuera de México";
+const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXICO);
 const servicios = [...SERVICIOS];
 ---
 
@@ -85,7 +86,15 @@ const servicios = [...SERVICIOS];
                 />
               </div>
               <div class="max-h-56 overflow-auto py-1" data-estado-options>
-                {estados.map((estado) => (
+                <label
+                  data-estado-row
+                  class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite"
+                >
+                  <input type="checkbox" data-estado-option value={OUTSIDE_MEXICO} class="rounded" />
+                  <span>{OUTSIDE_MEXICO}</span>
+                </label>
+                <div class="my-1 border-t border-dm-offblack/10" data-estado-separator></div>
+                {estadosMexico.map((estado) => (
                   <label
                     data-estado-row
                     class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite"
@@ -183,7 +192,15 @@ const servicios = [...SERVICIOS];
                 />
               </div>
               <div class="max-h-40 overflow-auto py-1" data-estado-options>
-                {estados.map((estado) => (
+                <label
+                  data-estado-row
+                  class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite"
+                >
+                  <input type="checkbox" data-estado-option value={OUTSIDE_MEXICO} class="rounded" />
+                  <span>{OUTSIDE_MEXICO}</span>
+                </label>
+                <div class="my-1 border-t border-dm-offblack/10" data-estado-separator></div>
+                {estadosMexico.map((estado) => (
                   <label
                     data-estado-row
                     class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite"
@@ -363,9 +380,13 @@ const servicios = [...SERVICIOS];
 </style>
 
 <script>
+  import { MEXICO_ESTADOS } from "../data/taxonomy";
   import { filterProfiles, type SearchableProfile } from "../lib/search";
   import { renderProfileCardHtml } from "../lib/renderProfileCard";
   import { injectDirectoryThemes } from "../lib/profileTheme";
+
+  const OUTSIDE_MEXICO = "Fuera de México";
+  const MEXICO_ONLY_ESTADOS = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXICO);
 
   type FilterState = {
     q: string;
@@ -579,6 +600,9 @@ const servicios = [...SERVICIOS];
     const lockEstado = root.dataset.lockEstado;
     if (lockServicio) servicio.add(lockServicio);
     if (lockEstado) estado.add(lockEstado);
+    if (root.dataset.hideEstado !== "true" && !lockEstado && estado.size === 0) {
+      MEXICO_ONLY_ESTADOS.forEach((mexicoEstado) => estado.add(mexicoEstado));
+    }
     return { q: state.q, servicio, estado };
   }
 
@@ -814,17 +838,27 @@ const servicios = [...SERVICIOS];
       const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
       const search = wrap.querySelector<HTMLInputElement>("[data-estado-search]");
       const rows = Array.from(wrap.querySelectorAll<HTMLElement>("[data-estado-row]"));
+      const separators = Array.from(wrap.querySelectorAll<HTMLElement>("[data-estado-separator]"));
       const noResults = wrap.querySelector<HTMLElement>("[data-estado-noresults]");
 
       const runSearch = () => {
         const q = normalizeText((search?.value || "").trim());
         let visible = 0;
+        let outsideVisible = false;
+        let mexicoVisible = false;
         rows.forEach((row) => {
           const opt = row.querySelector<HTMLInputElement>("[data-estado-option]");
           const name = opt?.value || "";
           const match = !q || normalizeText(name).includes(q);
           row.hidden = !match;
-          if (match) visible += 1;
+          if (match) {
+            visible += 1;
+            if (name === OUTSIDE_MEXICO) outsideVisible = true;
+            else mexicoVisible = true;
+          }
+        });
+        separators.forEach((separator) => {
+          separator.hidden = !(outsideVisible && mexicoVisible);
         });
         if (noResults) noResults.hidden = visible > 0;
       };

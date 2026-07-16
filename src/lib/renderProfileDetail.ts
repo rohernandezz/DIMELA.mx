@@ -1,7 +1,7 @@
 /**
  * Client-side profile detail HTML (matches directorio/[slug] layout).
  */
-import { toSlug } from "./slugs";
+import { estadoSlug, toSlug } from "./slugs";
 import type { SearchableProfile } from "./search";
 import { escapeHtml } from "./renderProfileCard";
 import { renderBioHtml } from "./bio";
@@ -20,7 +20,7 @@ export function renderProfileDetailHtml(
   const isPro = profile.tier === "pro";
   const name = escapeHtml(profile.name);
   const estado = escapeHtml(profile.estado);
-  const estadoHref = `/estado/${toSlug(profile.estado)}/`;
+  const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
   const descriptionHtml = renderBioHtml(profile.description || "");
   const siteHref = profile.website ? websiteHref(profile.website) : "";
   const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
