@@ -167,3 +167,17 @@ export const MOCK_PROFILES: MockProfile[] = [
     avatar: null,
   },
 ];
+
+/** Unique facet values from mock data (for FilterBar chips). */
+export function mockFacetOptions(profiles: MockProfile[] = MOCK_PROFILES) {
+  const servicios = new Set<string>();
+  const estados = new Set<string>();
+  for (const p of profiles) {
+    for (const s of p.servicios) servicios.add(s);
+    estados.add(p.estado);
+  }
+  return {
+    servicios: [...servicios].sort((a, b) => a.localeCompare(b, "es")),
+    estados: [...estados].sort((a, b) => a.localeCompare(b, "es")),
+  };
+}

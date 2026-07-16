@@ -21,6 +21,11 @@ const href = `#${profile.slug}`;
       ? "profile-card--pro border-dm-offblack/30 shadow-lg"
       : "border-dm-offblack/15",
   ]}
+  data-profile-card
+  data-name={profile.name}
+  data-description={profile.description}
+  data-estado={profile.estado}
+  data-servicios={JSON.stringify(profile.servicios)}
 >
   {
     isPro && (

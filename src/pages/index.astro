@@ -1,25 +1,58 @@
 ---
 /**
- * Scaffold homepage — single card grid mockup (Free + Pro).
+ * Homepage — card grid + FilterBar mock (client-side facets).
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileCard from "../components/ProfileCard.astro";
-import { MOCK_PROFILES } from "../data/mockProfiles";
+import DirectoryFilterBar from "../components/DirectoryFilterBar.astro";
+import { MOCK_PROFILES, mockFacetOptions } from "../data/mockProfiles";
+
+const { servicios, estados } = mockFacetOptions();
 ---
 
 <BaseLayout title="DIMELA.mx — Directorio Mexicano de Letristas">
-  <section class="mb-8 space-y-2">
+  <section class="mb-6 space-y-2">
     <p class="text-lg leading-relaxed">
       Descubre a letristas Mexicanxs: tipografía, lettering, caligrafía, rotulación y más.
     </p>
     <p class="text-xs tracking-wide text-dm-offblack/50 uppercase">
-      Mockup visual · grid simple · Free / Pro
+      Mockup · FilterBar + grid · OR en facet / AND entre facets
     </p>
   </section>
 
+  <DirectoryFilterBar servicios={servicios} estados={estados} />
+
   <section aria-label="Directorio">
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-profile-grid>
       {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
     </div>
+    <p
+      class="mt-8 hidden text-center text-sm text-dm-offblack/55"
+      data-filter-empty
+    >
+      No hay perfiles con esos filtros.
+    </p>
   </section>
 </BaseLayout>
+
+<script>
+  function syncEmpty() {
+    const grid = document.querySelector("[data-profile-grid]");
+    const empty = document.querySelector<HTMLElement>("[data-filter-empty]");
+    if (!grid || !empty) return;
+    const cards = [...grid.querySelectorAll<HTMLElement>("[data-profile-card]")];
+    const anyVisible = cards.some((c) => !c.hidden);
+    empty.classList.toggle("hidden", anyVisible);
+  }
+
+  const grid = document.querySelector("[data-profile-grid]");
+  if (grid) {
+    const observer = new MutationObserver(syncEmpty);
+    observer.observe(grid, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ["hidden"],
+    });
+    syncEmpty();
+  }
+</script>

@@ -1,0 +1,236 @@
+---
+/**
+ * DirectoryFilterBar — visual + client mock of faceted search.
+ * OR within a facet, AND across facets. Syncs to ?q=&servicio=&estado=
+ */
+interface Props {
+  servicios: string[];
+  estados: string[];
+}
+
+const { servicios, estados } = Astro.props;
+---
+
+<section
+  class="directory-filter mb-8 rounded-md border-2 border-dm-offblack/15 bg-white p-4 shadow-sm sm:p-5"
+  data-directory-filter
+  aria-label="Filtrar directorio"
+>
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <label class="relative min-w-0 flex-1">
+      <span class="sr-only">Buscar</span>
+      <input
+        type="search"
+        name="q"
+        data-filter-q
+        placeholder="Buscar por nombre o descripción…"
+        autocomplete="off"
+        class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2.5 text-sm text-dm-offblack outline-none placeholder:text-dm-offblack/40 focus:border-dm-offblack/50"
+      />
+    </label>
+    <button
+      type="button"
+      data-filter-clear
+      class="shrink-0 rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2.5 text-sm text-dm-offblack/70 hover:bg-dm-offblack hover:text-dm-offwhite disabled:cursor-default disabled:opacity-40"
+      disabled
+    >
+      Limpiar
+    </button>
+  </div>
+
+  <div class="mt-4 space-y-3">
+    <div>
+      <p class="mb-2 text-[11px] font-semibold tracking-wide text-dm-offblack/50 uppercase">
+        Servicio
+      </p>
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por servicio">
+        {
+          servicios.map((servicio) => (
+            <button
+              type="button"
+              class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-xs text-dm-offblack transition hover:border-dm-offblack"
+              data-filter-chip
+              data-facet="servicio"
+              data-value={servicio}
+              aria-pressed="false"
+            >
+              {servicio}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div>
+      <p class="mb-2 text-[11px] font-semibold tracking-wide text-dm-offblack/50 uppercase">
+        Ubicación
+      </p>
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por ubicación">
+        {
+          estados.map((estado) => (
+            <button
+              type="button"
+              class="filter-chip rounded border border-dm-offblack/25 bg-dm-blue px-2.5 py-1 text-xs text-dm-offblack transition hover:border-dm-offblack"
+              data-filter-chip
+              data-facet="estado"
+              data-value={estado}
+              aria-pressed="false"
+            >
+              {estado}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-4 text-sm text-dm-offblack/55" data-filter-count aria-live="polite"></p>
+</section>
+
+<style>
+  .filter-chip[aria-pressed="true"] {
+    background-color: var(--color-dm-offblack);
+    color: var(--color-dm-offwhite);
+    border-color: var(--color-dm-offblack);
+  }
+</style>
+
+<script>
+  type FilterState = {
+    q: string;
+    servicio: Set<string>;
+    estado: Set<string>;
+  };
+
+  function parseList(param: string | null): string[] {
+    if (!param) return [];
+    return param
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  function readUrl(): FilterState {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      q: (params.get("q") || "").trim(),
+      servicio: new Set(parseList(params.get("servicio"))),
+      estado: new Set(parseList(params.get("estado"))),
+    };
+  }
+
+  function writeUrl(state: FilterState) {
+    const params = new URLSearchParams();
+    if (state.q) params.set("q", state.q);
+    if (state.servicio.size) params.set("servicio", [...state.servicio].join(","));
+    if (state.estado.size) params.set("estado", [...state.estado].join(","));
+    const qs = params.toString();
+    const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    window.history.replaceState({}, "", next);
+  }
+
+  function hasFilters(state: FilterState) {
+    return Boolean(state.q || state.servicio.size || state.estado.size);
+  }
+
+  function matches(card: HTMLElement, state: FilterState) {
+    const name = (card.dataset.name || "").toLowerCase();
+    const description = (card.dataset.description || "").toLowerCase();
+    const estado = card.dataset.estado || "";
+    let servicios: string[] = [];
+    try {
+      servicios = JSON.parse(card.dataset.servicios || "[]");
+    } catch {
+      servicios = [];
+    }
+
+    if (state.q) {
+      const q = state.q.toLowerCase();
+      if (!name.includes(q) && !description.includes(q)) return false;
+    }
+
+    // OR within facet
+    if (state.servicio.size) {
+      const hit = [...state.servicio].some((s) => servicios.includes(s));
+      if (!hit) return false;
+    }
+
+    if (state.estado.size) {
+      if (!state.estado.has(estado)) return false;
+    }
+
+    return true;
+  }
+
+  function apply(root: HTMLElement, state: FilterState) {
+    const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
+    let visible = 0;
+    cards.forEach((card) => {
+      const ok = matches(card, state);
+      card.hidden = !ok;
+      if (ok) visible += 1;
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
+      const facet = chip.dataset.facet as "servicio" | "estado";
+      const value = chip.dataset.value || "";
+      const active = state[facet].has(value);
+      chip.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+
+    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
+    if (qInput && qInput.value !== state.q) qInput.value = state.q;
+
+    const clearBtn = root.querySelector<HTMLButtonElement>("[data-filter-clear]");
+    if (clearBtn) clearBtn.disabled = !hasFilters(state);
+
+    const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
+    if (countEl) {
+      const total = cards.length;
+      countEl.textContent = hasFilters(state)
+        ? `${visible} de ${total} perfiles`
+        : `${total} perfiles`;
+    }
+  }
+
+  function init() {
+    const root = document.querySelector<HTMLElement>("[data-directory-filter]");
+    if (!root) return;
+
+    let state = readUrl();
+    apply(root, state);
+
+    const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
+    let debounce: number | undefined;
+    qInput?.addEventListener("input", () => {
+      window.clearTimeout(debounce);
+      debounce = window.setTimeout(() => {
+        state = { ...state, q: (qInput.value || "").trim() };
+        writeUrl(state);
+        apply(root, state);
+      }, 150);
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const facet = chip.dataset.facet as "servicio" | "estado";
+        const value = chip.dataset.value || "";
+        const next = new Set(state[facet]);
+        if (next.has(value)) next.delete(value);
+        else next.add(value);
+        state = { ...state, [facet]: next };
+        writeUrl(state);
+        apply(root, state);
+      });
+    });
+
+    root.querySelector<HTMLButtonElement>("[data-filter-clear]")?.addEventListener("click", () => {
+      state = { q: "", servicio: new Set(), estado: new Set() };
+      writeUrl(state);
+      apply(root, state);
+    });
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
