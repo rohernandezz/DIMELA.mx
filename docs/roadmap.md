@@ -42,9 +42,16 @@ Preview: `https://dimela-mx.ro-88c.workers.dev` · branch often `filter-bar-mobi
 
 ## Next
 
-1. **Email provider** for magic links (stop returning `verifyUrl` in JSON)
+1. **Email Sending** — paused (needs Workers Paid). Using beta magic links in UI for now.
 2. **Pro / Stripe**
 3. Homepage **Destacados** (admin-curated among Pro; deferred)
+
+## Auth / accounts (done)
+
+- [x] `/cuenta/` hub — magic link, claim, create
+- [x] Profile claim via `invite_email` + `POST /api/me/profile/claim`
+- [~] Production email — deferred until Workers Paid; API returns verify link when email unavailable
+- [x] Beta `/entrar/` gated to localhost / explicit `BETA_LOGIN`
 
 ## Cutover (in progress)
 

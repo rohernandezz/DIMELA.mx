@@ -22,3 +22,9 @@ database_id = "4b237d4d-ca9f-4304-b1f8-6c8353cb1b53"
 [[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "dimela-mx-media"
+
+# Magic-link email (Cloudflare Email Sending). Enable with:
+#   npx wrangler email sending enable dimela.mx
+# Set secret: wrangler secret put MAGIC_LINK_FROM  (e.g. hola@dimela.mx)
+[[send_email]]
+name = "EMAIL"

@@ -66,14 +66,17 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - Response (search): `{ ok, source, total, query, results }`
 - Response (profile): `{ ok, source, profile }` · optional `preview: true`
 
-### Auth + editor (MVP)
+### Auth + editor
 
-- Magic link: `POST /api/auth/request` `{ email }` → D1 token, returns `verifyUrl` (email provider later)
-- **Beta demo login:** `GET /api/auth/beta?demo=<key>` → session cookie, redirect (`/entrar/` UI). Keys: featured profile demos + `admin` (see `shared/demoAccounts.js`). Localhost always; remote needs `BETA_LOGIN=true` (+ optional `BETA_LOGIN_SECRET`, pass as `?key=` on `/entrar/`)
-- `GET /api/auth/verify?token=` → sets `dm_session` HttpOnly cookie, redirects to `/editar/`
-- `GET /api/auth/me` → session user + owned profile (any status)
-- `PUT /api/me/profile` → create/update owned profile in D1
-- `POST /api/me/profile/submit` → `status = pending_review`
+- **Account hub:** `/cuenta/` — magic link, claim seeded profile, or start new profile
+- Magic link: `POST /api/auth/request` `{ email, next? }` → sends email when Email Sending is configured (Workers Paid); otherwise returns `verifyUrl` in JSON for beta/local use
+- Set `FORCE_EMAIL_ONLY=true` later to require real email and hide the link
+- `GET /api/auth/verify?token=` → session cookie → redirects to `/cuenta/` (claim/create) or `/editar/` (has profile)
+- `GET /api/auth/me` → user + owned profile + `claimable[]` (ownerless profiles with matching `invite_email`)
+- `POST /api/me/profile/claim` `{ slug }` → attach seeded profile to session user
+- `PUT /api/me/profile` → create/update owned profile (blocks create if claimable pending)
+- **Beta demo login:** `/entrar/` — localhost only (redirects to `/cuenta/` in production); remote needs `BETA_LOGIN=true`
+- Admin can set `inviteEmail` on ownerless profiles via `PATCH /api/admin/profiles/:slug`
 - `POST /api/me/profile/upload` → multipart `kind` + `file` → R2; writes `/media/...` on `cover`/`avatar`
 - `GET /api/me/media/quota` → platform storage + monthly Class A ops vs ~60% free-tier cap
 - Demo: `romina@tortilla.studio` owns `romina-hernandez`; admin `hola@dimela.mx` (`db/seed-auth.sql`)

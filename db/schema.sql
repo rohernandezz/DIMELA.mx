@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   custom_fonts TEXT NOT NULL DEFAULT '[]',
   galleries TEXT NOT NULL DEFAULT '[]',
   user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+  invite_email TEXT,
   status TEXT NOT NULL DEFAULT 'published'
     CHECK (status IN ('draft', 'pending_review', 'published', 'rejected')),
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

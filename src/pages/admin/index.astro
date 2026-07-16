@@ -100,6 +100,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     status: string;
     tier: string;
     ownerEmail?: string | null;
+    inviteEmail?: string | null;
     updatedAt?: string | null;
   };
 
@@ -168,7 +169,18 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
             </label>
             <button type="button" data-save-slug="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar slug</button>
           </div>
-          <p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail || "sin dueño")} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>
+          ${
+            p.ownerEmail
+              ? `<p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail)} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>`
+              : `<div class="mt-2 flex flex-wrap items-end gap-2">
+                  <label class="block min-w-0 flex-1 space-y-1">
+                    <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Invitar (email)</span>
+                    <input type="email" value="${escapeHtml(p.inviteEmail || "")}" placeholder="diseñador@email.com" data-invite-input class="w-full min-w-[10rem] rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 text-xs outline-none focus:border-dm-offblack/50" />
+                  </label>
+                  <button type="button" data-save-invite="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar invite</button>
+                </div>
+                <p class="mt-0.5 text-xs text-dm-offblack/45">sin dueño · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}${p.inviteEmail ? ` · invite: ${escapeHtml(p.inviteEmail)}` : ""}</p>`
+          }
         </div>
         <span class="rounded border border-dm-offblack/15 bg-dm-blue/50 px-2 py-0.5 text-[10px] font-semibold uppercase">${STATUS_LABEL[p.status] || p.status}</span>
       </div>
@@ -230,6 +242,30 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       return;
     }
     toast(`Slug actualizado → ${data.profile.slug}`);
+    await loadQueue();
+  }
+
+  async function saveInvite(btn: HTMLElement) {
+    const slug = btn.dataset.saveInvite || "";
+    const li = btn.closest("li");
+    const input = li?.querySelector<HTMLInputElement>("[data-invite-input]");
+    const inviteEmail = input?.value.trim() || "";
+    const res = await fetch(`/api/admin/profiles/${encodeURIComponent(slug)}`, {
+      method: "PATCH",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ inviteEmail }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo guardar el invite.");
+      return;
+    }
+    toast(
+      inviteEmail
+        ? `Invite → ${data.profile.inviteEmail || inviteEmail}`
+        : "Invite eliminado.",
+    );
     await loadQueue();
   }
 
@@ -318,9 +354,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         const approve = t.closest<HTMLElement>("[data-approve]");
         const reject = t.closest<HTMLElement>("[data-reject]");
         const saveSlugBtn = t.closest<HTMLElement>("[data-save-slug]");
+        const saveInviteBtn = t.closest<HTMLElement>("[data-save-invite]");
         if (approve?.dataset.approve) void decide(approve.dataset.approve, "approve");
         if (reject?.dataset.reject) void decide(reject.dataset.reject, "reject");
         if (saveSlugBtn?.dataset.saveSlug) void saveSlug(saveSlugBtn);
+        if (saveInviteBtn?.dataset.saveInvite) void saveInvite(saveInviteBtn);
       });
       document.querySelector("[data-action='refresh']")?.addEventListener("click", () => void loadQueue());
       document.querySelector("[data-action='logout']")?.addEventListener("click", async () => {

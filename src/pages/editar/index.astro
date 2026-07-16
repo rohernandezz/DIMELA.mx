@@ -25,7 +25,8 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
         </p>
         <h1 class="mt-1 text-2xl tracking-wide">Entrar con email</h1>
         <p class="mt-1 text-sm text-dm-offblack/65">
-          Te enviamos un enlace mágico (sin contraseña). En desarrollo el enlace aparece aquí.
+          Te enviamos un enlace mágico a tu correo. Si ya entraste, ve a
+          <a href="/cuenta/" class="underline hover:text-dm-offblack">Mi cuenta</a>.
         </p>
       </div>
       <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
@@ -38,7 +39,6 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
             name="email"
             required
             placeholder="tu@email.com"
-            value="romina@tortilla.studio"
             class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
           />
         </label>
@@ -51,6 +51,23 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       </form>
       <p class="text-sm text-dm-offblack/60" data-auth-message></p>
       <p class="hidden break-all text-sm" data-auth-link></p>
+    </section>
+
+    <!-- Claim seeded profile -->
+    <section
+      class="mb-10 hidden space-y-4 rounded border border-dm-offblack/15 bg-dm-offwhite/80 p-5"
+      data-claim-panel
+    >
+      <div>
+        <h2 class="text-xl tracking-wide">Reclama tu perfil</h2>
+        <p class="mt-1 text-sm text-dm-offblack/65">
+          Hay un perfil en el directorio asociado a tu correo. Reclámalo antes de crear uno nuevo.
+        </p>
+      </div>
+      <ul class="space-y-2" data-claim-list></ul>
+      <p class="text-xs text-dm-offblack/50">
+        <a href="/cuenta/" class="underline hover:text-dm-offblack">Mi cuenta</a>
+      </p>
     </section>
 
     <!-- Editor (shown when logged in) -->
@@ -407,6 +424,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
 <script>
   import { bindBioToolbar, mountBioEditor, type BioEditor } from "../../lib/bioEditor";
   import { openAvatarCropper } from "../../lib/imageCropper";
+  import { requestMagicLink, renderDevMagicLink } from "../../lib/authClient";
 
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
@@ -453,11 +471,52 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     window.setTimeout(() => el.classList.add("hidden"), 2800);
   }
 
-  function showLogin(show: boolean) {
+  type Claimable = { slug: string; name: string; estado: string; status: string };
+
+  function setView(mode: "login" | "claim" | "editor") {
     const auth = document.querySelector<HTMLElement>("[data-auth-panel]");
+    const claim = document.querySelector<HTMLElement>("[data-claim-panel]");
     const editor = document.querySelector<HTMLElement>("[data-editor-root]");
-    if (auth) auth.hidden = !show;
-    if (editor) editor.hidden = show;
+    if (auth) auth.hidden = mode !== "login";
+    claim?.classList.toggle("hidden", mode !== "claim");
+    if (editor) editor.hidden = mode !== "editor";
+  }
+
+  function showLogin(show: boolean) {
+    setView(show ? "login" : "editor");
+  }
+
+  function renderClaimList(items: Claimable[]) {
+    const list = document.querySelector<HTMLElement>("[data-claim-list]");
+    if (!list) return;
+    list.innerHTML = items
+      .map(
+        (p) => `<li>
+          <button type="button" class="w-full rounded border border-dm-offblack/15 bg-white p-3 text-left hover:border-dm-offblack/35"
+            data-claim-slug="${p.slug}">
+            <span class="block font-medium">${p.name}</span>
+            <span class="text-sm text-dm-offblack/60">${p.estado}</span>
+          </button>
+        </li>`,
+      )
+      .join("");
+  }
+
+  async function claimProfileSlug(slug: string) {
+    const res = await fetch("/api/me/profile/claim", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo reclamar.");
+      return;
+    }
+    toast("Perfil reclamado.");
+    fillProfile(data.profile);
+    setView("editor");
   }
 
   function fillProfile(profile: Profile | null) {
@@ -996,29 +1055,47 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     try {
       const res = await fetch("/api/auth/me", { credentials: "same-origin" });
       if (res.status === 401) {
-        showLogin(true);
+        setView("login");
         return;
       }
       if (!res.headers.get("content-type")?.includes("json")) {
         if (res.status >= 500) {
           toast("API con error. Usa npm run dev:all (Astro + wrangler).");
         }
-        showLogin(true);
+        setView("login");
         return;
       }
       const data = await res.json();
       if (!data.ok) {
         if (data.error) toast(data.error);
-        showLogin(true);
+        setView("login");
         return;
       }
-      showLogin(false);
       const emailEl = document.querySelector<HTMLElement>("[data-user-email]");
       if (emailEl) emailEl.textContent = data.user.email;
-      fillProfile(data.profile);
+
+      if (data.profile) {
+        setView("editor");
+        fillProfile(data.profile);
+        void loadMediaQuota();
+        if (new URLSearchParams(location.search).has("claimed")) {
+          toast("Perfil reclamado — ya puedes editarlo.");
+        }
+        return;
+      }
+
+      const claimable = (data.claimable || []) as Claimable[];
+      if (claimable.length > 0) {
+        renderClaimList(claimable);
+        setView("claim");
+        return;
+      }
+
+      setView("editor");
+      fillProfile(null);
       void loadMediaQuota();
     } catch {
-      showLogin(true);
+      setView("login");
     }
   }
 
@@ -1038,33 +1115,29 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
           linkEl.textContent = "";
         }
         try {
-          const res = await fetch("/api/auth/request", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-          });
-          const data = await res.json();
-          if (!res.ok || !data.ok) {
-            if (msg) msg.textContent = data.error || "No se pudo enviar.";
+          const result = await requestMagicLink(email, "/editar/");
+          if (!result.ok) {
+            if (msg) msg.textContent = result.error || "No se pudo enviar.";
             return;
           }
-          if (msg) msg.textContent = data.message || "Enlace listo.";
-          if (data.verifyUrl && linkEl) {
-            linkEl.classList.remove("hidden");
-            const href =
-              data.verifyPath ||
-              (() => {
-                const u = new URL(data.verifyUrl, window.location.origin);
-                return `${u.pathname}${u.search}`;
-              })();
-            linkEl.innerHTML = `<a class="text-dm-offblack underline" href="${href}">Abrir enlace mágico</a>`;
-          }
+          if (msg) msg.textContent = result.message || "Listo.";
+          renderDevMagicLink(result, linkEl);
         } catch {
           if (msg) {
             msg.textContent =
               "API no disponible. Usa `wrangler dev` o el Worker desplegado (proxy /api).";
           }
         }
+      });
+    }
+
+    const claimList = document.querySelector<HTMLElement>("[data-claim-list]");
+    if (claimList && !claimList.dataset.ready) {
+      claimList.dataset.ready = "1";
+      claimList.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-claim-slug]");
+        if (!btn?.dataset.claimSlug) return;
+        void claimProfileSlug(btn.dataset.claimSlug);
       });
     }
 

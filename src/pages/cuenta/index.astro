@@ -1,0 +1,290 @@
+---
+/**
+ * Account hub — magic-link login, claim seeded profile, or create new.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Mi cuenta — DIMELA.mx"
+  description="Entra, reclama tu perfil o crea uno nuevo en el directorio DIMELA."
+  headerVariant="simple"
+  homeHref="/"
+>
+  <div class="mx-auto max-w-lg pb-16">
+    <!-- Login -->
+    <section class="space-y-4" data-cuenta-login>
+      <header class="space-y-2">
+        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Cuenta</p>
+        <h1 class="text-3xl tracking-wide">Mi cuenta</h1>
+        <p class="text-sm leading-relaxed text-dm-offblack/65">
+          Entra con tu correo — te enviamos un enlace mágico, sin contraseña.
+        </p>
+      </header>
+      <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
+        <label class="block min-w-0 flex-1 space-y-1.5">
+          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            >Email</span
+          >
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="tu@email.com"
+            autocomplete="email"
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+          />
+        </label>
+        <button
+          type="submit"
+          class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+        >
+          Enviar enlace
+        </button>
+      </form>
+      <p class="text-sm text-dm-offblack/60" data-auth-message></p>
+      <p class="hidden break-all text-sm" data-auth-link></p>
+    </section>
+
+    <!-- Logged in -->
+    <section class="hidden space-y-6" data-cuenta-session>
+      <header class="space-y-1">
+        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+          Sesión · <span data-user-email></span>
+        </p>
+        <h1 class="text-2xl tracking-wide" data-session-title>Mi cuenta</h1>
+      </header>
+
+      <!-- Has profile -->
+      <div class="hidden space-y-3 rounded border border-dm-offblack/15 bg-white p-5" data-has-profile>
+        <p class="text-sm text-dm-offblack/70">
+          Editas <strong data-profile-name></strong>
+          <span class="text-dm-offblack/50">(<span data-profile-slug></span>)</span>
+        </p>
+        <p class="text-xs text-dm-offblack/50">
+          Estado: <span data-profile-status class="font-medium"></span>
+        </p>
+        <div class="flex flex-wrap gap-2 pt-1">
+          <a
+            href="/editar/"
+            class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+          >
+            Editar perfil
+          </a>
+          <a
+            href="/directorio/"
+            data-public-link
+            class="rounded border border-dm-offblack/20 bg-white px-3 py-1.5 text-sm hover:border-dm-offblack/40"
+          >
+            Ver en directorio
+          </a>
+          <button
+            type="button"
+            class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:border-dm-offblack/30"
+            data-action="logout"
+          >
+            Salir
+          </button>
+        </div>
+      </div>
+
+      <!-- Claim -->
+      <div class="hidden space-y-3" data-claim-panel>
+        <div class="rounded border border-dm-offblack/15 bg-white p-5">
+          <h2 class="text-lg tracking-wide">Reclama tu perfil</h2>
+          <p class="mt-1 text-sm text-dm-offblack/65">
+            Encontramos un perfil en el directorio asociado a tu correo. Reclámalo para editarlo.
+          </p>
+          <ul class="mt-4 space-y-2" data-claim-list></ul>
+        </div>
+        <p class="text-sm text-dm-offblack/55">
+          ¿No es tu perfil?
+          <a href="/editar/" class="underline hover:text-dm-offblack">Crear uno nuevo</a>
+        </p>
+      </div>
+
+      <!-- Create new -->
+      <div class="hidden space-y-3 rounded border border-dm-offblack/15 bg-dm-offwhite/80 p-5" data-create-panel>
+        <h2 class="text-lg tracking-wide">Crear perfil</h2>
+        <p class="text-sm text-dm-offblack/65">
+          Aún no tienes perfil en DIMELA. Completa tu ficha y envíala a revisión cuando esté lista.
+        </p>
+        <a
+          href="/editar/"
+          class="inline-block rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+        >
+          Empezar mi perfil
+        </a>
+        <button
+          type="button"
+          class="ml-2 rounded border border-dm-offblack/15 px-3 py-2 text-sm text-dm-offblack/60 hover:border-dm-offblack/30"
+          data-action="logout"
+        >
+          Salir
+        </button>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { requestMagicLink, renderDevMagicLink } from "../../lib/authClient";
+
+  type Claimable = { slug: string; name: string; estado: string; status: string };
+  type Profile = { slug: string; name: string; status: string };
+
+  const loginSection = document.querySelector<HTMLElement>("[data-cuenta-login]");
+  const sessionSection = document.querySelector<HTMLElement>("[data-cuenta-session]");
+  const hasProfilePanel = document.querySelector<HTMLElement>("[data-has-profile]");
+  const claimPanel = document.querySelector<HTMLElement>("[data-claim-panel]");
+  const createPanel = document.querySelector<HTMLElement>("[data-create-panel]");
+  const claimList = document.querySelector<HTMLElement>("[data-claim-list]");
+
+  function showLogin(show: boolean) {
+    loginSection?.classList.toggle("hidden", !show);
+    sessionSection?.classList.toggle("hidden", show);
+  }
+
+  function statusLabel(status: string) {
+    const map: Record<string, string> = {
+      draft: "Borrador",
+      pending_review: "En revisión",
+      published: "Publicado",
+      rejected: "Rechazado",
+    };
+    return map[status] || status;
+  }
+
+  function renderClaimList(items: Claimable[]) {
+    if (!claimList) return;
+    claimList.innerHTML = items
+      .map(
+        (p) => `<li>
+          <button type="button" class="group w-full rounded border border-dm-offblack/15 bg-white p-4 text-left transition hover:border-dm-offblack/35"
+            data-claim-slug="${p.slug}">
+            <span class="block text-lg tracking-wide">${p.name}</span>
+            <span class="mt-0.5 block text-sm text-dm-offblack/60">${p.estado} · ${statusLabel(p.status)}</span>
+            <span class="mt-2 block text-sm text-dm-offblack/80 group-hover:underline">Reclamar perfil →</span>
+          </button>
+        </li>`,
+      )
+      .join("");
+  }
+
+  function showProfile(profile: Profile) {
+    hasProfilePanel?.classList.remove("hidden");
+    claimPanel?.classList.add("hidden");
+    createPanel?.classList.add("hidden");
+    const nameEl = document.querySelector<HTMLElement>("[data-profile-name]");
+    const slugEl = document.querySelector<HTMLElement>("[data-profile-slug]");
+    const statusEl = document.querySelector<HTMLElement>("[data-profile-status]");
+    const publicLink = document.querySelector<HTMLAnchorElement>("[data-public-link]");
+    if (nameEl) nameEl.textContent = profile.name;
+    if (slugEl) slugEl.textContent = profile.slug;
+    if (statusEl) statusEl.textContent = statusLabel(profile.status);
+    if (publicLink) publicLink.href = `/directorio/${profile.slug}/`;
+  }
+
+  function showClaim(items: Claimable[]) {
+    hasProfilePanel?.classList.add("hidden");
+    createPanel?.classList.add("hidden");
+    claimPanel?.classList.remove("hidden");
+    renderClaimList(items);
+  }
+
+  function showCreate() {
+    hasProfilePanel?.classList.add("hidden");
+    claimPanel?.classList.add("hidden");
+    createPanel?.classList.remove("hidden");
+  }
+
+  async function claimSlug(slug: string) {
+    const res = await fetch("/api/me/profile/claim", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      alert(data.error || "No se pudo reclamar.");
+      return;
+    }
+    window.location.href = "/editar/?claimed=1";
+  }
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    showLogin(true);
+  }
+
+  async function loadSession() {
+    try {
+      const res = await fetch("/api/auth/me", { credentials: "same-origin" });
+      if (res.status === 401) {
+        showLogin(true);
+        return;
+      }
+      const data = await res.json();
+      if (!data.ok) {
+        showLogin(true);
+        return;
+      }
+      showLogin(false);
+      const emailEl = document.querySelector<HTMLElement>("[data-user-email]");
+      if (emailEl) emailEl.textContent = data.user.email;
+
+      if (data.profile) {
+        showProfile(data.profile);
+        return;
+      }
+
+      const claimable = (data.claimable || []) as Claimable[];
+      if (claimable.length > 0) {
+        showClaim(claimable);
+        return;
+      }
+
+      showCreate();
+    } catch {
+      showLogin(true);
+    }
+  }
+
+  function init() {
+    const authForm = document.querySelector<HTMLFormElement>("[data-auth-form]");
+    authForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = new FormData(authForm).get("email") as string;
+      const msg = document.querySelector<HTMLElement>("[data-auth-message]");
+      const linkEl = document.querySelector<HTMLElement>("[data-auth-link]");
+      if (msg) msg.textContent = "Enviando…";
+      linkEl?.classList.add("hidden");
+      try {
+        const result = await requestMagicLink(email, "/cuenta/");
+        if (!result.ok) {
+          if (msg) msg.textContent = result.error || "No se pudo enviar.";
+          return;
+        }
+        if (msg) msg.textContent = result.message || "Listo.";
+        renderDevMagicLink(result, linkEl);
+      } catch {
+        if (msg) msg.textContent = "API no disponible.";
+      }
+    });
+
+    claimList?.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-claim-slug]");
+      if (!btn?.dataset.claimSlug) return;
+      void claimSlug(btn.dataset.claimSlug);
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-action='logout']").forEach((btn) => {
+      btn.addEventListener("click", () => void logout());
+    });
+
+    void loadSession();
+  }
+
+  init();
+</script>

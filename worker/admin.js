@@ -1,7 +1,7 @@
 /**
  * Admin approval APIs (D1).
  */
-import { getSessionUser, json, mapProfileRow, PROFILE_COLUMNS } from "./auth.js";
+import { getSessionUser, json, mapProfileRow, PROFILE_COLUMNS, normalizeEmail, isValidEmail } from "./auth.js";
 import { normalizeSlug } from "./slugs.js";
 
 async function requireAdmin(env, request) {
@@ -28,7 +28,7 @@ export async function handleAdminQueue(request, env) {
   const { results } = await env.DB.prepare(
     `SELECT p.slug, p.name, p.estado, p.servicios, p.description, p.website, p.tier,
             p.featured, p.cover, p.avatar, p.custom_css, p.status, p.user_id, p.galleries,
-            p.updated_at, u.email AS owner_email
+            p.invite_email, p.updated_at, u.email AS owner_email
      FROM profiles p
      LEFT JOIN users u ON u.id = p.user_id
      WHERE p.status = ?
@@ -40,6 +40,7 @@ export async function handleAdminQueue(request, env) {
   const profiles = (results || []).map((row) => ({
     ...mapProfileRow(row),
     ownerEmail: row.owner_email || null,
+    inviteEmail: row.invite_email || null,
     updatedAt: row.updated_at || null,
   }));
 
@@ -106,7 +107,7 @@ export async function handleAdminDecide(request, env, url) {
 }
 
 /**
- * PATCH /api/admin/profiles/:slug — body: { slug: "new-url-slug" }
+ * PATCH /api/admin/profiles/:slug — body: { slug?, inviteEmail? }
  */
 export async function handleAdminProfilePatch(request, env, url) {
   if (request.method !== "PATCH") {
@@ -128,11 +129,6 @@ export async function handleAdminProfilePatch(request, env, url) {
     return json({ ok: false, error: "JSON inválido." }, 400);
   }
 
-  const newSlug = normalizeSlug(body.slug);
-  if (!newSlug) {
-    return json({ ok: false, error: "Slug inválido." }, 400);
-  }
-
   const existing = await env.DB.prepare(
     `SELECT slug, user_id FROM profiles WHERE slug = ? LIMIT 1`,
   )
@@ -140,31 +136,59 @@ export async function handleAdminProfilePatch(request, env, url) {
     .first();
   if (!existing) return json({ ok: false, error: "Perfil no encontrado." }, 404);
 
-  if (newSlug === oldSlug) {
-    const row = await env.DB.prepare(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE slug = ? LIMIT 1`)
-      .bind(oldSlug)
+  let newSlug = oldSlug;
+  if (body.slug != null) {
+    newSlug = normalizeSlug(body.slug);
+    if (!newSlug) {
+      return json({ ok: false, error: "Slug inválido." }, 400);
+    }
+  }
+
+  let inviteEmail = undefined;
+  if (body.inviteEmail != null) {
+    const raw = String(body.inviteEmail).trim();
+    if (!raw) {
+      inviteEmail = null;
+    } else {
+      inviteEmail = normalizeEmail(raw);
+      if (!isValidEmail(inviteEmail)) {
+        return json({ ok: false, error: "inviteEmail inválido." }, 400);
+      }
+    }
+    if (existing.user_id) {
+      return json({ ok: false, error: "No se puede invitar: el perfil ya tiene dueño." }, 400);
+    }
+  }
+
+  if (newSlug !== oldSlug) {
+    const taken = await env.DB.prepare(`SELECT slug FROM profiles WHERE slug = ? LIMIT 1`)
+      .bind(newSlug)
       .first();
-    return json({ ok: true, profile: mapProfileRow(row) });
+    if (taken) {
+      return json({ ok: false, error: "Ese slug ya está en uso." }, 409);
+    }
+    await env.DB.prepare(
+      `UPDATE profiles SET slug = ?, updated_at = datetime('now') WHERE slug = ?`,
+    )
+      .bind(newSlug, oldSlug)
+      .run();
   }
 
-  const taken = await env.DB.prepare(
-    `SELECT slug FROM profiles WHERE slug = ? LIMIT 1`,
-  )
-    .bind(newSlug)
-    .first();
-  if (taken) {
-    return json({ ok: false, error: "Ese slug ya está en uso." }, 409);
+  if (inviteEmail !== undefined) {
+    await env.DB.prepare(
+      `UPDATE profiles SET invite_email = ?, updated_at = datetime('now') WHERE slug = ?`,
+    )
+      .bind(inviteEmail, newSlug)
+      .run();
   }
 
-  await env.DB.prepare(
-    `UPDATE profiles SET slug = ?, updated_at = datetime('now') WHERE slug = ?`,
-  )
-    .bind(newSlug, oldSlug)
-    .run();
-
-  const row = await env.DB.prepare(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE slug = ? LIMIT 1`)
+  const row = await env.DB.prepare(`SELECT ${PROFILE_COLUMNS}, invite_email FROM profiles WHERE slug = ? LIMIT 1`)
     .bind(newSlug)
     .first();
 
-  return json({ ok: true, profile: mapProfileRow(row), previousSlug: oldSlug });
+  return json({
+    ok: true,
+    profile: { ...mapProfileRow(row), inviteEmail: row.invite_email || null },
+    previousSlug: newSlug !== oldSlug ? oldSlug : undefined,
+  });
 }

@@ -4,6 +4,7 @@
 
 import { slugFromName, uniqueProfileSlug } from "./slugs.js";
 import { sanitizeCustomCss } from "./customCss.js";
+import { sendMagicLinkEmail } from "./email.js";
 import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
 
 export { DEMO_ACCOUNTS };
@@ -15,6 +16,96 @@ const MAGIC_MINUTES = 30;
 function isLocalDevHost(url) {
   const h = url.hostname;
   return h === "localhost" || h === "127.0.0.1" || h === "[::1]" || h.endsWith(".localhost");
+}
+
+/** Expose magic link in JSON for local dev or when explicitly enabled. */
+export function exposeMagicLinkInResponse(env, url) {
+  if (isLocalDevHost(url)) return true;
+  return env.DEV_MAGIC_LINKS === "true" || env.DEV_MAGIC_LINKS === "1";
+}
+
+async function ownedProfileRow(env, userId) {
+  return env.DB.prepare(`SELECT slug FROM profiles WHERE user_id = ? LIMIT 1`).bind(userId).first();
+}
+
+export async function listClaimableProfiles(env, user) {
+  if (!env.DB || !user?.email) return [];
+  const owned = await ownedProfileRow(env, user.id);
+  if (owned) return [];
+
+  const { results } = await env.DB.prepare(
+    `SELECT slug, name, estado, status
+     FROM profiles
+     WHERE user_id IS NULL
+       AND invite_email IS NOT NULL
+       AND invite_email = ?
+     ORDER BY name COLLATE NOCASE`,
+  )
+    .bind(normalizeEmail(user.email))
+    .all();
+
+  return (results || []).map((row) => ({
+    slug: row.slug,
+    name: row.name,
+    estado: row.estado,
+    status: row.status,
+  }));
+}
+
+async function claimProfile(env, user, slug) {
+  const email = normalizeEmail(user.email);
+  const profile = await env.DB.prepare(
+    `SELECT slug, user_id, invite_email FROM profiles WHERE slug = ? LIMIT 1`,
+  )
+    .bind(slug)
+    .first();
+
+  if (!profile) return { ok: false, error: "Perfil no encontrado." };
+  if (profile.user_id) return { ok: false, error: "Este perfil ya tiene dueño." };
+  if (!profile.invite_email || normalizeEmail(profile.invite_email) !== email) {
+    return { ok: false, error: "Este perfil no está disponible para reclamar con tu correo." };
+  }
+
+  const owned = await ownedProfileRow(env, user.id);
+  if (owned) return { ok: false, error: "Ya tienes un perfil vinculado." };
+
+  await env.DB.prepare(
+    `UPDATE profiles SET user_id = ?, invite_email = NULL, updated_at = datetime('now') WHERE slug = ?`,
+  )
+    .bind(user.id, slug)
+    .run();
+
+  return { ok: true, slug };
+}
+
+async function autoClaimSingleProfile(env, user) {
+  const claimable = await listClaimableProfiles(env, user);
+  if (claimable.length !== 1) return null;
+  const result = await claimProfile(env, user, claimable[0].slug);
+  return result.ok ? claimable[0].slug : null;
+}
+
+async function resolvePostLoginPath(env, user, requestedNext, publicOrigin) {
+  const owned = await ownedProfileRow(env, user.id);
+  if (owned) {
+    const next = requestedNext || "/editar/";
+    const url = new URL(next, publicOrigin);
+    return url.pathname + url.search;
+  }
+
+  const autoSlug = await autoClaimSingleProfile(env, user);
+  if (autoSlug) {
+    return `/editar/?claimed=${encodeURIComponent(autoSlug)}`;
+  }
+
+  const claimable = await listClaimableProfiles(env, user);
+  if (claimable.length > 0) {
+    return "/cuenta/?step=claim";
+  }
+
+  const next = requestedNext || "/cuenta/?step=create";
+  const url = new URL(next, publicOrigin);
+  return url.pathname + url.search;
 }
 
 /** Beta one-click login: localhost always; remote needs BETA_LOGIN (+ optional BETA_LOGIN_SECRET). */
@@ -162,6 +253,16 @@ export async function handleAuthRequest(request, env, url) {
     return json({ ok: false, error: "Email inválido." }, 400);
   }
 
+  const recent = await env.DB.prepare(
+    `SELECT COUNT(*) AS c FROM magic_links
+     WHERE email = ? AND expires_at > datetime('now')`,
+  )
+    .bind(email)
+    .first();
+  if ((recent?.c || 0) >= 5) {
+    return json({ ok: false, error: "Demasiados enlaces activos. Espera un momento." }, 429);
+  }
+
   const token = randomToken();
   const expiresAt = isoInMinutes(MAGIC_MINUTES);
 
@@ -174,18 +275,46 @@ export async function handleAuthRequest(request, env, url) {
   const publicOrigin = requestPublicOrigin(request, url);
   const verifyUrl = new URL("/api/auth/verify", publicOrigin);
   verifyUrl.searchParams.set("token", token);
-  verifyUrl.searchParams.set("next", body.next || "/editar/");
+  verifyUrl.searchParams.set("next", body.next || "/cuenta/");
 
-  // Email provider later — for now return the link (dev/MVP).
-  console.log(`Magic link for ${email}: ${verifyUrl.toString()}`);
+  const verifyUrlString = verifyUrl.toString();
+  const emailResult = await sendMagicLinkEmail(env, { to: email, verifyUrl: verifyUrlString });
 
-  return json({
+  // Production email needs Workers Paid + Email Sending. Until then, fall back to
+  // returning the link in JSON (beta / local). Set FORCE_EMAIL_ONLY=true to require email.
+  const forceEmailOnly = env.FORCE_EMAIL_ONLY === "true" || env.FORCE_EMAIL_ONLY === "1";
+  if (!emailResult.sent && forceEmailOnly) {
+    console.error(`Magic link email not sent for ${email}:`, emailResult.reason || "unknown");
+    return json(
+      {
+        ok: false,
+        error:
+          "Correo no configurado en el servidor. Contacta a hola@dimela.mx para acceder.",
+      },
+      503,
+    );
+  }
+
+  if (!emailResult.sent) {
+    console.log(`Magic link for ${email}: ${verifyUrlString}`);
+  }
+
+  const showLink = !emailResult.sent || exposeMagicLinkInResponse(env, url);
+  const payload = {
     ok: true,
-    message: "Revisa tu correo (o usa el enlace de desarrollo).",
+    message: emailResult.sent
+      ? "Revisa tu correo — te enviamos un enlace para entrar."
+      : "Enlace listo (beta — correo aún no activo).",
     expiresMinutes: MAGIC_MINUTES,
-    verifyUrl: verifyUrl.toString(),
-    verifyPath: `${verifyUrl.pathname}${verifyUrl.search}`,
-  });
+    emailSent: Boolean(emailResult.sent),
+  };
+
+  if (showLink) {
+    payload.verifyUrl = verifyUrlString;
+    payload.verifyPath = `${verifyUrl.pathname}${verifyUrl.search}`;
+  }
+
+  return json(payload);
 }
 
 export async function handleAuthVerify(request, env, url) {
@@ -195,7 +324,7 @@ export async function handleAuthVerify(request, env, url) {
   if (!env.DB) return json({ ok: false, error: "D1 no configurado." }, 503);
 
   const token = (url.searchParams.get("token") || "").trim();
-  const next = url.searchParams.get("next") || "/editar/";
+  const requestedNext = url.searchParams.get("next") || "/cuenta/";
   if (!token) return json({ ok: false, error: "Falta token." }, 400);
 
   const link = await env.DB.prepare(
@@ -231,9 +360,10 @@ export async function handleAuthVerify(request, env, url) {
   const sessionToken = await createSessionForUser(env, user);
 
   const publicOrigin = requestPublicOrigin(request, url);
-  const redirectTo = new URL(next, publicOrigin);
+  const redirectPath = await resolvePostLoginPath(env, user, requestedNext, publicOrigin);
+  const redirectTo = new URL(redirectPath, publicOrigin);
   if (redirectTo.origin !== publicOrigin) {
-    redirectTo.href = new URL("/editar/", publicOrigin).href;
+    redirectTo.href = new URL("/cuenta/", publicOrigin).href;
   }
 
   const cookieUrl = new URL(publicOrigin);
@@ -382,7 +512,39 @@ export async function handleAuthMe(request, env) {
     ok: true,
     user: { id: user.id, email: user.email, role: user.role },
     profile: profile ? mapProfileRow(profile) : null,
+    claimable: await listClaimableProfiles(env, user),
   });
+}
+
+export async function handleMeProfileClaim(request, env) {
+  if (request.method !== "POST") {
+    return json({ ok: false, error: "Método no permitido." }, 405);
+  }
+  if (!env.DB) return json({ ok: false, error: "D1 no configurado." }, 503);
+
+  const user = await getSessionUser(env, request);
+  if (!user) return json({ ok: false, error: "No autenticado." }, 401);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ ok: false, error: "JSON inválido." }, 400);
+  }
+
+  const slug = String(body.slug || "").trim();
+  if (!slug) return json({ ok: false, error: "Falta slug." }, 400);
+
+  const result = await claimProfile(env, user, slug);
+  if (!result.ok) return json({ ok: false, error: result.error }, 400);
+
+  const profile = await env.DB.prepare(
+    `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE user_id = ? LIMIT 1`,
+  )
+    .bind(user.id)
+    .first();
+
+  return json({ ok: true, profile: mapProfileRow(profile) });
 }
 
 export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status, user_id, galleries`;
@@ -498,6 +660,20 @@ export async function handleMeProfilePut(request, env) {
 
   const existing = owned;
 
+  if (!existing) {
+    const claimable = await listClaimableProfiles(env, user);
+    if (claimable.length > 0) {
+      return json(
+        {
+          ok: false,
+          error: "Tienes un perfil pendiente de reclamar antes de crear uno nuevo.",
+          claimable,
+        },
+        409,
+      );
+    }
+  }
+
   let slug;
   if (existing) {
     slug = existing.slug;
@@ -506,7 +682,7 @@ export async function handleMeProfilePut(request, env) {
     if (!base) {
       return json({ ok: false, error: "Nombre inválido para generar URL." }, 400);
     }
-    slug = await uniqueProfileSlug(env, base, user.id);
+    slug = await uniqueProfileSlug(env, base, user.id, user.email);
   }
 
   const serviciosJson = JSON.stringify(servicios);

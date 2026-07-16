@@ -8,6 +8,7 @@ import {
   handleAuthMe,
   handleAuthRequest,
   handleAuthVerify,
+  handleMeProfileClaim,
   handleMeProfilePut,
   handleMeProfileSubmit,
   json,
@@ -172,6 +173,7 @@ export default {
       return json({ ok: false, error: "Método no permitido." }, 405);
     }
     if (path === "/api/me/profile/submit") return handleMeProfileSubmit(request, env);
+    if (path === "/api/me/profile/claim") return handleMeProfileClaim(request, env);
     if (path === "/api/me/profile/upload") return handleMeProfileUpload(request, env, url);
     if (path === "/api/me/profile/font") {
       if (request.method === "POST") return handleFontUpload(request, env);

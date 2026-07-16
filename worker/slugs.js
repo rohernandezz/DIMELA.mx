@@ -17,14 +17,22 @@ export function normalizeSlug(raw) {
     .replace(/^-|-$/g, "");
 }
 
-export async function uniqueProfileSlug(env, baseSlug, excludeUserId = null) {
+export async function uniqueProfileSlug(env, baseSlug, excludeUserId = null, ownerEmail = null) {
   let candidate = baseSlug || "perfil";
   let n = 2;
+  const email = String(ownerEmail || "")
+    .trim()
+    .toLowerCase();
   while (true) {
     const row = await env.DB.prepare(
-      `SELECT slug FROM profiles WHERE slug = ? AND (user_id IS NULL OR user_id != ?) LIMIT 1`,
+      `SELECT slug FROM profiles WHERE slug = ?
+       AND (
+         (user_id IS NOT NULL AND user_id != ?)
+         OR (user_id IS NULL AND (invite_email IS NULL OR invite_email != ? COLLATE NOCASE))
+       )
+       LIMIT 1`,
     )
-      .bind(candidate, excludeUserId ?? "")
+      .bind(candidate, excludeUserId ?? "", email)
       .first();
     if (!row) return candidate;
     candidate = `${baseSlug}-${n++}`;
