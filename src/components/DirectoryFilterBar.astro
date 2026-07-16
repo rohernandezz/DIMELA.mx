@@ -651,6 +651,8 @@ const servicios = [...SERVICIOS];
 
   /** User wants the mobile filters panel open (survives scroll-down auto-hide). */
   let mobileFiltersWanted = false;
+  let mobileFiltersAnim: Animation | null = null;
+  let mobileFiltersAnimGen = 0;
 
   function setMobileFiltersOpen(
     root: HTMLElement,
@@ -660,9 +662,54 @@ const servicios = [...SERVICIOS];
     const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
     const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-filters-toggle]");
     if (!panel || !toggle) return;
-    panel.hidden = !open;
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+
+    const wasOpen = toggle.getAttribute("aria-expanded") === "true";
     if (opts?.fromUser) mobileFiltersWanted = open;
+    if (open === wasOpen) return;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+
+    mobileFiltersAnimGen += 1;
+    const gen = mobileFiltersAnimGen;
+    mobileFiltersAnim?.cancel();
+    mobileFiltersAnim = null;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) {
+      panel.hidden = !open;
+      return;
+    }
+
+    // Same light motion as sticky filter stack (opacity + slight slide).
+    if (open) {
+      panel.hidden = false;
+      mobileFiltersAnim = panel.animate(
+        [
+          { transform: "translateY(-0.35rem)", opacity: 0.85 },
+          { transform: "translateY(0)", opacity: 1 },
+        ],
+        { duration: 160, easing: "ease-out" },
+      );
+    } else {
+      mobileFiltersAnim = panel.animate(
+        [
+          { transform: "translateY(0)", opacity: 1 },
+          { transform: "translateY(-0.35rem)", opacity: 0.85 },
+        ],
+        { duration: 140, easing: "ease-in", fill: "forwards" },
+      );
+      mobileFiltersAnim.finished
+        .then(() => {
+          if (gen !== mobileFiltersAnimGen) return;
+          panel.hidden = true;
+          mobileFiltersAnim?.cancel();
+          mobileFiltersAnim = null;
+        })
+        .catch(() => {
+          if (gen !== mobileFiltersAnimGen) return;
+          panel.hidden = true;
+          mobileFiltersAnim = null;
+        });
+    }
   }
 
   function uiState(state: FilterState, root: HTMLElement): FilterState {
