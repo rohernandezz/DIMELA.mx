@@ -1,8 +1,45 @@
 ---
+/**
+ * Browse by ubicación — index of estados with profile counts (mock).
+ */
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { countByEstado } from "../../lib/taxonomyCounts";
+
+const rows = countByEstado();
+const total = rows.reduce((n, r) => n + r.count, 0);
 ---
 
-<BaseLayout title="Estados — DIMELA.mx">
-  <h1 class="mb-3 text-2xl">Explorar por ubicación</h1>
-  <p class="text-sm text-black/70">Placeholder — índice de estados.</p>
+<BaseLayout title="Locación — DIMELA.mx" headerVariant="simple" homeHref="/">
+  <header class="mb-8">
+    <p class="mb-2 text-sm text-dm-offblack/50">
+      <a href="/" class="hover:underline">Inicio</a>
+      <span class="mx-1.5" aria-hidden="true">›</span>
+      <span class="text-dm-offblack/70">Locación</span>
+    </p>
+    <h1 class="text-2xl tracking-wide">Explorar por ubicación</h1>
+    <p class="mt-2 text-sm text-dm-offblack/65">
+      {total} perfiles en {rows.filter((r) => r.count > 0).length} ubicaciones.
+    </p>
+  </header>
+
+  <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      rows.map((row) => (
+        <li>
+          <a
+            href={`/estado/${row.slug}/`}
+            class:list={[
+              "flex items-baseline justify-between gap-3 rounded border px-3 py-2.5 transition",
+              row.count > 0
+                ? "border-dm-offblack/15 bg-white hover:border-dm-offblack/35 hover:shadow-sm"
+                : "pointer-events-none border-dm-offblack/10 bg-white/50 text-dm-offblack/40",
+            ]}
+          >
+            <span class="min-w-0 truncate font-medium">{row.label}</span>
+            <span class="shrink-0 text-sm tabular-nums text-dm-offblack/55">{row.count}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </BaseLayout>

@@ -4,6 +4,7 @@
  * (visual margin inside the same cell). Pro keeps badge + stronger border.
  */
 import type { MockProfile } from "../data/mockProfiles";
+import { estadoSlug } from "../lib/slugs";
 
 interface Props {
   profile: MockProfile;
@@ -12,6 +13,7 @@ interface Props {
 const { profile } = Astro.props;
 const isPro = profile.tier === "pro";
 const href = `/directorio/${profile.slug}/`;
+const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
 ---
 
 <article
@@ -89,7 +91,7 @@ const href = `/directorio/${profile.slug}/`;
           {profile.name}
         </a>
         <a
-          href={`/estado/#${profile.estado}`}
+          href={estadoHref}
           class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline"
         >
           {profile.estado}

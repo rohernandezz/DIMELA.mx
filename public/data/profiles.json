@@ -1,0 +1,879 @@
+[
+  {
+    "slug": "romina-hernandez",
+    "name": "Romina Hernández",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Diseño de Tipografía",
+      "Lettering",
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.",
+    "website": "https://tortilla.studio",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "cristobal-henestrosa",
+    "name": "Cristóbal Henestrosa",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Diseño de Tipografía",
+      "Diseño Editorial"
+    ],
+    "description": "Diseñador tipográfico y editorial. Fuentes para prensa, libros e identidad cultural mexicana.",
+    "website": "https://henestrosatype.com",
+    "tier": "pro",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "miguel-contreras",
+    "name": "Miguel Contreras",
+    "estado": "Puebla",
+    "servicios": [
+      "Lettering",
+      "Branding",
+      "Diseño de Tipografía",
+      "Caligrafía"
+    ],
+    "description": "Lettering, caligrafía y tipografía para marcas. Proyectos de identidad con trazo propio.",
+    "website": "https://miglconts.com",
+    "tier": "pro",
+    "cover": "/mock/cover-green.svg",
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "cecilia-del-castillo",
+    "name": "Cecilia del Castillo",
+    "estado": "Fuera de México",
+    "servicios": [
+      "Diseño de Tipografía",
+      "Caligrafía"
+    ],
+    "description": "Mexican type designer & calligrapher. Fuentes y caligrafía para editorial e identidad.",
+    "website": "https://www.instagram.com/ceci_dcd",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "antonio-mejia-lechuga",
+    "name": "Antonio Mejía Lechuga",
+    "estado": "Querétaro",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Diseño editorial y tipografía aplicada a libros, revistas y publicaciones independientes.",
+    "website": "https://cuatroojos.com.mx",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "giovanni-bautista",
+    "name": "Giovanni Bautista",
+    "estado": "Oaxaca",
+    "servicios": [
+      "Rotulación Manual",
+      "Lettering"
+    ],
+    "description": "Rotulación a mano y lettering para comercio local, fachadas y espacios públicos en Oaxaca.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "mara-osman",
+    "name": "Mara Osman",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Branding",
+      "Diseño de Tipografía",
+      "Lettering",
+      "Caligrafía"
+    ],
+    "description": "Identidad tipográfica, lettering y caligrafía para marcas culturales y editoriales.",
+    "tier": "pro",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "sandra-morales",
+    "name": "Sandra Morales",
+    "estado": "Puebla",
+    "servicios": [
+      "Rotulación Manual"
+    ],
+    "description": "Rotulación manual para negocios, letreros y piezas de señalética con carácter local.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "ana-reyes-aguascalientes-base",
+    "name": "Ana Reyes",
+    "estado": "Aguascalientes",
+    "servicios": [
+      "Lettering",
+      "Diseño de Tipografía"
+    ],
+    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Aguascalientes.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "bruno-garcia-baja-california-base",
+    "name": "Bruno García",
+    "estado": "Baja California",
+    "servicios": [
+      "Branding"
+    ],
+    "description": "Branding con foco en tipografía y voz visual. Basada en Baja California.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "camila-torres-baja-california-sur-base",
+    "name": "Camila Torres",
+    "estado": "Baja California Sur",
+    "servicios": [
+      "Diseño de Tipografía"
+    ],
+    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Baja California Sur.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "diego-castillo-campeche-base",
+    "name": "Diego Castillo",
+    "estado": "Campeche",
+    "servicios": [
+      "Diseño Editorial",
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Campeche.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "elena-ruiz-chiapas-base",
+    "name": "Elena Ruiz",
+    "estado": "Chiapas",
+    "servicios": [
+      "Caligrafía"
+    ],
+    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Chiapas.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "fernanda-reyes-chihuahua-base",
+    "name": "Fernanda Reyes",
+    "estado": "Chihuahua",
+    "servicios": [
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Soporte técnico para diseñadores de fuentes. Basada en Chihuahua.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "gabriel-garcia-ciudad-de-mexico-base",
+    "name": "Gabriel García",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Rotulación Manual",
+      "Branding"
+    ],
+    "description": "Rotulación a mano para fachadas y comercio local. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "helena-torres-coahuila-base",
+    "name": "Helena Torres",
+    "estado": "Coahuila",
+    "servicios": [
+      "Lettering"
+    ],
+    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Coahuila.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "ivan-castillo-colima-base",
+    "name": "Iván Castillo",
+    "estado": "Colima",
+    "servicios": [
+      "Branding"
+    ],
+    "description": "Identidad tipográfica y sistemas de marca. Basada en Colima.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "jimena-ruiz-durango-base",
+    "name": "Jimena Ruiz",
+    "estado": "Durango",
+    "servicios": [
+      "Diseño de Tipografía",
+      "Caligrafía"
+    ],
+    "description": "Familias tipográficas a la medida y retail. Basada en Durango.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "kevin-reyes-guanajuato-base",
+    "name": "Kevin Reyes",
+    "estado": "Guanajuato",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Guanajuato.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "lucia-garcia-guerrero-base",
+    "name": "Lucia García",
+    "estado": "Guerrero",
+    "servicios": [
+      "Caligrafía"
+    ],
+    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Guerrero.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "marco-torres-hidalgo-base",
+    "name": "Marco Torres",
+    "estado": "Hidalgo",
+    "servicios": [
+      "Ingeniería de Fuentes",
+      "Lettering"
+    ],
+    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Hidalgo.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "natalia-castillo-jalisco-base",
+    "name": "Natalia Castillo",
+    "estado": "Jalisco",
+    "servicios": [
+      "Rotulación Manual"
+    ],
+    "description": "Letreros y señalética con trazo manual. Basada en Jalisco.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "oscar-ruiz-mexico-base",
+    "name": "Oscar Ruiz",
+    "estado": "México",
+    "servicios": [
+      "Lettering"
+    ],
+    "description": "Lettering para marca, empaques y piezas editoriales. Basada en México.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "paula-reyes-michoacan-base",
+    "name": "Paula Reyes",
+    "estado": "Michoacán",
+    "servicios": [
+      "Branding",
+      "Diseño Editorial"
+    ],
+    "description": "Branding con foco en tipografía y voz visual. Basada en Michoacán.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "rafael-garcia-morelos-base",
+    "name": "Rafael García",
+    "estado": "Morelos",
+    "servicios": [
+      "Diseño de Tipografía"
+    ],
+    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Morelos.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "sofia-torres-nayarit-base",
+    "name": "Sofía Torres",
+    "estado": "Nayarit",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Nayarit.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "tomas-castillo-nuevo-leon-base",
+    "name": "Tomás Castillo",
+    "estado": "Nuevo León",
+    "servicios": [
+      "Caligrafía",
+      "Rotulación Manual"
+    ],
+    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Nuevo León.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "valeria-ruiz-oaxaca-base",
+    "name": "Valeria Ruiz",
+    "estado": "Oaxaca",
+    "servicios": [
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Soporte técnico para diseñadores de fuentes. Basada en Oaxaca.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "ximena-reyes-puebla-base",
+    "name": "Ximena Reyes",
+    "estado": "Puebla",
+    "servicios": [
+      "Rotulación Manual"
+    ],
+    "description": "Rotulación a mano para fachadas y comercio local. Basada en Puebla.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "yuri-garcia-queretaro-base",
+    "name": "Yuri García",
+    "estado": "Querétaro",
+    "servicios": [
+      "Lettering",
+      "Diseño de Tipografía"
+    ],
+    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Querétaro.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "ana-torres-quintana-roo-base",
+    "name": "Ana Torres",
+    "estado": "Quintana Roo",
+    "servicios": [
+      "Branding"
+    ],
+    "description": "Identidad tipográfica y sistemas de marca. Basada en Quintana Roo.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "bruno-castillo-san-luis-potosi-base",
+    "name": "Bruno Castillo",
+    "estado": "San Luis Potosí",
+    "servicios": [
+      "Diseño de Tipografía"
+    ],
+    "description": "Familias tipográficas a la medida y retail. Basada en San Luis Potosí.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "camila-ruiz-sinaloa-base",
+    "name": "Camila Ruiz",
+    "estado": "Sinaloa",
+    "servicios": [
+      "Diseño Editorial",
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Sinaloa.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "diego-reyes-sonora-base",
+    "name": "Diego Reyes",
+    "estado": "Sonora",
+    "servicios": [
+      "Caligrafía"
+    ],
+    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Sonora.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "elena-garcia-tabasco-base",
+    "name": "Elena García",
+    "estado": "Tabasco",
+    "servicios": [
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Tabasco.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "fernanda-torres-tamaulipas-base",
+    "name": "Fernanda Torres",
+    "estado": "Tamaulipas",
+    "servicios": [
+      "Rotulación Manual",
+      "Branding"
+    ],
+    "description": "Letreros y señalética con trazo manual. Basada en Tamaulipas.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "gabriel-castillo-tlaxcala-base",
+    "name": "Gabriel Castillo",
+    "estado": "Tlaxcala",
+    "servicios": [
+      "Lettering"
+    ],
+    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Tlaxcala.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "helena-ruiz-veracruz-base",
+    "name": "Helena Ruiz",
+    "estado": "Veracruz",
+    "servicios": [
+      "Branding"
+    ],
+    "description": "Branding con foco en tipografía y voz visual. Basada en Veracruz.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "ivan-reyes-yucatan-base",
+    "name": "Iván Reyes",
+    "estado": "Yucatán",
+    "servicios": [
+      "Diseño de Tipografía",
+      "Caligrafía"
+    ],
+    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Yucatán.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "jimena-garcia-zacatecas-base",
+    "name": "Jimena García",
+    "estado": "Zacatecas",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Zacatecas.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "kevin-torres-fuera-de-mexico-base",
+    "name": "Kevin Torres",
+    "estado": "Fuera de México",
+    "servicios": [
+      "Caligrafía"
+    ],
+    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Fuera de México.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "lucia-castillo-ciudad-de-mexico-hub0",
+    "name": "Lucia Castillo",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Ingeniería de Fuentes",
+      "Lettering"
+    ],
+    "description": "Soporte técnico para diseñadores de fuentes. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "marco-ruiz-ciudad-de-mexico-hub1",
+    "name": "Marco Ruiz",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Rotulación Manual"
+    ],
+    "description": "Rotulación a mano para fachadas y comercio local. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "natalia-reyes-ciudad-de-mexico-hub2",
+    "name": "Natalia Reyes",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Lettering"
+    ],
+    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Ciudad de México.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "oscar-garcia-ciudad-de-mexico-hub3",
+    "name": "Oscar García",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Branding",
+      "Diseño Editorial"
+    ],
+    "description": "Identidad tipográfica y sistemas de marca. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "paula-torres-ciudad-de-mexico-hub4",
+    "name": "Paula Torres",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Diseño de Tipografía"
+    ],
+    "description": "Familias tipográficas a la medida y retail. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "rafael-castillo-ciudad-de-mexico-hub5",
+    "name": "Rafael Castillo",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "sofia-ruiz-ciudad-de-mexico-hub6",
+    "name": "Sofía Ruiz",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Caligrafía",
+      "Rotulación Manual"
+    ],
+    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "tomas-reyes-ciudad-de-mexico-hub7",
+    "name": "Tomás Reyes",
+    "estado": "Ciudad de México",
+    "servicios": [
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Ciudad de México.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "valeria-garcia-puebla-hub0",
+    "name": "Valeria García",
+    "estado": "Puebla",
+    "servicios": [
+      "Rotulación Manual"
+    ],
+    "description": "Letreros y señalética con trazo manual. Basada en Puebla.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "ximena-torres-puebla-hub1",
+    "name": "Ximena Torres",
+    "estado": "Puebla",
+    "servicios": [
+      "Lettering",
+      "Diseño de Tipografía"
+    ],
+    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Puebla.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "yuri-castillo-puebla-hub2",
+    "name": "Yuri Castillo",
+    "estado": "Puebla",
+    "servicios": [
+      "Branding"
+    ],
+    "description": "Branding con foco en tipografía y voz visual. Basada en Puebla.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "ana-ruiz-puebla-hub3",
+    "name": "Ana Ruiz",
+    "estado": "Puebla",
+    "servicios": [
+      "Diseño de Tipografía"
+    ],
+    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Puebla.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "bruno-reyes-puebla-hub4",
+    "name": "Bruno Reyes",
+    "estado": "Puebla",
+    "servicios": [
+      "Diseño Editorial",
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Puebla.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "camila-garcia-jalisco-hub0",
+    "name": "Camila García",
+    "estado": "Jalisco",
+    "servicios": [
+      "Caligrafía"
+    ],
+    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Jalisco.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "diego-torres-jalisco-hub1",
+    "name": "Diego Torres",
+    "estado": "Jalisco",
+    "servicios": [
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Soporte técnico para diseñadores de fuentes. Basada en Jalisco.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "elena-castillo-jalisco-hub2",
+    "name": "Elena Castillo",
+    "estado": "Jalisco",
+    "servicios": [
+      "Rotulación Manual",
+      "Branding"
+    ],
+    "description": "Rotulación a mano para fachadas y comercio local. Basada en Jalisco.",
+    "tier": "free",
+    "cover": null,
+    "avatar": null
+  },
+  {
+    "slug": "fernanda-ruiz-jalisco-hub3",
+    "name": "Fernanda Ruiz",
+    "estado": "Jalisco",
+    "servicios": [
+      "Lettering"
+    ],
+    "description": "Letras dibujadas a mano para identidad y campaña. Basada en Jalisco.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "gabriel-reyes-nuevo-leon-hub0",
+    "name": "Gabriel Reyes",
+    "estado": "Nuevo León",
+    "servicios": [
+      "Branding"
+    ],
+    "description": "Identidad tipográfica y sistemas de marca. Basada en Nuevo León.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "helena-garcia-nuevo-leon-hub1",
+    "name": "Helena García",
+    "estado": "Nuevo León",
+    "servicios": [
+      "Diseño de Tipografía",
+      "Caligrafía"
+    ],
+    "description": "Familias tipográficas a la medida y retail. Basada en Nuevo León.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "ivan-torres-nuevo-leon-hub2",
+    "name": "Iván Torres",
+    "estado": "Nuevo León",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Diseño editorial y tipografía aplicada a publicaciones. Basada en Nuevo León.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "jimena-castillo-oaxaca-hub0",
+    "name": "Jimena Castillo",
+    "estado": "Oaxaca",
+    "servicios": [
+      "Caligrafía"
+    ],
+    "description": "Trazo caligráfico para invitaciones, logos y arte. Basada en Oaxaca.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "kevin-ruiz-oaxaca-hub1",
+    "name": "Kevin Ruiz",
+    "estado": "Oaxaca",
+    "servicios": [
+      "Ingeniería de Fuentes",
+      "Lettering"
+    ],
+    "description": "Ingeniería tipográfica: producción, kerning y exportación. Basada en Oaxaca.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "lucia-reyes-oaxaca-hub2",
+    "name": "Lucia Reyes",
+    "estado": "Oaxaca",
+    "servicios": [
+      "Rotulación Manual"
+    ],
+    "description": "Letreros y señalética con trazo manual. Basada en Oaxaca.",
+    "tier": "free",
+    "cover": null,
+    "avatar": "/mock/miguel-avatar.png"
+  },
+  {
+    "slug": "marco-garcia-queretaro-hub0",
+    "name": "Marco García",
+    "estado": "Querétaro",
+    "servicios": [
+      "Lettering"
+    ],
+    "description": "Lettering para marca, empaques y piezas editoriales. Basada en Querétaro.",
+    "tier": "pro",
+    "cover": "/mock/cover-warm.svg",
+    "avatar": null
+  },
+  {
+    "slug": "natalia-torres-queretaro-hub1",
+    "name": "Natalia Torres",
+    "estado": "Querétaro",
+    "servicios": [
+      "Branding",
+      "Diseño Editorial"
+    ],
+    "description": "Branding con foco en tipografía y voz visual. Basada en Querétaro.",
+    "tier": "free",
+    "cover": "/mock/cover-cool.svg",
+    "avatar": null
+  },
+  {
+    "slug": "oscar-castillo-yucatan-hub0",
+    "name": "Oscar Castillo",
+    "estado": "Yucatán",
+    "servicios": [
+      "Diseño de Tipografía"
+    ],
+    "description": "Diseño de fuentes para editorial, marca y pantalla. Basada en Yucatán.",
+    "tier": "free",
+    "cover": "/mock/cover-pink.svg",
+    "avatar": null
+  },
+  {
+    "slug": "paula-ruiz-yucatan-hub1",
+    "name": "Paula Ruiz",
+    "estado": "Yucatán",
+    "servicios": [
+      "Diseño Editorial"
+    ],
+    "description": "Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Yucatán.",
+    "tier": "free",
+    "cover": "/mock/cover-green.svg",
+    "avatar": null
+  },
+  {
+    "slug": "rafael-reyes-veracruz-hub0",
+    "name": "Rafael Reyes",
+    "estado": "Veracruz",
+    "servicios": [
+      "Caligrafía",
+      "Rotulación Manual"
+    ],
+    "description": "Caligrafía contemporánea para marca y piezas únicas. Basada en Veracruz.",
+    "tier": "free",
+    "cover": "/mock/cecilia-featured.png",
+    "avatar": null
+  },
+  {
+    "slug": "sofia-garcia-veracruz-hub1",
+    "name": "Sofía García",
+    "estado": "Veracruz",
+    "servicios": [
+      "Ingeniería de Fuentes"
+    ],
+    "description": "Soporte técnico para diseñadores de fuentes. Basada en Veracruz.",
+    "tier": "free",
+    "cover": "/mock/mara-featured.png",
+    "avatar": null
+  }
+]

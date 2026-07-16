@@ -1,8 +1,18 @@
 ---
 /**
  * Option B filter bar — desktop chips; mobile dropdown under search.
+ * Taxonomy pages can hide a locked facet (estado or servicio).
  */
 import { MEXICO_ESTADOS, SERVICIOS } from "../data/taxonomy";
+
+interface Props {
+  /** Hide ubicación controls (e.g. on `/estado/[slug]/`). */
+  hideEstado?: boolean;
+  /** Hide servicio chips (e.g. on `/servicios/[slug]/`). */
+  hideServicio?: boolean;
+}
+
+const { hideEstado = false, hideServicio = false } = Astro.props;
 
 const estados = [...MEXICO_ESTADOS];
 const servicios = [...SERVICIOS];
@@ -12,6 +22,8 @@ const servicios = [...SERVICIOS];
 <section
   class="directory-filter mb-6"
   data-directory-filter
+  data-hide-estado={hideEstado ? "true" : undefined}
+  data-hide-servicio={hideServicio ? "true" : undefined}
   aria-label="Filtrar directorio"
 >
   {/* Header moves here when collapsed so grey bar + search stick as one unit */}
@@ -32,34 +44,36 @@ const servicios = [...SERVICIOS];
         </label>
 
       {/* Desktop ubicación — fills remaining width */}
-      <div class="relative hidden min-w-0 flex-1 md:block" data-estado-multi data-estado-desktop>
-        <button
-          type="button"
-          data-estado-toggle
-          class="flex w-full min-w-0 items-center gap-2 rounded border border-dm-offblack/20 bg-dm-blue/50 px-3 py-1.5 text-left text-sm text-dm-offblack"
-          aria-expanded="false"
-        >
-          <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-            >Ubicación</span
-          >
-          <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
-          <span class="shrink-0 text-dm-offblack/40" aria-hidden="true">▾</span>
-        </button>
-        <div
-          data-estado-panel
-          hidden
-          class="absolute top-full left-0 z-30 mt-1 max-h-64 w-full min-w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
-        >
-          {
-            estados.map((estado) => (
-              <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
-                <input type="checkbox" data-estado-option value={estado} class="rounded" />
-                <span>{estado}</span>
-              </label>
-            ))
-          }
-        </div>
-      </div>
+      {
+        !hideEstado && (
+          <div class="relative hidden min-w-0 flex-1 md:block" data-estado-multi data-estado-desktop>
+            <button
+              type="button"
+              data-estado-toggle
+              class="flex w-full min-w-0 items-center gap-2 rounded border border-dm-offblack/20 bg-dm-blue/50 px-3 py-1.5 text-left text-sm text-dm-offblack"
+              aria-expanded="false"
+            >
+              <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+                >Ubicación</span
+              >
+              <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+              <span class="shrink-0 text-dm-offblack/40" aria-hidden="true">▾</span>
+            </button>
+            <div
+              data-estado-panel
+              hidden
+              class="absolute top-full left-0 z-30 mt-1 max-h-64 w-full min-w-56 overflow-auto rounded border border-dm-offblack/20 bg-white py-1 shadow-lg"
+            >
+              {estados.map((estado) => (
+                <label class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-xs hover:bg-dm-offwhite">
+                  <input type="checkbox" data-estado-option value={estado} class="rounded" />
+                  <span>{estado}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )
+      }
 
       {/* Count: end of bar, before Limpiar / Filtros */}
       <p
@@ -107,55 +121,59 @@ const servicios = [...SERVICIOS];
       hidden
       class="border-t border-dm-offblack/10 px-3 py-3 md:hidden"
     >
-      <div class="relative mb-4" data-estado-multi data-estado-mobile>
-        <p class="mb-1.5 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
-          Ubicación
-        </p>
-        <button
-          type="button"
-          data-estado-toggle
-          class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
-          aria-expanded="false"
-        >
-          <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
-          <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
-        </button>
-        <div
-          data-estado-panel
-          hidden
-          class="mt-1 max-h-40 overflow-auto rounded border border-dm-offblack/20 bg-white py-1"
-        >
-          {
-            estados.map((estado) => (
-              <label class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite">
-                <input type="checkbox" data-estado-option value={estado} class="rounded" />
-                <span>{estado}</span>
-              </label>
-            ))
-          }
-        </div>
-      </div>
+      {
+        !hideEstado && (
+          <div class="relative mb-4" data-estado-multi data-estado-mobile>
+            <p class="mb-1.5 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
+              Ubicación
+            </p>
+            <button
+              type="button"
+              data-estado-toggle
+              class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
+              aria-expanded="false"
+            >
+              <span data-estado-label class="min-w-0 flex-1 truncate">Todo México</span>
+              <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
+            </button>
+            <div
+              data-estado-panel
+              hidden
+              class="mt-1 max-h-40 overflow-auto rounded border border-dm-offblack/20 bg-white py-1"
+            >
+              {estados.map((estado) => (
+                <label class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-dm-offwhite">
+                  <input type="checkbox" data-estado-option value={estado} class="rounded" />
+                  <span>{estado}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )
+      }
 
-      <div class="mb-4">
-        <p class="mb-1.5 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
-          Servicio
-        </p>
-        <div class="flex flex-wrap gap-2">
-          {
-            servicios.map((servicio) => (
-              <button
-                type="button"
-                class="filter-chip rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack"
-                data-filter-chip
-                data-value={servicio}
-                aria-pressed="false"
-              >
-                {servicio}
-              </button>
-            ))
-          }
-        </div>
-      </div>
+      {
+        !hideServicio && (
+          <div class="mb-4">
+            <p class="mb-1.5 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
+              Servicio
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {servicios.map((servicio) => (
+                <button
+                  type="button"
+                  class="filter-chip rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack"
+                  data-filter-chip
+                  data-value={servicio}
+                  aria-pressed="false"
+                >
+                  {servicio}
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      }
 
       <button
         type="button"
@@ -168,28 +186,30 @@ const servicios = [...SERVICIOS];
     </div>
 
     {/* Desktop: servicio chips */}
-    <div class="hidden border-t border-dm-offblack/10 px-3 py-3 md:block">
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase"
-          >Servicio</span
-        >
-        <div class="flex flex-wrap gap-1.5">
-          {
-            servicios.map((servicio) => (
-              <button
-                type="button"
-                class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack hover:border-dm-offblack"
-                data-filter-chip
-                data-value={servicio}
-                aria-pressed="false"
-              >
-                {servicio}
-              </button>
-            ))
-          }
+    {
+      !hideServicio && (
+        <div class="hidden border-t border-dm-offblack/10 px-3 py-3 md:block">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase"
+              >Servicio</span
+            >
+            <div class="flex flex-wrap gap-1.5">
+              {servicios.map((servicio) => (
+                <button
+                  type="button"
+                  class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm text-dm-offblack hover:border-dm-offblack"
+                  data-filter-chip
+                  data-value={servicio}
+                  aria-pressed="false"
+                >
+                  {servicio}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )
+    }
   </div>
   </div>
 </section>
@@ -354,12 +374,22 @@ const servicios = [...SERVICIOS];
     );
   }
 
-  function hasFilters(state: FilterState) {
-    return Boolean(state.q || state.servicio.size || state.estado.size);
+  function hasFilters(state: FilterState, root: HTMLElement) {
+    const hideEstado = root.dataset.hideEstado === "true";
+    const hideServicio = root.dataset.hideServicio === "true";
+    if (state.q) return true;
+    if (!hideServicio && state.servicio.size) return true;
+    if (!hideEstado && state.estado.size) return true;
+    return false;
   }
 
-  function facetCount(state: FilterState) {
-    return state.servicio.size + state.estado.size;
+  function facetCount(state: FilterState, root: HTMLElement) {
+    const hideEstado = root.dataset.hideEstado === "true";
+    const hideServicio = root.dataset.hideServicio === "true";
+    let n = 0;
+    if (!hideServicio) n += state.servicio.size;
+    if (!hideEstado) n += state.estado.size;
+    return n;
   }
 
   function estadoListLabel(values: string[], empty: string) {
@@ -451,20 +481,27 @@ const servicios = [...SERVICIOS];
     });
   }
 
-  function renderActiveCrumbs(state: FilterState) {
+  function renderActiveCrumbs(state: FilterState, root: HTMLElement) {
+    const hideEstado = root.dataset.hideEstado === "true";
+    const hideServicio = root.dataset.hideServicio === "true";
     document.querySelectorAll<HTMLElement>("[data-active-crumbs]").forEach((host) => {
       const light = host.dataset.crumbsTheme === "light";
-      if (!hasFilters(state)) {
+      const crumbState: FilterState = {
+        q: state.q,
+        servicio: hideServicio ? new Set() : state.servicio,
+        estado: hideEstado ? new Set() : state.estado,
+      };
+      if (!hasFilters(crumbState, root)) {
         host.hidden = true;
         host.replaceChildren();
         return;
       }
       host.hidden = false;
       const nodes: Node[] = [];
-      appendCrumbGroup(nodes, [...state.estado], "estado", light);
-      appendCrumbGroup(nodes, [...state.servicio], "servicio", light);
-      if (state.q) {
-        nodes.push(crumbSep(light), crumbPill(`“${state.q}”`, "q", state.q, light));
+      appendCrumbGroup(nodes, [...crumbState.estado], "estado", light);
+      appendCrumbGroup(nodes, [...crumbState.servicio], "servicio", light);
+      if (crumbState.q) {
+        nodes.push(crumbSep(light), crumbPill(`“${crumbState.q}”`, "q", crumbState.q, light));
       }
       host.replaceChildren(...nodes);
     });
@@ -499,10 +536,18 @@ const servicios = [...SERVICIOS];
   }
 
   function apply(root: HTMLElement, state: FilterState) {
+    const hideEstado = root.dataset.hideEstado === "true";
+    const hideServicio = root.dataset.hideServicio === "true";
+    const effective: FilterState = {
+      q: state.q,
+      servicio: hideServicio ? new Set() : state.servicio,
+      estado: hideEstado ? new Set() : state.estado,
+    };
+
     const cards = document.querySelectorAll<HTMLElement>("[data-profile-card]");
     let visible = 0;
     cards.forEach((card) => {
-      const ok = matches(card, state);
+      const ok = matches(card, effective);
       card.hidden = !ok;
       if (ok) visible += 1;
     });
@@ -510,39 +555,39 @@ const servicios = [...SERVICIOS];
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
       chip.setAttribute(
         "aria-pressed",
-        state.servicio.has(chip.dataset.value || "") ? "true" : "false",
+        effective.servicio.has(chip.dataset.value || "") ? "true" : "false",
       );
     });
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
-      box.checked = state.estado.has(box.value);
+      box.checked = effective.estado.has(box.value);
     });
-    syncEstadoLabels(root, state);
+    syncEstadoLabels(root, effective);
     // Remeasure after layout so we only abbreviate when the full list overflows.
-    requestAnimationFrame(() => syncEstadoLabels(root, state));
-    renderActiveCrumbs(state);
+    requestAnimationFrame(() => syncEstadoLabels(root, effective));
+    renderActiveCrumbs(effective, root);
 
     const qInput = root.querySelector<HTMLInputElement>("[data-filter-q]");
     if (qInput && qInput.value !== state.q) qInput.value = state.q;
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-clear]").forEach((btn) => {
-      btn.disabled = !hasFilters(state);
+      btn.disabled = !hasFilters(effective, root);
     });
 
-    const countText = hasFilters(state)
+    const countText = hasFilters(effective, root)
       ? `${visible} de ${cards.length}`
       : `${cards.length}`;
     const countEl = root.querySelector<HTMLElement>("[data-filter-count]");
     const countValue = root.querySelector<HTMLElement>("[data-filter-count-value]");
     if (countValue) countValue.textContent = countText;
     if (countEl) {
-      countEl.title = hasFilters(state)
+      countEl.title = hasFilters(effective, root)
         ? `${visible} de ${cards.length} perfiles`
         : `${cards.length} perfiles`;
     }
 
     const badge = root.querySelector<HTMLElement>("[data-sheet-badge]");
     if (badge) {
-      const n = facetCount(state);
+      const n = facetCount(effective, root);
       if (n > 0) {
         badge.hidden = false;
         badge.textContent = String(n);
@@ -597,6 +642,8 @@ const servicios = [...SERVICIOS];
     }
 
     let state = readUrl();
+    if (root.dataset.hideEstado === "true") state = { ...state, estado: new Set() };
+    if (root.dataset.hideServicio === "true") state = { ...state, servicio: new Set() };
     apply(root, state);
     setMobileFiltersOpen(root, false);
 
@@ -693,7 +740,7 @@ const servicios = [...SERVICIOS];
 
     document.querySelectorAll<HTMLAnchorElement>("[data-filter-home]").forEach((home) => {
       home.addEventListener("click", (e) => {
-        if (!hasFilters(state)) return;
+        if (!hasFilters(state, root)) return;
         e.preventDefault();
         state = { q: "", servicio: new Set(), estado: new Set() };
         writeUrl(state);

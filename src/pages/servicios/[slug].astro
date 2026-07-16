@@ -1,0 +1,54 @@
+---
+/**
+ * Profiles locked to one servicio; FilterBar still filters by estado + text.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProfileCard from "../../components/ProfileCard.astro";
+import DirectoryFilterBar from "../../components/DirectoryFilterBar.astro";
+import { MOCK_PROFILES } from "../../data/mockProfiles";
+import { SERVICIOS } from "../../data/taxonomy";
+import { servicioFromSlug, servicioSlug } from "../../lib/slugs";
+
+export function getStaticPaths() {
+  return SERVICIOS.map((servicio) => ({
+    params: { slug: servicioSlug(servicio) },
+  }));
+}
+
+const { slug } = Astro.params;
+const servicio = servicioFromSlug(slug!);
+if (!servicio) {
+  return Astro.redirect("/404");
+}
+
+const profiles = MOCK_PROFILES.filter((p) => p.servicios.includes(servicio));
+---
+
+<BaseLayout title={`${servicio} — DIMELA.mx`} headerVariant="simple" homeHref="/">
+  <header class="mb-4">
+    <p class="mb-2 text-sm text-dm-offblack/50">
+      <a href="/" class="hover:underline">Inicio</a>
+      <span class="mx-1.5" aria-hidden="true">›</span>
+      <a href="/servicios/" class="hover:underline">Servicios</a>
+      <span class="mx-1.5" aria-hidden="true">›</span>
+      <span class="text-dm-offblack/70">{servicio}</span>
+    </p>
+    <h1 class="text-2xl tracking-wide">{servicio}</h1>
+    <p class="mt-1 text-sm text-dm-offblack/65">
+      {profiles.length} {profiles.length === 1 ? "perfil" : "perfiles"}
+    </p>
+  </header>
+
+  <DirectoryFilterBar hideServicio />
+  <section aria-label={`Directorio · ${servicio}`}>
+    <div
+      class="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(min(100%,18.5rem),1fr))] gap-4 sm:gap-5"
+      data-profile-grid
+    >
+      {profiles.map((profile) => <ProfileCard profile={profile} />)}
+    </div>
+    <p class="mt-8 hidden text-center text-sm text-dm-offblack/55" data-filter-empty>
+      No hay perfiles con esos filtros.
+    </p>
+  </section>
+</BaseLayout>

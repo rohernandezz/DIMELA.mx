@@ -1,0 +1,500 @@
+---
+/**
+ * Brand / design playground — visual sandbox for tokens & UI patterns.
+ * Tokens: src/styles/global.css · docs: docs/brand.md
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const colors = [
+  {
+    token: "dm-offwhite",
+    hex: "#e9ebee",
+    role: "Page background; soft surfaces",
+    swatch: "bg-dm-offwhite",
+    text: "text-dm-offblack",
+    border: "border-dm-offblack/25",
+  },
+  {
+    token: "dm-offblack",
+    hex: "#383636",
+    role: "Primary text; header/footer chrome",
+    swatch: "bg-dm-offblack",
+    text: "text-dm-offwhite",
+    border: "border-dm-offblack",
+  },
+  {
+    token: "dm-pink",
+    hex: "#f5c1df",
+    role: "Accent — Pro badge, Limpiar active",
+    swatch: "bg-dm-pink",
+    text: "text-dm-offblack",
+    border: "border-dm-offblack/25",
+  },
+  {
+    token: "dm-blue",
+    hex: "#e8f2fb",
+    role: "Soft fill — card cover, ubicación",
+    swatch: "bg-dm-blue",
+    text: "text-dm-offblack",
+    border: "border-dm-offblack/20",
+  },
+  {
+    token: "dm-blue-strong",
+    hex: "#cde7fe",
+    role: "Stronger blue in gradients / covers",
+    swatch: "bg-dm-blue-strong",
+    text: "text-dm-offblack",
+    border: "border-dm-offblack/20",
+  },
+  {
+    token: "dm-green",
+    hex: "#d9f7d9",
+    role: "Accent — use sparingly",
+    swatch: "bg-dm-green",
+    text: "text-dm-offblack",
+    border: "border-dm-offblack/20",
+  },
+] as const;
+---
+
+<BaseLayout
+  title="Brand — DIMELA.mx"
+  description="Design playground: brand colors, Outpact type, and UI samples."
+>
+  <div class="mx-auto max-w-3xl space-y-16 pb-16">
+    <header class="space-y-2">
+      <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+        Design sandbox
+      </p>
+      <h1 class="text-3xl tracking-wide sm:text-4xl">Brand</h1>
+      <p class="max-w-xl text-sm leading-relaxed text-dm-offblack/70">
+        Tokens from <code class="text-dm-offblack">global.css</code> · OutpactVF · live UI
+        patterns. Design here, then implement in the app.
+      </p>
+    </header>
+
+    <!-- Colors -->
+    <section class="space-y-4" aria-labelledby="brand-colors">
+      <div>
+        <h2 id="brand-colors" class="text-xl tracking-wide">Colors</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          @theme tokens — use Tailwind classes, not hardcoded hex in components.
+        </p>
+      </div>
+      <ul class="grid gap-3 sm:grid-cols-2">
+        {
+          colors.map((c) => (
+            <li
+              class:list={[
+                "overflow-hidden rounded-md border bg-white shadow-sm",
+                c.border,
+              ]}
+            >
+              <div class:list={["h-20", c.swatch]} aria-hidden="true" />
+              <div class="space-y-1 border-t border-dm-offblack/10 px-3 py-2.5">
+                <p class="font-semibold">{c.token}</p>
+                <p class="font-mono text-xs text-dm-offblack/70">{c.hex}</p>
+                <p class="font-mono text-[11px] text-dm-offblack/50">
+                  bg-{c.token} · text-{c.token}
+                </p>
+                <p class="pt-1 text-xs text-dm-offblack/60">{c.role}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="rounded-md border border-dm-offblack/15 bg-white p-4">
+        <p class="mb-3 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+          Opacity hierarchy
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="rounded border border-dm-offblack/15 bg-dm-offblack/15 px-2.5 py-1 text-xs"
+            >offblack/15</span
+          >
+          <span class="rounded border border-dm-offblack/25 bg-dm-offblack/25 px-2.5 py-1 text-xs"
+            >offblack/25</span
+          >
+          <span class="rounded border border-dm-offblack/35 bg-dm-offblack/35 px-2.5 py-1 text-xs"
+            >offblack/35</span
+          >
+          <span class="rounded border border-dm-offblack/45 bg-dm-offblack/45 px-2.5 py-1 text-xs"
+            >offblack/45</span
+          >
+          <span class="rounded border border-dm-offblack/60 bg-dm-offblack/60 px-2.5 py-1 text-xs"
+            >offblack/60</span
+          >
+          <span class="rounded border border-dm-offblack/75 bg-dm-offblack/75 px-2.5 py-1 text-xs"
+            >offblack/75</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="space-y-4" aria-labelledby="brand-type">
+      <div>
+        <h2 id="brand-type" class="text-xl tracking-wide">Typography</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          OutpactVF · weights 100–900 · stack via <code class="text-dm-offblack">font-sans</code>
+        </p>
+      </div>
+      <div class="space-y-6 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
+        <div>
+          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Brand lockup
+          </p>
+          <p class="text-lg tracking-wide sm:text-2xl">DIMELA.mx</p>
+        </div>
+        <div>
+          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Weights
+          </p>
+          <ul class="space-y-1.5">
+            <li class="font-thin text-lg">100 Thin — letrista</li>
+            <li class="font-light text-lg">300 Light — letrista</li>
+            <li class="font-normal text-lg">400 Regular — letrista</li>
+            <li class="font-medium text-lg">500 Medium — letrista</li>
+            <li class="font-semibold text-lg">600 Semibold — letrista</li>
+            <li class="font-bold text-lg">700 Bold — letrista</li>
+            <li class="font-black text-lg">900 Black — letrista</li>
+          </ul>
+        </div>
+        <div>
+          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Sizes & tracking
+          </p>
+          <ul class="space-y-2">
+            <li class="text-3xl font-bold tracking-wide">Display · text-3xl tracking-wide</li>
+            <li class="text-xl font-bold">Card name · text-xl font-bold</li>
+            <li class="text-sm leading-relaxed text-dm-offblack/75">
+              Body · text-sm leading-relaxed /75 — Lettering, caligrafía y tipografía para marcas.
+            </li>
+            <li class="text-xs text-dm-offblack/60">Meta · text-xs /60 — Ciudad de México</li>
+            <li
+              class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            >
+              Facet label · uppercase tracking-wide
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Header strip -->
+    <section class="space-y-4" aria-labelledby="brand-header">
+      <div>
+        <h2 id="brand-header" class="text-xl tracking-wide">Header strip</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          Off-black chrome · off-white type · hamburger panel
+        </p>
+      </div>
+      <div
+        class="overflow-hidden rounded-md border border-dm-offblack/20 shadow-md"
+        aria-hidden="true"
+      >
+        <div
+          class="flex items-center justify-between bg-dm-offblack px-4 py-3 text-dm-offwhite"
+        >
+          <span class="text-lg tracking-wide">DIMELA.mx</span>
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded text-dm-offwhite"
+            aria-hidden="true"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="border-t border-black/10 bg-white py-1 text-dm-offblack shadow-lg">
+          <span class="block px-3 py-2 text-sm text-dm-offblack/50">Todo</span>
+          <span class="block bg-dm-offwhite px-3 py-2 text-sm">Acerca</span>
+          <span class="block border-t border-dm-offblack/10 px-3 py-2 text-sm">Brand</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter chips & Limpiar -->
+    <section class="space-y-4" aria-labelledby="brand-filters">
+      <div>
+        <h2 id="brand-filters" class="text-xl tracking-wide">Filters</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          Chips idle / pressed · Limpiar idle / active pink
+        </p>
+      </div>
+      <div class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
+        <div>
+          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Servicio
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack"
+              aria-pressed="false"
+            >
+              Lettering
+            </button>
+            <button
+              type="button"
+              class="rounded border border-dm-offblack bg-dm-offblack px-3 py-1.5 text-sm text-dm-offwhite"
+              aria-pressed="true"
+            >
+              Caligrafía
+            </button>
+            <button
+              type="button"
+              class="rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack hover:border-dm-offblack"
+              aria-pressed="false"
+            >
+              Tipografía
+            </button>
+          </div>
+          <p class="mt-2 text-[11px] text-dm-offblack/50">
+            Idle: <code>border-dm-offblack/25 bg-white</code> · Pressed:
+            <code>bg-dm-offblack text-dm-offwhite</code>
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-end gap-4 border-t border-dm-offblack/10 pt-5">
+          <div class="space-y-1.5">
+            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+              Limpiar idle
+            </p>
+            <button
+              type="button"
+              class="cursor-not-allowed rounded border border-dm-offblack/20 bg-transparent px-2 py-1 text-xs text-dm-offblack/40 opacity-50"
+              disabled
+            >
+              Limpiar
+            </button>
+          </div>
+          <div class="space-y-1.5">
+            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+              Limpiar active
+            </p>
+            <button
+              type="button"
+              class="rounded border border-dm-offblack bg-dm-pink px-2 py-1 text-xs text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
+            >
+              Limpiar
+            </button>
+          </div>
+          <div class="space-y-1.5">
+            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+              Count badge
+            </p>
+            <span class="relative inline-flex">
+              <span
+                class="rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite"
+              >
+                Filtros ▾
+              </span>
+              <span
+                class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-dm-pink px-1 text-[10px] font-bold text-dm-offblack"
+              >
+                2
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pro badge & profile cards -->
+    <section class="space-y-4" aria-labelledby="brand-cards">
+      <div>
+        <h2 id="brand-cards" class="text-xl tracking-wide">Profile cards</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          Pro fills cell + pink badge · Free scaled 98%×96% · softer border
+        </p>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <!-- Free sketch -->
+        <article
+          class="profile-card relative flex flex-col overflow-hidden rounded-md border-2 border-dm-offblack/15 bg-white shadow-md origin-center scale-x-[0.98] scale-y-[0.96]"
+        >
+          <div
+            class="relative aspect-[16/10] bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-offwhite p-4"
+          >
+            <span class="absolute bottom-4 left-4 text-3xl font-bold text-dm-offblack/25"
+              >Aa</span
+            >
+          </div>
+          <div class="flex flex-1 flex-col gap-3 p-4">
+            <header class="flex items-center gap-3">
+              <div
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
+                aria-hidden="true"
+              >
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p class="truncate text-lg font-bold">Free Studio</p>
+                <p class="text-sm text-dm-offblack/60">Jalisco</p>
+              </div>
+            </header>
+            <p class="line-clamp-2 text-sm leading-relaxed text-dm-offblack/75">
+              Lettering y tipografía. Escala visual Free dentro de la celda.
+            </p>
+            <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
+              <span
+                class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80"
+                >Lettering</span
+              >
+            </div>
+          </div>
+          <p
+            class="absolute bottom-2 left-2 rounded bg-dm-offblack/80 px-1.5 py-0.5 text-[9px] tracking-wide text-dm-offwhite uppercase"
+          >
+            Free
+          </p>
+        </article>
+
+        <!-- Pro sketch -->
+        <article
+          class="profile-card relative flex flex-col overflow-hidden rounded-md border-2 border-dm-offblack/35 bg-white shadow-lg"
+        >
+          <span
+            class="absolute top-3 right-3 z-10 rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase"
+          >
+            Pro
+          </span>
+          <div
+            class="relative aspect-[16/10] bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-pink/40 p-4"
+          >
+            <span class="absolute bottom-4 left-4 text-3xl font-bold text-dm-offblack/25"
+              >Aa</span
+            >
+          </div>
+          <div class="flex flex-1 flex-col gap-3 p-4">
+            <header class="flex items-center gap-3">
+              <div
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
+                aria-hidden="true"
+              >
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p class="truncate text-lg font-bold">Pro Atelier</p>
+                <p class="text-sm text-dm-offblack/60">CDMX</p>
+              </div>
+            </header>
+            <p class="line-clamp-2 text-sm leading-relaxed text-dm-offblack/75">
+              Identidad con trazo propio. Badge Pro + borde más fuerte.
+            </p>
+            <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
+              <span
+                class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80"
+                >Caligrafía</span
+              >
+              <span
+                class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80"
+                >Tipografía</span
+              >
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Forms & controls -->
+    <section class="space-y-4" aria-labelledby="brand-forms">
+      <div>
+        <h2 id="brand-forms" class="text-xl tracking-wide">Forms & controls</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          Search, ubicación, borders — matching filter bar patterns
+        </p>
+      </div>
+      <div class="space-y-4 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
+        <div>
+          <label
+            for="brand-search"
+            class="mb-1.5 block text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          >
+            Buscar
+          </label>
+          <input
+            id="brand-search"
+            type="search"
+            placeholder="Nombre o descripción…"
+            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack"
+          />
+        </div>
+        <div>
+          <p class="mb-1.5 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Ubicación
+          </p>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
+          >
+            <span>Todo México</span>
+            <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-3 border-t border-dm-offblack/10 pt-4">
+          <button
+            type="button"
+            class="rounded border border-dm-offblack bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite transition hover:opacity-90"
+          >
+            Primario
+          </button>
+          <button
+            type="button"
+            class="rounded border border-dm-offblack/25 bg-white px-3 py-2 text-sm text-dm-offblack transition hover:border-dm-offblack"
+          >
+            Secundario
+          </button>
+          <button
+            type="button"
+            class="rounded border border-dm-offblack bg-dm-pink px-3 py-2 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
+          >
+            Acento
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Borders & shadows -->
+    <section class="space-y-4" aria-labelledby="brand-surfaces">
+      <div>
+        <h2 id="brand-surfaces" class="text-xl tracking-wide">Borders & shadows</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">Surface treatments used on cards and shells</p>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div
+          class="rounded-md border border-dm-offblack/15 bg-white p-4 text-center text-xs shadow-sm"
+        >
+          <p class="font-semibold">Soft</p>
+          <p class="mt-1 text-dm-offblack/50">border /15 · shadow-sm</p>
+        </div>
+        <div
+          class="rounded-md border-2 border-dm-offblack/15 bg-white p-4 text-center text-xs shadow-md"
+        >
+          <p class="font-semibold">Free card</p>
+          <p class="mt-1 text-dm-offblack/50">border-2 /15 · shadow-md</p>
+        </div>
+        <div
+          class="rounded-md border-2 border-dm-offblack/35 bg-white p-4 text-center text-xs shadow-lg"
+        >
+          <p class="font-semibold">Pro card</p>
+          <p class="mt-1 text-dm-offblack/50">border-2 /35 · shadow-lg</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="border-t border-dm-offblack/10 pt-6 text-xs text-dm-offblack/45">
+      Source: <code>docs/brand.md</code> · <code>src/styles/global.css</code>
+    </p>
+  </div>
+</BaseLayout>

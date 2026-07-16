@@ -6,8 +6,9 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "npm run emit:profiles && astro dev",
+    "build": "npm run emit:profiles && astro build",
+    "emit:profiles": "npx --yes tsx scripts/emit-mock-profiles.ts",
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "npm run build && wrangler deploy"

@@ -11,6 +11,8 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 - [x] Option B as default `/` (mobile crumbs, desktop chips)
 - [x] Deploy preview: `dimela-mx.*.workers.dev`
 - [x] Decision: keep `src/data/mockProfiles.ts` (better than old Blowfish dummy set); skip Hugo content import for now
+- [x] Taxonomy browse — `/estado/`, `/servicios/` (+ `[slug]` detail) over mock data
+- [x] Mock-first `/api/search` on the Worker (reads `public/data/profiles.json`)
 
 ## UI prototypes (kept for reference)
 
@@ -24,14 +26,14 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 
 ## Next (build)
 
-1. **Taxonomy pages** — `/estado/`, `/servicios/` browse indexes over mock data
-2. **D1 + `/api/search`** when ready for real persistence (still mock-first until then)
+1. **Wire homepage filters to `/api/search`** (optional; client mock still works)
+2. **D1** — persist published profiles; point `/api/search` at SQL (`source: "d1"`)
 3. Auth → approval → Pro/Stripe → cutover
 
 Profile cards link to `/directorio/[slug]/` (mock detail pages).
 
 ## Notes
 
-- Filters: `?q=&servicio=&estado=` (client-side on mocks until API)
+- Filters: `?q=&servicio=&estado=` (client-side on mocks; same shape on `/api/search`)
 - Destacados deferred
 - Hugo `content/` remains in-repo as legacy reference only

@@ -32,6 +32,12 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - Brand color + type: [docs/brand.md](brand.md) — tokens in `src/styles/global.css` `@theme`
 - Font file: `public/fonts/Outpact-VF.woff2`
 
+### Search API (mock-first)
+
+- `GET /api/search?q=&servicio=&estado=` — Worker filters `public/data/profiles.json` (emitted from `src/data/mockProfiles.ts` on build)
+- Response: `{ ok, source: "mock", total, query, results }`
+- Later: same route, `source: "d1"`, query published rows only
+
 ## Planned (platform)
 
 When profiles become editable and paid tiers exist, the edge stack grows:
