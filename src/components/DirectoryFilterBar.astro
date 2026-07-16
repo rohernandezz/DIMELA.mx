@@ -79,15 +79,15 @@ const { servicios, estados } = Astro.props;
   </div>
 
   <div class="mt-2 flex flex-wrap items-center gap-1.5">
-    <span class="shrink-0 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+    <span class="shrink-0 text-xs font-semibold tracking-wide text-dm-offblack/50 uppercase">
       Servicio
     </span>
-    <div class="flex flex-wrap gap-1" role="group" aria-label="Filtrar por servicio">
+    <div class="flex flex-wrap gap-1.5" role="group" aria-label="Filtrar por servicio">
       {
         servicios.map((servicio) => (
           <button
             type="button"
-            class="filter-chip rounded border border-dm-offblack/20 bg-white px-1.5 py-0.5 text-[11px] leading-tight text-dm-offblack transition hover:border-dm-offblack"
+            class="filter-chip rounded border border-dm-offblack/25 bg-white px-2.5 py-1 text-sm leading-tight text-dm-offblack transition hover:border-dm-offblack"
             data-filter-chip
             data-facet="servicio"
             data-value={servicio}
