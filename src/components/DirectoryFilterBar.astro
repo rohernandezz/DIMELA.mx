@@ -27,7 +27,8 @@ const estados = [...MEXICO_ESTADOS];
 const servicios = [...SERVICIOS];
 ---
 
-<div data-filter-sentinel class="pointer-events-none h-px w-full" aria-hidden="true"></div>
+  {/* Sentinel: when this leaves the viewport, filter bar sticks under the site header */}
+  <div data-filter-sentinel class="pointer-events-none h-px w-full" aria-hidden="true"></div>
 <section
   class="directory-filter mb-6"
   data-directory-filter
@@ -37,7 +38,6 @@ const servicios = [...SERVICIOS];
   data-lock-servicio={lockServicio}
   aria-label="Filtrar directorio"
 >
-  {/* Header moves here when collapsed so grey bar + search stick as one unit */}
   <div data-sticky-stack>
     <div class="filter-shell overflow-visible rounded border border-dm-offblack/15 bg-white">
       {/* Top row — always visible */}
@@ -258,27 +258,20 @@ const servicios = [...SERVICIOS];
   }
 
   /*
-   * Collapsed (scroll): real header + search stick as one unit.
-   * At top of page: normal spacing — header in body, search as inset card.
-   * Mobile: break out of main padding. Desktop: full viewport width.
+   * Collapsed (scroll): filter sticks flush under the always-sticky site header.
+   * --dm-site-header-h is kept in sync via ResizeObserver (compact anim included).
    */
   .directory-filter[data-collapsed] {
     position: sticky;
-    top: 0;
+    top: calc(var(--dm-site-header-h, 3.25rem) - 1px);
     z-index: 40;
     margin-left: calc(-1 * var(--dm-page-px));
     margin-right: calc(-1 * var(--dm-page-px));
-    background-color: var(--color-dm-offwhite);
+    background-color: #fff;
   }
   .directory-filter[data-collapsed] [data-sticky-stack] {
     display: flex;
     flex-direction: column;
-  }
-  .directory-filter[data-collapsed] :global(header [data-header-inner]) {
-    max-width: none;
-    margin-inline: 0;
-    padding-left: var(--dm-page-px);
-    padding-right: var(--dm-page-px);
   }
   /* Desktop sticky: edge-to-edge; controls stay on page column */
   @media (min-width: 768px) {
@@ -287,18 +280,6 @@ const servicios = [...SERVICIOS];
       max-width: 100vw;
       margin-left: calc(50% - 50vw);
       margin-right: calc(50% - 50vw);
-    }
-    .directory-filter[data-collapsed] :global(header [data-header-inner]) {
-      max-width: var(--max-width-dm-page);
-      margin-inline: auto;
-      padding-top: 0.25rem;
-      padding-bottom: 0.25rem;
-      min-height: 0;
-    }
-    .directory-filter[data-collapsed] :global(header [data-header-inner] a[data-filter-home]) {
-      font-size: 0.8125rem;
-      line-height: 1rem;
-      letter-spacing: 0.02em;
     }
     .directory-filter[data-collapsed] .filter-top,
     .directory-filter[data-collapsed] .filter-shell > .border-t {
@@ -335,15 +316,6 @@ const servicios = [...SERVICIOS];
     }
     .directory-filter[data-collapsed] [data-filter-count] {
       display: none;
-    }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .directory-filter[data-collapsed] :global(header [data-header-inner]),
-    .directory-filter[data-collapsed] :global(header [data-header-inner] a[data-filter-home]) {
-      transition:
-        padding 0.2s ease,
-        font-size 0.2s ease,
-        line-height 0.2s ease;
     }
   }
 </style>
@@ -722,38 +694,57 @@ const servicios = [...SERVICIOS];
     if (!root) return;
 
     const stack = root.querySelector<HTMLElement>("[data-sticky-stack]");
-    const main = document.querySelector("main");
+    const siteHeader = document.querySelector<HTMLElement>("[data-site-header]");
     const sentinel = document.querySelector("[data-filter-sentinel]");
 
-    const setCollapsed = (collapsed: boolean) => {
-      const header = document.querySelector<HTMLElement>("header");
-      if (!header || !stack || !main) return;
+    const syncSiteHeaderHeight = () => {
+      if (!siteHeader) {
+        document.documentElement.style.setProperty("--dm-site-header-h", "52px");
+        return;
+      }
+      // Floor so sticky top never sits below the visible header (avoids the desktop gap).
+      const h = Math.max(1, Math.floor(siteHeader.getBoundingClientRect().height));
+      document.documentElement.style.setProperty("--dm-site-header-h", `${h}px`);
+    };
 
+    const setCollapsed = (collapsed: boolean) => {
       const wasCollapsed = root.hasAttribute("data-collapsed");
       if (collapsed === wasCollapsed) return;
 
       root.toggleAttribute("data-collapsed", collapsed);
+      siteHeader?.toggleAttribute("data-compact", collapsed);
+      // Measure after compact styles apply (and again on the next frame during transitions).
+      syncSiteHeaderHeight();
+      requestAnimationFrame(() => {
+        syncSiteHeaderHeight();
+        requestAnimationFrame(syncSiteHeaderHeight);
+      });
 
-      if (collapsed) {
-        if (header.parentElement !== stack) stack.prepend(header);
-        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          stack.animate(
-            [
-              { transform: "translateY(-0.5rem)", opacity: 0.75 },
-              { transform: "translateY(0)", opacity: 1 },
-            ],
-            { duration: 180, easing: "ease-out" },
-          );
-        }
-      } else if (header.parentElement === stack) {
-        main.parentElement?.insertBefore(header, main);
+      if (collapsed && stack && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        stack.animate(
+          [
+            { transform: "translateY(-0.35rem)", opacity: 0.85 },
+            { transform: "translateY(0)", opacity: 1 },
+          ],
+          { duration: 160, easing: "ease-out" },
+        );
       }
     };
+
+    syncSiteHeaderHeight();
+    if (siteHeader && typeof ResizeObserver !== "undefined") {
+      const headerRo = new ResizeObserver(() => syncSiteHeaderHeight());
+      headerRo.observe(siteHeader);
+    }
 
     if (sentinel) {
       const collapsedObserver = new IntersectionObserver(
         ([entry]) => setCollapsed(!entry.isIntersecting),
-        { threshold: 0 },
+        {
+          // Unstick only once the sentinel is back under the sticky site header.
+          rootMargin: `-${Math.max(1, Math.round((siteHeader?.getBoundingClientRect().height ?? 52) - 1))}px 0px 0px 0px`,
+          threshold: 0,
+        },
       );
       collapsedObserver.observe(sentinel);
     }
@@ -768,6 +759,7 @@ const servicios = [...SERVICIOS];
     window.addEventListener("resize", () => {
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
+        syncSiteHeaderHeight();
         syncEstadoLabels(root, state);
         syncSiteTaglineFromCrumbs();
       }, 100);
