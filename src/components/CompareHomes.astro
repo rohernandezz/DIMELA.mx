@@ -1,0 +1,34 @@
+---
+/**
+ * Tiny strip to flip between homepage filter mocks.
+ */
+interface Props {
+  current: "path" | "bar";
+}
+
+const { current } = Astro.props;
+---
+
+<p
+  class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded border border-dashed border-dm-offblack/20 bg-white/70 px-3 py-2 text-xs text-dm-offblack/70"
+>
+  <span class="font-semibold tracking-wide uppercase">Comparar UI</span>
+  <a
+    href="/"
+    class:list={[
+      "underline-offset-2 hover:underline",
+      current === "path" && "font-bold text-dm-offblack underline",
+    ]}
+  >
+    A · Path / breadcrumbs
+  </a>
+  <a
+    href="/bar/"
+    class:list={[
+      "underline-offset-2 hover:underline",
+      current === "bar" && "font-bold text-dm-offblack underline",
+    ]}
+  >
+    B · Filter bar
+  </a>
+</p>

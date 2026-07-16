@@ -1,50 +1,84 @@
 ---
 /**
- * Site header: path filter (logo › ubicación › servicio) + quiet nav.
+ * Simple header — logo + nav only (filters live below in DirectoryFilterBar).
  */
+interface Props {
+  variant?: "path" | "simple";
+}
+
 import DirectoryPathFilter from "./DirectoryPathFilter.astro";
 
+const { variant = "path" } = Astro.props;
 const pathname = Astro.url.pathname;
 ---
 
 <header class="border-b border-black/10 bg-dm-offblack text-dm-offwhite">
-  <div
-    class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6"
-  >
-    <DirectoryPathFilter />
-
-    <nav
-      class="flex shrink-0 flex-wrap items-center gap-3 text-xs text-dm-offwhite/70 sm:justify-end"
-      aria-label="Principal"
-    >
-      <a
-        href="/directorio/"
-        class:list={["hover:text-dm-offwhite", pathname.startsWith("/directorio") && "text-dm-offwhite underline"]}
-        aria-current={pathname.startsWith("/directorio") ? "page" : undefined}
-      >
-        Todo
-      </a>
-      <a
-        href="/estado/"
-        class:list={["hover:text-dm-offwhite", pathname.startsWith("/estado") && "text-dm-offwhite underline"]}
-        aria-current={pathname.startsWith("/estado") ? "page" : undefined}
-      >
-        Locación
-      </a>
-      <a
-        href="/servicios/"
-        class:list={["hover:text-dm-offwhite", pathname.startsWith("/servicios") && "text-dm-offwhite underline"]}
-        aria-current={pathname.startsWith("/servicios") ? "page" : undefined}
-      >
-        Servicios
-      </a>
-      <a
-        href="/acerca-de/"
-        class:list={["hover:text-dm-offwhite", pathname.startsWith("/acerca-de") && "text-dm-offwhite underline"]}
-        aria-current={pathname.startsWith("/acerca-de") ? "page" : undefined}
-      >
-        Acerca
-      </a>
-    </nav>
-  </div>
+  {
+    variant === "path" ? (
+      <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+        <DirectoryPathFilter />
+        <nav
+          class="flex shrink-0 flex-wrap items-center gap-3 text-xs text-dm-offwhite/70 sm:justify-end"
+          aria-label="Principal"
+        >
+          <a
+            href="/directorio/"
+            class:list={[
+              "hover:text-dm-offwhite",
+              pathname.startsWith("/directorio") && "text-dm-offwhite underline",
+            ]}
+          >
+            Todo
+          </a>
+          <a
+            href="/estado/"
+            class:list={[
+              "hover:text-dm-offwhite",
+              pathname.startsWith("/estado") && "text-dm-offwhite underline",
+            ]}
+          >
+            Locación
+          </a>
+          <a
+            href="/servicios/"
+            class:list={[
+              "hover:text-dm-offwhite",
+              pathname.startsWith("/servicios") && "text-dm-offwhite underline",
+            ]}
+          >
+            Servicios
+          </a>
+          <a
+            href="/acerca-de/"
+            class:list={[
+              "hover:text-dm-offwhite",
+              pathname.startsWith("/acerca-de") && "text-dm-offwhite underline",
+            ]}
+          >
+            Acerca
+          </a>
+        </nav>
+      </div>
+    ) : (
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <a href="/bar/" class="text-lg tracking-wide hover:opacity-80">
+          DIMELA.mx
+        </a>
+        <nav class="flex flex-wrap items-center gap-4 text-sm text-dm-offwhite/80" aria-label="Principal">
+          <a href="/directorio/" class="hover:text-dm-offwhite">
+            Todo
+          </a>
+          <a href="/estado/" class="hover:text-dm-offwhite">
+            Locación
+          </a>
+          <a href="/servicios/" class="hover:text-dm-offwhite">
+            Servicios
+          </a>
+          <a href="/acerca-de/" class="hover:text-dm-offwhite">
+            Acerca
+          </a>
+        </nav>
+      </div>
+    )
+  }
 </header>

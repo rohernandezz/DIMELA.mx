@@ -1,18 +1,17 @@
 ---
 /**
- * Homepage A — path / breadcrumb filters in the header.
+ * Homepage B — simple header + compact filter bar (pre-path style).
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileCard from "../components/ProfileCard.astro";
+import DirectoryFilterBar from "../components/DirectoryFilterBar.astro";
 import CompareHomes from "../components/CompareHomes.astro";
 import { MOCK_PROFILES } from "../data/mockProfiles";
 ---
 
-<BaseLayout
-  title="DIMELA.mx — Path UI"
-  headerVariant="path"
->
-  <CompareHomes current="path" />
+<BaseLayout title="DIMELA.mx — Filter bar UI" headerVariant="simple">
+  <CompareHomes current="bar" />
+  <DirectoryFilterBar />
   <section aria-label="Directorio">
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-profile-grid>
       {MOCK_PROFILES.map((profile) => <ProfileCard profile={profile} />)}
