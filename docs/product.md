@@ -45,7 +45,7 @@ Two ways to find people (both stay):
 **Facet rule:** OR within a facet, AND across facets  
 (e.g. Lettering *or* Branding, *and* CDMX if selected).
 
-**Data today:** Live grids and filters use `GET /api/search` (D1 published rows; `profiles.json` fallback). Profile detail pages and taxonomy indexes still build from `src/data/mockProfiles.ts`.
+**Data today:** Directory grids, filters, taxonomy indexes, and profile detail pages load from Worker APIs over D1 (`/api/search`, `/api/profile`), with `profiles.json` as fallback.
 
 Other filter UI experiments (A/C/D) are archived as routes — see [ui-prototypes.md](ui-prototypes.md).
 

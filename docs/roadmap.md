@@ -15,6 +15,8 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 - [x] Mock-first `/api/search` on the Worker (reads `public/data/profiles.json`)
 - [x] Directory grid filled from `/api/search` (D1); same source as filters
 - [x] D1 `profiles` table + seed from mocks; `/api/search` prefers D1 (`source: "d1"`)
+- [x] Profile detail + taxonomy indexes from `/api/profile` and `/api/search`
+- [x] Random grid order per page load (stable while filtering)
 
 ## UI prototypes (kept for reference)
 
@@ -33,11 +35,12 @@ Phased delivery. Canonical discovery UI is **Option B (filter bar)** on `/`.
 2. **Approval** — draft → pending_review → published
 3. **Pro / Stripe** → cutover from Hugo
 
-Profile **detail** pages (`/directorio/[slug]/`) and taxonomy **indexes** still use mock data at build time. Live grids (`/`, `/directorio/`, `/estado/[slug]/`, `/servicios/[slug]/`) render from `/api/search`.
+Profile **detail** pages and taxonomy **indexes** load from `/api/profile` and `/api/search` (D1). Static paths for details are generated from emitted `profiles.json` at build time.
 
 ## Notes
 
 - Filters: `?q=&servicio=&estado=` (FilterBar → `/api/search`; falls back to `/data/profiles.json` in `astro dev`)
+- Profile: `GET /api/profile?slug=`
 - Destacados deferred
 - Hugo `content/` remains in-repo as legacy reference only
 - D1 scripts: `npm run db:migrate:remote` / `db:seed:remote` (see [architecture.md](architecture.md))

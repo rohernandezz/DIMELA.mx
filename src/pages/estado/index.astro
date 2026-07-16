@@ -1,12 +1,8 @@
 ---
 /**
- * Browse by ubicación — index of estados with profile counts (mock).
+ * Browse by ubicación — counts from /api/search (D1).
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { countByEstado } from "../../lib/taxonomyCounts";
-
-const rows = countByEstado();
-const total = rows.reduce((n, r) => n + r.count, 0);
 ---
 
 <BaseLayout title="Locación — DIMELA.mx" headerVariant="simple" homeHref="/">
@@ -17,29 +13,44 @@ const total = rows.reduce((n, r) => n + r.count, 0);
       <span class="text-dm-offblack/70">Locación</span>
     </p>
     <h1 class="text-2xl tracking-wide">Explorar por ubicación</h1>
-    <p class="mt-2 text-sm text-dm-offblack/65">
-      {total} perfiles en {rows.filter((r) => r.count > 0).length} ubicaciones.
-    </p>
+    <p class="mt-2 text-sm text-dm-offblack/65" data-taxonomy-summary>Cargando…</p>
   </header>
 
-  <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-    {
-      rows.map((row) => (
-        <li>
-          <a
-            href={`/estado/${row.slug}/`}
-            class:list={[
-              "flex items-baseline justify-between gap-3 rounded border px-3 py-2.5 transition",
-              row.count > 0
-                ? "border-dm-offblack/15 bg-white hover:border-dm-offblack/35 hover:shadow-sm"
-                : "pointer-events-none border-dm-offblack/10 bg-white/50 text-dm-offblack/40",
-            ]}
-          >
-            <span class="min-w-0 truncate font-medium">{row.label}</span>
-            <span class="shrink-0 text-sm tabular-nums text-dm-offblack/55">{row.count}</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-taxonomy-index data-taxonomy-kind="estado"></ul>
 </BaseLayout>
+
+<script>
+  import { fetchSearchResults } from "../../lib/fetchDirectory";
+  import { countByEstado } from "../../lib/taxonomyCounts";
+
+  function rowHtml(href: string, label: string, count: number) {
+    const active = count > 0;
+    const cls = active
+      ? "border-dm-offblack/15 bg-white hover:border-dm-offblack/35 hover:shadow-sm"
+      : "pointer-events-none border-dm-offblack/10 bg-white/50 text-dm-offblack/40";
+    return `<li><a href="${href}" class="flex items-baseline justify-between gap-3 rounded border px-3 py-2.5 transition ${cls}"><span class="min-w-0 truncate font-medium">${label}</span><span class="shrink-0 text-sm tabular-nums text-dm-offblack/55">${count}</span></a></li>`;
+  }
+
+  async function init() {
+    const list = document.querySelector<HTMLElement>('[data-taxonomy-index][data-taxonomy-kind="estado"]');
+    const summary = document.querySelector<HTMLElement>("[data-taxonomy-summary]");
+    if (!list) return;
+
+    try {
+      const profiles = await fetchSearchResults();
+      const rows = countByEstado(profiles);
+      const withProfiles = rows.filter((r) => r.count > 0).length;
+      list.innerHTML = rows
+        .map((row) => rowHtml(`/estado/${row.slug}/`, row.label, row.count))
+        .join("");
+      if (summary) {
+        summary.textContent = `${profiles.length} perfiles en ${withProfiles} ubicaciones.`;
+      }
+    } catch {
+      if (summary) summary.textContent = "No se pudo cargar el directorio.";
+    }
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

@@ -648,6 +648,33 @@ const servicios = [...SERVICIOS];
 
   let applySeq = 0;
   let catalogTotal = 0;
+  /** Slug order for this page load — random once, stable while filtering. */
+  let sessionOrder: string[] | null = null;
+
+  function shuffleProfiles(items: SearchableProfile[]): SearchableProfile[] {
+    const next = [...items];
+    for (let i = next.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = next[i]!;
+      next[i] = next[j]!;
+      next[j] = tmp;
+    }
+    return next;
+  }
+
+  function orderForSession(results: SearchableProfile[], reshuffle: boolean): SearchableProfile[] {
+    if (reshuffle || !sessionOrder) {
+      const shuffled = shuffleProfiles(results);
+      sessionOrder = shuffled.map((p) => p.slug);
+      return shuffled;
+    }
+    const rank = new Map(sessionOrder.map((slug, i) => [slug, i]));
+    return [...results].sort(
+      (a, b) =>
+        (rank.get(a.slug) ?? Number.MAX_SAFE_INTEGER) -
+        (rank.get(b.slug) ?? Number.MAX_SAFE_INTEGER),
+    );
+  }
 
   async function apply(root: HTMLElement, state: FilterState) {
     const effective = uiState(state, root);
@@ -655,9 +682,11 @@ const servicios = [...SERVICIOS];
 
     const seq = ++applySeq;
     try {
-      const results = await loadResults(root, state);
+      const raw = await loadResults(root, state);
       if (seq !== applySeq) return;
-      if (!hasFilters(effective, root)) catalogTotal = results.length;
+      const filtered = hasFilters(effective, root);
+      if (!filtered) catalogTotal = raw.length;
+      const results = orderForSession(raw, sessionOrder === null);
       paintGrid(results);
       paintCounts(root, effective, results.length, catalogTotal || results.length);
     } catch {

@@ -40,8 +40,11 @@ This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) patt
 - `GET /api/search?q=&servicio=&estado=`
 - Prefers **D1** published rows (`source: "d1"`); falls back to `public/data/profiles.json` (`source: "mock"`)
 - Live directory grids (`/`, `/directorio/`, taxonomy detail) are empty in HTML and filled client-side from this endpoint (one source of truth with filters)
+- Taxonomy indexes (`/estado/`, `/servicios/`) count from the same search results
+- Profile detail: `GET /api/profile?slug=` (D1 row, mock JSON fallback); page shell hydrates client-side
 - FilterBar falls back to filtering `/data/profiles.json` when the Worker API is unavailable (`astro dev`)
-- Response: `{ ok, source, total, query, results }`
+- Response (search): `{ ok, source, total, query, results }`
+- Response (profile): `{ ok, source, profile }`
 
 ### D1
 

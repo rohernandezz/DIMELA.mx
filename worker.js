@@ -1,5 +1,5 @@
 /**
- * Cloudflare Worker: static assets + /api/search (D1 when bound, else mock JSON).
+ * Cloudflare Worker: static assets + directory APIs (D1 when bound, else mock JSON).
  */
 
 function parseList(param) {
@@ -71,7 +71,25 @@ async function loadFromD1(env) {
     if (!results?.length) return null;
     return results.map(mapD1Row);
   } catch (err) {
-    console.error("D1 search load failed, falling back to mock:", err);
+    console.error("D1 load failed, falling back to mock:", err);
+    return null;
+  }
+}
+
+async function loadProfileFromD1(env, slug) {
+  if (!env.DB) return null;
+  try {
+    const row = await env.DB.prepare(
+      `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar
+       FROM profiles
+       WHERE status = 'published' AND slug = ?
+       LIMIT 1`,
+    )
+      .bind(slug)
+      .first();
+    return row ? mapD1Row(row) : null;
+  } catch (err) {
+    console.error("D1 profile load failed:", err);
     return null;
   }
 }
@@ -80,6 +98,14 @@ async function loadFromMock(env, origin) {
   const assetRes = await env.ASSETS.fetch(new URL("/data/profiles.json", origin));
   if (!assetRes.ok) return null;
   return assetRes.json();
+}
+
+async function loadProfiles(env, origin) {
+  let source = "mock";
+  let profiles = await loadFromD1(env);
+  if (profiles) source = "d1";
+  else profiles = await loadFromMock(env, origin);
+  return { source, profiles };
 }
 
 export default {
@@ -97,14 +123,7 @@ export default {
         estado: parseList(url.searchParams.get("estado")),
       };
 
-      let source = "mock";
-      let profiles = await loadFromD1(env);
-      if (profiles) {
-        source = "d1";
-      } else {
-        profiles = await loadFromMock(env, url.origin);
-      }
-
+      const { source, profiles } = await loadProfiles(env, url.origin);
       if (!profiles) {
         return json({ ok: false, error: "No se pudo cargar el directorio." }, 503);
       }
@@ -118,6 +137,31 @@ export default {
         query,
         results,
       });
+    }
+
+    if (url.pathname === "/api/profile") {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return json({ ok: false, error: "Método no permitido." }, 405);
+      }
+
+      const slug = (url.searchParams.get("slug") || "").trim();
+      if (!slug) {
+        return json({ ok: false, error: "Falta slug." }, 400);
+      }
+
+      let source = "d1";
+      let profile = await loadProfileFromD1(env, slug);
+      if (!profile) {
+        const { source: mockSource, profiles } = await loadProfiles(env, url.origin);
+        source = mockSource;
+        profile = profiles?.find((p) => p.slug === slug) || null;
+      }
+
+      if (!profile) {
+        return json({ ok: false, error: "Perfil no encontrado." }, 404);
+      }
+
+      return json({ ok: true, source, profile });
     }
 
     if (url.pathname.startsWith("/api/")) {
