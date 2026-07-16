@@ -16,6 +16,7 @@ function sqlStr(value: string | null | undefined): string {
 
 const lines = [
   "-- Auto-generated from src/data/mockProfiles.ts — do not edit by hand",
+  "DELETE FROM profile_publications;",
   "DELETE FROM profiles;",
   "",
 ];
@@ -42,7 +43,19 @@ for (const p of MOCK_PROFILES) {
   );
 }
 
-lines.push("");
+lines.push(
+  "",
+  `INSERT INTO profile_publications (
+  slug, name, estado, servicios, description, website, tier, featured,
+  cover, avatar, custom_css, custom_fonts, galleries
+)
+SELECT
+  slug, name, estado, servicios, description, website, tier, featured,
+  cover, avatar, custom_css, custom_fonts, galleries
+FROM profiles
+WHERE status = 'published';`,
+  "",
+);
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, lines.join("\n"));
 console.log(`Wrote ${MOCK_PROFILES.length} INSERT rows → ${out}`);

@@ -10,6 +10,10 @@ import {
   recordMediaDelete,
   recordMediaPut,
 } from "./media.js";
+import {
+  markProfileDraftForEdit,
+  publicationReferencesMedia,
+} from "./publications.js";
 
 export const FONT_LIMITS = {
   maxFonts: 2,
@@ -48,6 +52,7 @@ async function loadOwnedProfile(env, userId) {
 }
 
 async function saveFonts(env, userId, fonts) {
+  await markProfileDraftForEdit(env, userId);
   await env.DB.prepare(
     `UPDATE profiles SET custom_fonts = ?, updated_at = datetime('now') WHERE user_id = ?`,
   )
@@ -190,7 +195,8 @@ export async function handleFontDelete(request, env) {
   await saveFonts(env, user.id, next);
 
   const oldKey = objectKeyFromUrl(target.url);
-  if (oldKey && env.MEDIA) {
+  const isPublished = await publicationReferencesMedia(env, profile.slug, target.url);
+  if (oldKey && env.MEDIA && !isPublished) {
     try {
       await env.MEDIA.delete(oldKey);
       await recordMediaDelete(env, oldKey);

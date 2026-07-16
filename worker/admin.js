@@ -3,6 +3,7 @@
  */
 import { getSessionUser, json, mapProfileRow, PROFILE_COLUMNS, normalizeEmail, isValidEmail } from "./auth.js";
 import { normalizeSlug } from "./slugs.js";
+import { publishProfile, rejectPublishedRevision } from "./publications.js";
 
 async function requireAdmin(env, request) {
   if (!env.DB) return { error: json({ ok: false, error: "D1 no configurado." }, 503) };
@@ -27,8 +28,12 @@ export async function handleAdminQueue(request, env) {
 
   const { results } = await env.DB.prepare(
     `SELECT p.slug, p.name, p.estado, p.servicios, p.description, p.website, p.tier,
-            p.featured, p.cover, p.avatar, p.custom_css, p.status, p.user_id, p.galleries,
-            p.invite_email, p.updated_at, u.email AS owner_email
+            p.featured, p.cover, p.avatar, p.custom_css, p.custom_fonts,
+            p.status, p.user_id, p.galleries,
+            p.invite_email, p.updated_at, u.email AS owner_email,
+            EXISTS(
+              SELECT 1 FROM profile_publications pp WHERE pp.slug = p.slug
+            ) AS has_publication
      FROM profiles p
      LEFT JOIN users u ON u.id = p.user_id
      WHERE p.status = ?
@@ -66,8 +71,6 @@ export async function handleAdminDecide(request, env, url) {
     return json({ ok: false, error: "Acción inválida." }, 400);
   }
 
-  const nextStatus = action === "approve" ? "published" : "rejected";
-
   let note = null;
   try {
     if ((request.headers.get("content-type") || "").includes("application/json")) {
@@ -85,11 +88,18 @@ export async function handleAdminDecide(request, env, url) {
     .first();
   if (!existing) return json({ ok: false, error: "Perfil no encontrado." }, 404);
 
-  await env.DB.prepare(
-    `UPDATE profiles SET status = ?, updated_at = datetime('now') WHERE slug = ?`,
-  )
-    .bind(nextStatus, slug)
-    .run();
+  if (action === "approve") {
+    await publishProfile(env, slug);
+  } else {
+    const rejectedPublished = await rejectPublishedRevision(env, slug);
+    if (!rejectedPublished.meta?.changes) {
+      await env.DB.prepare(
+        `UPDATE profiles SET status = 'rejected', updated_at = datetime('now') WHERE slug = ?`,
+      )
+        .bind(slug)
+        .run();
+    }
+  }
 
   // Optional audit note in a lightweight way: store in description prefix? Skip — keep note in response only for now.
   const row = await env.DB.prepare(
@@ -169,11 +179,14 @@ export async function handleAdminProfilePatch(request, env, url) {
     if (taken) {
       return json({ ok: false, error: "Ese slug ya está en uso." }, 409);
     }
-    await env.DB.prepare(
-      `UPDATE profiles SET slug = ?, updated_at = datetime('now') WHERE slug = ?`,
-    )
-      .bind(newSlug, oldSlug)
-      .run();
+    await env.DB.batch([
+      env.DB.prepare(
+        `UPDATE profiles SET slug = ?, updated_at = datetime('now') WHERE slug = ?`,
+      ).bind(newSlug, oldSlug),
+      env.DB.prepare(
+        `UPDATE profile_publications SET slug = ? WHERE slug = ?`,
+      ).bind(newSlug, oldSlug),
+    ]);
   }
 
   if (releaseOwner) {

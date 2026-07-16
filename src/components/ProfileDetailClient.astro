@@ -43,7 +43,9 @@ const { slug = "" } = Astro.props;
     }
 
     try {
-      const result = await fetchProfile(slug);
+      const previewPending =
+        new URLSearchParams(location.search).get("preview") === "pending";
+      const result = await fetchProfile(slug, { previewPending });
       if (!result) {
         if (status) status.textContent = "Perfil no encontrado.";
         document.title = "No encontrado — DIMELA.mx";

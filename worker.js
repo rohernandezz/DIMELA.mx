@@ -19,6 +19,7 @@ import {
 import { handleAdminDecide, handleAdminQueue, handleAdminProfilePatch } from "./worker/admin.js";
 import { handleMeProfileUpload, handleMediaGet, handleMediaQuotaGet } from "./worker/media.js";
 import { handleFontDelete, handleFontUpload } from "./worker/fonts.js";
+import { PUBLICATION_COLUMNS } from "./worker/publications.js";
 import {
   handleGalleryCreate,
   handleGalleryDelete,
@@ -71,9 +72,8 @@ async function loadFromD1(env) {
   if (!env.DB) return null;
   try {
     const { results } = await env.DB.prepare(
-      `SELECT ${PROFILE_COLUMNS}
-       FROM profiles
-       WHERE status = 'published'
+      `SELECT ${PUBLICATION_COLUMNS}
+       FROM profile_publications
        ORDER BY name COLLATE NOCASE`,
     ).all();
     if (!results?.length) return null;
@@ -87,12 +87,16 @@ async function loadFromD1(env) {
 async function loadProfileFromD1(env, slug, { publishedOnly = true } = {}) {
   if (!env.DB) return null;
   try {
-    const row = await env.DB.prepare(
-      `SELECT ${PROFILE_COLUMNS}
-       FROM profiles
-       WHERE ${publishedOnly ? "status = 'published' AND " : ""}slug = ?
-       LIMIT 1`,
-    )
+    const query = publishedOnly
+      ? `SELECT ${PUBLICATION_COLUMNS}
+         FROM profile_publications
+         WHERE slug = ?
+         LIMIT 1`
+      : `SELECT ${PROFILE_COLUMNS}
+         FROM profiles
+         WHERE slug = ?
+         LIMIT 1`;
+    const row = await env.DB.prepare(query)
       .bind(slug)
       .first();
     return row ? mapD1Row(row) : null;
@@ -233,6 +237,14 @@ export default {
       const slug = (url.searchParams.get("slug") || "").trim();
       if (!slug) {
         return publicJson({ ok: false, error: "Falta slug." }, 400);
+      }
+
+      if (url.searchParams.get("preview") === "pending") {
+        const working = await loadProfileFromD1(env, slug, { publishedOnly: false });
+        if (!working || !(await canPreviewProfile(env, request, working))) {
+          return json({ ok: false, error: "Perfil no encontrado." }, 404);
+        }
+        return json({ ok: true, source: "d1", profile: working, preview: true });
       }
 
       let source = "d1";

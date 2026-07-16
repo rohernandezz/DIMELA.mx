@@ -33,9 +33,14 @@ export type FetchProfileResult = {
   preview?: boolean;
 };
 
-export async function fetchProfile(slug: string): Promise<FetchProfileResult | null> {
+export async function fetchProfile(
+  slug: string,
+  { previewPending = false }: { previewPending?: boolean } = {},
+): Promise<FetchProfileResult | null> {
   try {
-    const res = await fetch(`/api/profile?slug=${encodeURIComponent(slug)}`, {
+    const params = new URLSearchParams({ slug });
+    if (previewPending) params.set("preview", "pending");
+    const res = await fetch(`/api/profile?${params}`, {
       credentials: "same-origin",
     });
     // Astro dev has no Worker — /api/* is an HTML 404. Fall through to profiles.json.

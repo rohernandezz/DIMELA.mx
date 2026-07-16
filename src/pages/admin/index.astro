@@ -102,6 +102,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     ownerEmail?: string | null;
     inviteEmail?: string | null;
     updatedAt?: string | null;
+    hasPublishedVersion?: boolean;
   };
 
   const STATUS_LABEL: Record<string, string> = {
@@ -148,17 +149,21 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       )
       .join("");
     const canDecide = p.status === "pending_review" || p.status === "rejected" || p.status === "draft";
+    const reviewLabel =
+      p.hasPublishedVersion && p.status !== "published"
+        ? `${STATUS_LABEL[p.status] || p.status} · versión pública activa`
+        : STATUS_LABEL[p.status] || p.status;
     const actions =
       p.status === "pending_review"
         ? `<div class="mt-3 flex flex-wrap gap-2">
             <button type="button" data-approve="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white">Aprobar</button>
             <button type="button" data-reject="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/25 px-3 py-1.5 text-sm text-dm-offblack/80 hover:border-dm-offblack/50">Rechazar</button>
-            <a href="/directorio/${escapeHtml(p.slug)}/" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:underline">Ver</a>
+            <a href="/directorio/${escapeHtml(p.slug)}/?preview=pending" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:underline">Ver cambios</a>
           </div>`
         : canDecide
           ? `<div class="mt-3 flex flex-wrap gap-2">
               <button type="button" data-approve="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm">Publicar</button>
-              <a href="/directorio/${escapeHtml(p.slug)}/" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60">Ver</a>
+              <a href="/directorio/${escapeHtml(p.slug)}/?preview=pending" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60">Ver borrador</a>
             </div>`
           : `<div class="mt-3"><a href="/directorio/${escapeHtml(p.slug)}/" class="text-sm text-dm-offblack/60 hover:underline">Ver perfil</a></div>`;
 
@@ -176,7 +181,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           </div>
           ${
             p.ownerEmail
-              ? `<p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail)} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>${
+              ? `<p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail)} · ${escapeHtml(reviewLabel)}${p.tier === "pro" ? " · Pro" : ""}</p>${
                   isDemoOwner(p.ownerEmail)
                     ? `<div class="mt-1"><button type="button" data-release-invite="${escapeHtml(p.slug)}" data-owner="${escapeHtml(p.ownerEmail)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/70 hover:border-dm-offblack/40">Liberar demo → pendiente de invitar</button></div>`
                     : ""
@@ -191,7 +196,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
                 <p class="mt-0.5 text-xs text-dm-offblack/45">sin dueño · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}${p.inviteEmail ? ` · invite: ${escapeHtml(p.inviteEmail)}` : ""}</p>`
           }
         </div>
-        <span class="rounded border border-dm-offblack/15 bg-dm-blue/50 px-2 py-0.5 text-[10px] font-semibold uppercase">${STATUS_LABEL[p.status] || p.status}</span>
+        <span class="rounded border border-dm-offblack/15 bg-dm-blue/50 px-2 py-0.5 text-[10px] font-semibold uppercase">${escapeHtml(reviewLabel)}</span>
       </div>
       <p class="mt-2 line-clamp-2 text-sm text-dm-offblack/75">${escapeHtml((p.description || "").replace(/<[^>]+>/g, ""))}</p>
       <div class="mt-2 flex flex-wrap gap-1">${chips}</div>

@@ -50,6 +50,30 @@ CREATE INDEX IF NOT EXISTS idx_profiles_user ON profiles (user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions (user_id);
 CREATE INDEX IF NOT EXISTS idx_magic_email ON magic_links (email);
 
+-- Last approved profile versions. Public directory reads use this table while
+-- `profiles` remains the owner's editable working copy.
+CREATE TABLE IF NOT EXISTS profile_publications (
+  slug TEXT PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  estado TEXT NOT NULL,
+  servicios TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  website TEXT,
+  tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'pro')),
+  featured INTEGER NOT NULL DEFAULT 0,
+  cover TEXT,
+  avatar TEXT,
+  custom_css TEXT,
+  custom_fonts TEXT NOT NULL DEFAULT '[]',
+  galleries TEXT NOT NULL DEFAULT '[]',
+  published_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_profile_publications_estado
+  ON profile_publications (estado);
+CREATE INDEX IF NOT EXISTS idx_profile_publications_tier
+  ON profile_publications (tier);
+
 CREATE TABLE IF NOT EXISTS media_objects (
   key TEXT PRIMARY KEY NOT NULL,
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,

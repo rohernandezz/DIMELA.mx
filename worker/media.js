@@ -3,6 +3,10 @@
  */
 
 import { getSessionUser, json, mapProfileRow, PROFILE_COLUMNS } from "./auth.js";
+import {
+  markProfileDraftForEdit,
+  publicationReferencesMedia,
+} from "./publications.js";
 
 const ALLOWED_KINDS = new Set(["cover", "avatar"]);
 const ALLOWED_TYPES = new Map([
@@ -273,8 +277,12 @@ export async function handleMeProfileUpload(request, env, _url) {
   const column = kind === "cover" ? "cover" : "avatar";
   const previousUrl = profile[column];
   const oldKey = objectKeyFromUrl(previousUrl);
+  const oldIsPublished = await publicationReferencesMedia(env, profile.slug, previousUrl);
 
-  const quotaCheck = await assertUploadQuota(env, { fileSize: file.size, oldKey });
+  const quotaCheck = await assertUploadQuota(env, {
+    fileSize: file.size,
+    oldKey: oldIsPublished ? null : oldKey,
+  });
   if (!quotaCheck.ok) {
     return json(
       { ok: false, error: quotaCheck.error, code: quotaCheck.code },
@@ -300,6 +308,7 @@ export async function handleMeProfileUpload(request, env, _url) {
 
   const publicUrl = mediaPublicUrl(key);
 
+  await markProfileDraftForEdit(env, user.id);
   await env.DB.prepare(
     `UPDATE profiles SET ${column} = ?, updated_at = datetime('now') WHERE user_id = ?`,
   )
@@ -313,7 +322,12 @@ export async function handleMeProfileUpload(request, env, _url) {
     sizeBytes: file.size,
   });
 
-  if (oldKey && oldKey.startsWith(`profiles/${user.id}/`) && oldKey !== key) {
+  if (
+    oldKey &&
+    !oldIsPublished &&
+    oldKey.startsWith(`profiles/${user.id}/`) &&
+    oldKey !== key
+  ) {
     try {
       await env.MEDIA.delete(oldKey);
       await recordMediaDelete(env, oldKey);

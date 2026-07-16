@@ -78,6 +78,12 @@ DIMELA.mx/
 
 **Mental model:** Astro builds HTML/CSS/JS into `dist/`. The Worker serves those files and handles `/api/*` (+ `/media/*`). Client pages hydrate directory/profile data from the API.
 
+### Location search aliases
+
+The **Ubicación** autocomplete in `src/components/DirectoryFilterBar.astro` uses the central alias map in `src/data/locationAliases.ts`. Matching ignores accents and case; for example, `cdmx` → Ciudad de México, `edomex` → Estado de México, `guadalajara` → Jalisco, and `monterrey` → Nuevo León.
+
+To add an alias, edit `LOCATION_ALIASES` with `alias: "Canonical estado"`, using the exact estado string from `MEXICO_ESTADOS` in `src/data/taxonomy.ts`. URL slugs such as `cdmx` and `edomex` are configured separately in `src/lib/slugs.ts`; location aliases only affect filter text search.
+
 ## Docs
 
 | Doc | What’s in it |

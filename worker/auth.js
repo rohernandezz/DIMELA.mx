@@ -6,6 +6,7 @@ import { slugFromName, uniqueProfileSlug } from "./slugs.js";
 import { sanitizeCustomCss } from "./customCss.js";
 import { sendMagicLinkEmail } from "./email.js";
 import { DEMO_ACCOUNTS } from "../shared/demoAccounts.js";
+import { markProfileDraftForEdit } from "./publications.js";
 
 export { DEMO_ACCOUNTS };
 
@@ -547,7 +548,9 @@ export async function handleMeProfileClaim(request, env) {
   return json({ ok: true, profile: mapProfileRow(profile) });
 }
 
-export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status, user_id, galleries`;
+export const PROFILE_COLUMNS = `slug, name, estado, servicios, description, website, tier,
+  featured, cover, avatar, custom_css, custom_fonts, status, user_id, galleries,
+  EXISTS(SELECT 1 FROM profile_publications pp WHERE pp.slug = profiles.slug) AS has_publication`;
 
 export function parseCustomFonts(raw) {
   try {
@@ -598,6 +601,7 @@ export function mapProfileRow(row) {
     status: row.status,
     userId: row.user_id || undefined,
     galleries: parseGalleries(row.galleries),
+    hasPublishedVersion: Boolean(row.has_publication),
   };
 }
 
@@ -688,6 +692,7 @@ export async function handleMeProfilePut(request, env) {
   const serviciosJson = JSON.stringify(servicios);
 
   if (existing) {
+    await markProfileDraftForEdit(env, user.id);
     await env.DB.prepare(
       `UPDATE profiles SET
         name = ?, estado = ?, servicios = ?, description = ?, website = ?,

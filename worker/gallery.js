@@ -18,6 +18,10 @@ import {
   recordMediaDelete,
   recordMediaPut,
 } from "./media.js";
+import {
+  markProfileDraftForEdit,
+  publicationReferencesMedia,
+} from "./publications.js";
 
 export const GALLERY_LIMITS = {
   free: { maxGalleries: 1, maxImagesPerGallery: 12, maxBytes: 3 * 1024 * 1024 },
@@ -41,6 +45,7 @@ async function loadOwnedProfile(env, userId) {
 }
 
 async function saveGalleries(env, userId, galleries) {
+  await markProfileDraftForEdit(env, userId);
   await env.DB.prepare(
     `UPDATE profiles SET galleries = ?, updated_at = datetime('now') WHERE user_id = ?`,
   )
@@ -220,7 +225,8 @@ export async function handleGalleryImageDelete(request, env) {
 
   const [removed] = gallery.images.splice(idx, 1);
   const oldKey = objectKeyFromUrl(removed.url);
-  if (oldKey) {
+  const isPublished = await publicationReferencesMedia(env, profile.slug, removed.url);
+  if (oldKey && !isPublished) {
     try {
       await env.MEDIA.delete(oldKey);
       await recordMediaDelete(env, oldKey);
@@ -357,7 +363,7 @@ export async function handleGalleryDelete(request, env) {
   const [removed] = galleries.splice(idx, 1);
   for (const img of removed.images || []) {
     const oldKey = objectKeyFromUrl(img.url);
-    if (!oldKey) continue;
+    if (!oldKey || (await publicationReferencesMedia(env, profile.slug, img.url))) continue;
     try {
       await env.MEDIA.delete(oldKey);
       await recordMediaDelete(env, oldKey);

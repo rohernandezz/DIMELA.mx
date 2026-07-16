@@ -1,4 +1,5 @@
 -- Auto-generated from src/data/mockProfiles.ts — do not edit by hand
+DELETE FROM profile_publications;
 DELETE FROM profiles;
 
 INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES ('romina-hernandez', 'Romina Hernández', 'Ciudad de México', '["Diseño de Tipografía","Lettering","Ingeniería de Fuentes"]', '<p>Desde México, hago letras con amor y buen sazón. Tipografía a la medida, lettering e ingeniería en Tortilla.studio.</p><h2>Tipografía con raíz</h2><p>Trabajo con estudios, marcas y editoriales que buscan una voz tipográfica clara y con raíz mexicana — desde logotipos hasta familias completas para texto corrido, UI y packaging.</p><p>Me importa el oficio: boceto, revisión, kerning, pruebas en contexto real. Cada proyecto empieza con escucha y termina con archivos listos para producción.</p><h2>Colaboración</h2><p>Talleres, charlas y colaboraciones con el Colegio de Diseñadores, TMX y equipos creativos en CDMX y remoto. Si tienes un proyecto — editorial, marca o fuente propia — escríbeme.</p>', 'https://tortilla.studio', 'pro', 0, '/mock/cover-warm.svg', NULL, '.profile-card .bio-lead,
@@ -89,3 +90,13 @@ INSERT INTO profiles (slug, name, estado, servicios, description, website, tier,
 INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES ('paula-ruiz-yucatan-hub1', 'Paula Ruiz', 'Yucatán', '["Diseño Editorial"]', '<p>Libros, revistas y piezas impresas con cuidado tipográfico. Basada en Yucatán.</p><p>Libros, revistas y catálogos con cuidado en cada página.</p>', NULL, 'free', 0, '/mock/cover-green.svg', NULL, NULL, '[]', 'published');
 INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES ('rafael-reyes-veracruz-hub0', 'Rafael Reyes', 'Veracruz', '["Caligrafía","Rotulación Manual"]', '<p>Caligrafía contemporánea para marca y piezas únicas. Basada en Veracruz.</p><p>Piezas únicas para invitaciones, logotipos y proyectos especiales.</p>', NULL, 'free', 0, '/mock/cecilia-featured.png', NULL, NULL, '[]', 'published');
 INSERT INTO profiles (slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, custom_fonts, status) VALUES ('sofia-garcia-veracruz-hub1', 'Sofía García', 'Veracruz', '["Ingeniería de Fuentes"]', '<p>Soporte técnico para diseñadores de fuentes. Basada en Veracruz.</p><p>Soporte técnico para lanzar fuentes sin sorpresas.</p>', NULL, 'free', 0, '/mock/mara-featured.png', NULL, NULL, '[]', 'published');
+
+INSERT INTO profile_publications (
+  slug, name, estado, servicios, description, website, tier, featured,
+  cover, avatar, custom_css, custom_fonts, galleries
+)
+SELECT
+  slug, name, estado, servicios, description, website, tier, featured,
+  cover, avatar, custom_css, custom_fonts, galleries
+FROM profiles
+WHERE status = 'published';

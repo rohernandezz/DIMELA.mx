@@ -445,6 +445,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     customFonts?: ProfileFont[];
     status: string;
     galleries?: ProfileGallery[];
+    hasPublishedVersion?: boolean;
   };
 
   const FONT_LIMITS = { maxFonts: 2, maxKb: 768 };
@@ -560,12 +561,18 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     });
 
     const badge = document.querySelector<HTMLElement>("[data-status-badge]");
-    if (badge) badge.textContent = STATUS_LABEL[status] || status;
+    if (badge) {
+      const label = STATUS_LABEL[status] || status;
+      badge.textContent =
+        profile?.hasPublishedVersion && status !== "published"
+          ? `${label} · versión pública activa`
+          : label;
+    }
 
     const pub = document.querySelector<HTMLAnchorElement>("[data-public-link]");
     if (pub) {
       pub.href = slug ? `/directorio/${slug}/` : "/directorio/";
-      pub.textContent = status === "published" ? "Vista pública" : "Vista previa";
+      pub.textContent = profile?.hasPublishedVersion ? "Vista pública" : "Vista previa";
     }
 
     const cover = document.querySelector<HTMLElement>("[data-cover-preview]");

@@ -414,6 +414,7 @@ const servicios = [...SERVICIOS];
 </style>
 
 <script>
+  import { LOCATION_ALIASES } from "../data/locationAliases";
   import { MEXICO_ESTADOS } from "../data/taxonomy";
   import { filterProfiles, type SearchableProfile } from "../lib/search";
   import { renderProfileCardHtml } from "../lib/renderProfileCard";
@@ -916,6 +917,11 @@ const servicios = [...SERVICIOS];
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
 
+    const normalizedLocationAliases = Object.entries(LOCATION_ALIASES).map(([alias, estado]) => ({
+      alias: normalizeText(alias),
+      estado,
+    }));
+
     root.querySelectorAll<HTMLElement>("[data-estado-multi]").forEach((wrap) => {
       const toggle = wrap.querySelector<HTMLButtonElement>("[data-estado-toggle]");
       const panel = wrap.querySelector<HTMLElement>("[data-estado-panel]");
@@ -926,6 +932,13 @@ const servicios = [...SERVICIOS];
 
       const runSearch = () => {
         const q = normalizeText((search?.value || "").trim());
+        const aliasEstados = new Set<string>(
+          q
+            ? normalizedLocationAliases
+                .filter(({ alias }) => alias.includes(q))
+                .map(({ estado }) => estado)
+            : [],
+        );
         let visible = 0;
         let scopeVisible = false;
         let outsideVisible = false;
@@ -938,7 +951,7 @@ const servicios = [...SERVICIOS];
               ? ALL_LOCATIONS_LABEL
               : MEXICO_SCOPE_LABEL
             : opt?.value || "";
-          const match = !q || normalizeText(name).includes(q);
+          const match = !q || normalizeText(name).includes(q) || aliasEstados.has(name);
           row.hidden = !match;
           if (match) {
             visible += 1;

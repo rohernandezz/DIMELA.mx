@@ -1,0 +1,57 @@
+import type { MexicoEstado } from "./taxonomy";
+
+/**
+ * Common location searches that should reveal a canonical estado option.
+ *
+ * Keys may use natural spelling: the directory filter normalizes accents and
+ * case before matching. Add new city or shorthand aliases here.
+ */
+export const LOCATION_ALIASES = {
+  cdmx: "Ciudad de México",
+  edomex: "Estado de México",
+  guadalajara: "Jalisco",
+  monterrey: "Nuevo León",
+  puebla: "Puebla",
+  león: "Guanajuato",
+  tijuana: "Baja California",
+  cancún: "Quintana Roo",
+  mérida: "Yucatán",
+  querétaro: "Querétaro",
+  toluca: "Estado de México",
+  juárez: "Chihuahua",
+  "ciudad juárez": "Chihuahua",
+  chihuahua: "Chihuahua",
+  mexicali: "Baja California",
+  ensenada: "Baja California",
+  "la paz": "Baja California Sur",
+  "los cabos": "Baja California Sur",
+  "cabo san lucas": "Baja California Sur",
+  hermosillo: "Sonora",
+  culiacán: "Sinaloa",
+  mazatlán: "Sinaloa",
+  saltillo: "Coahuila",
+  torreón: "Coahuila",
+  durango: "Durango",
+  zacatecas: "Zacatecas",
+  "san luis potosí": "San Luis Potosí",
+  aguascalientes: "Aguascalientes",
+  morelia: "Michoacán",
+  veracruz: "Veracruz",
+  xalapa: "Veracruz",
+  villahermosa: "Tabasco",
+  "tuxtla gutiérrez": "Chiapas",
+  "san cristóbal de las casas": "Chiapas",
+  oaxaca: "Oaxaca",
+  acapulco: "Guerrero",
+  cuernavaca: "Morelos",
+  pachuca: "Hidalgo",
+  tlaxcala: "Tlaxcala",
+  "playa del carmen": "Quintana Roo",
+  cozumel: "Quintana Roo",
+  tepíc: "Nayarit",
+  colima: "Colima",
+  campeche: "Campeche",
+  tampico: "Tamaulipas",
+  reynosa: "Tamaulipas",
+  matamoros: "Tamaulipas",
+} satisfies Record<string, MexicoEstado>;
