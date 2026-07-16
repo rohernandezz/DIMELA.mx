@@ -13,7 +13,7 @@ import {
   mapProfileRow,
   PROFILE_COLUMNS,
 } from "./worker/auth.js";
-import { handleAdminDecide, handleAdminQueue } from "./worker/admin.js";
+import { handleAdminDecide, handleAdminQueue, handleAdminProfilePatch } from "./worker/admin.js";
 import { handleMeProfileUpload, handleMediaGet, handleMediaQuotaGet } from "./worker/media.js";
 import {
   handleGalleryCreate,
@@ -180,6 +180,9 @@ export default {
     if (path === "/api/me/media/quota") return handleMediaQuotaGet(request, env);
     if (path.startsWith("/media/")) return handleMediaGet(request, env, url);
     if (path === "/api/admin/queue") return handleAdminQueue(request, env);
+    if (/^\/api\/admin\/profiles\/[^/]+$/.test(path) && request.method === "PATCH") {
+      return handleAdminProfilePatch(request, env, url);
+    }
     if (path.startsWith("/api/admin/profiles/") && (path.endsWith("/approve") || path.endsWith("/reject"))) {
       return handleAdminDecide(request, env, url);
     }

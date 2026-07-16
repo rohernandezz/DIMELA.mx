@@ -1,7 +1,8 @@
 /**
  * Admin approval APIs (D1).
  */
-import { getSessionUser, json, mapProfileRow } from "./auth.js";
+import { getSessionUser, json, mapProfileRow, PROFILE_COLUMNS } from "./auth.js";
+import { normalizeSlug } from "./slugs.js";
 
 async function requireAdmin(env, request) {
   if (!env.DB) return { error: json({ ok: false, error: "D1 no configurado." }, 503) };
@@ -26,8 +27,8 @@ export async function handleAdminQueue(request, env) {
 
   const { results } = await env.DB.prepare(
     `SELECT p.slug, p.name, p.estado, p.servicios, p.description, p.website, p.tier,
-            p.featured, p.cover, p.avatar, p.custom_css, p.status, p.user_id, p.updated_at,
-            u.email AS owner_email
+            p.featured, p.cover, p.avatar, p.custom_css, p.status, p.user_id, p.galleries,
+            p.updated_at, u.email AS owner_email
      FROM profiles p
      LEFT JOIN users u ON u.id = p.user_id
      WHERE p.status = ?
@@ -91,8 +92,7 @@ export async function handleAdminDecide(request, env, url) {
 
   // Optional audit note in a lightweight way: store in description prefix? Skip — keep note in response only for now.
   const row = await env.DB.prepare(
-    `SELECT slug, name, estado, servicios, description, website, tier, featured, cover, avatar, custom_css, status, user_id
-     FROM profiles WHERE slug = ? LIMIT 1`,
+    `SELECT ${PROFILE_COLUMNS} FROM profiles WHERE slug = ? LIMIT 1`,
   )
     .bind(slug)
     .first();
@@ -103,4 +103,68 @@ export async function handleAdminDecide(request, env, url) {
     note,
     profile: mapProfileRow(row),
   });
+}
+
+/**
+ * PATCH /api/admin/profiles/:slug — body: { slug: "new-url-slug" }
+ */
+export async function handleAdminProfilePatch(request, env, url) {
+  if (request.method !== "PATCH") {
+    return json({ ok: false, error: "Método no permitido." }, 405);
+  }
+  const gate = await requireAdmin(env, request);
+  if (gate.error) return gate.error;
+
+  const parts = url.pathname.split("/").filter(Boolean);
+  if (parts.length < 4 || parts[0] !== "api" || parts[1] !== "admin" || parts[2] !== "profiles") {
+    return json({ ok: false, error: "Ruta inválida." }, 404);
+  }
+  const oldSlug = decodeURIComponent(parts[3] || "").trim();
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ ok: false, error: "JSON inválido." }, 400);
+  }
+
+  const newSlug = normalizeSlug(body.slug);
+  if (!newSlug) {
+    return json({ ok: false, error: "Slug inválido." }, 400);
+  }
+
+  const existing = await env.DB.prepare(
+    `SELECT slug, user_id FROM profiles WHERE slug = ? LIMIT 1`,
+  )
+    .bind(oldSlug)
+    .first();
+  if (!existing) return json({ ok: false, error: "Perfil no encontrado." }, 404);
+
+  if (newSlug === oldSlug) {
+    const row = await env.DB.prepare(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE slug = ? LIMIT 1`)
+      .bind(oldSlug)
+      .first();
+    return json({ ok: true, profile: mapProfileRow(row) });
+  }
+
+  const taken = await env.DB.prepare(
+    `SELECT slug FROM profiles WHERE slug = ? LIMIT 1`,
+  )
+    .bind(newSlug)
+    .first();
+  if (taken) {
+    return json({ ok: false, error: "Ese slug ya está en uso." }, 409);
+  }
+
+  await env.DB.prepare(
+    `UPDATE profiles SET slug = ?, updated_at = datetime('now') WHERE slug = ?`,
+  )
+    .bind(newSlug, oldSlug)
+    .run();
+
+  const row = await env.DB.prepare(`SELECT ${PROFILE_COLUMNS} FROM profiles WHERE slug = ? LIMIT 1`)
+    .bind(newSlug)
+    .first();
+
+  return json({ ok: true, profile: mapProfileRow(row), previousSlug: oldSlug });
 }

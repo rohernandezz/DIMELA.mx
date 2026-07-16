@@ -2,6 +2,8 @@
  * Magic-link auth + session helpers (D1).
  */
 
+import { slugFromName, uniqueProfileSlug } from "./slugs.js";
+
 const SESSION_COOKIE = "dm_session";
 const SESSION_DAYS = 14;
 const MAGIC_MINUTES = 30;
@@ -320,11 +322,6 @@ export async function handleMeProfilePut(request, env) {
   }
 
   const name = String(body.name || "").trim();
-  const slug = String(body.slug || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9-]+/g, "-")
-    .replace(/^-|-$/g, "");
   const estado = String(body.estado || "").trim();
   const website = body.website ? String(body.website).trim() : null;
   const description = sanitizeBio(body.description || "");
@@ -333,8 +330,8 @@ export async function handleMeProfilePut(request, env) {
     ? body.servicios.map(String)
     : [];
 
-  if (!name || !slug || !estado) {
-    return json({ ok: false, error: "Nombre, slug y ubicación son obligatorios." }, 400);
+  if (!name || !estado) {
+    return json({ ok: false, error: "Nombre y ubicación son obligatorios." }, 400);
   }
 
   const existing = await env.DB.prepare(
@@ -343,41 +340,29 @@ export async function handleMeProfilePut(request, env) {
     .bind(user.id)
     .first();
 
-  const slugTaken = await env.DB.prepare(
-    `SELECT slug FROM profiles WHERE slug = ? AND (user_id IS NULL OR user_id != ?) LIMIT 1`,
-  )
-    .bind(slug, user.id)
-    .first();
-  if (slugTaken) {
-    return json({ ok: false, error: "Ese slug ya está en uso." }, 409);
+  let slug;
+  if (existing) {
+    slug = existing.slug;
+  } else {
+    const base = slugFromName(name);
+    if (!base) {
+      return json({ ok: false, error: "Nombre inválido para generar URL." }, 400);
+    }
+    slug = await uniqueProfileSlug(env, base, user.id);
   }
 
   const serviciosJson = JSON.stringify(servicios);
 
   if (existing) {
-    const oldSlug = existing.slug;
-    if (oldSlug !== slug) {
-      await env.DB.prepare(
-        `UPDATE profiles SET
-          slug = ?, name = ?, estado = ?, servicios = ?, description = ?, website = ?,
-          custom_css = COALESCE(?, custom_css),
-          status = CASE WHEN status = 'published' THEN 'draft' ELSE status END,
-          updated_at = datetime('now')
-         WHERE user_id = ?`,
-      )
-        .bind(slug, name, estado, serviciosJson, description, website, customCss, user.id)
-        .run();
-    } else {
-      await env.DB.prepare(
-        `UPDATE profiles SET
-          name = ?, estado = ?, servicios = ?, description = ?, website = ?,
-          custom_css = COALESCE(?, custom_css),
-          updated_at = datetime('now')
-         WHERE user_id = ?`,
-      )
-        .bind(name, estado, serviciosJson, description, website, customCss, user.id)
-        .run();
-    }
+    await env.DB.prepare(
+      `UPDATE profiles SET
+        name = ?, estado = ?, servicios = ?, description = ?, website = ?,
+        custom_css = COALESCE(?, custom_css),
+        updated_at = datetime('now')
+       WHERE user_id = ?`,
+    )
+      .bind(name, estado, serviciosJson, description, website, customCss, user.id)
+      .run();
   } else {
     await env.DB.prepare(
       `INSERT INTO profiles (

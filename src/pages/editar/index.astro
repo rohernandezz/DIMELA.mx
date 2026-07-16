@@ -111,7 +111,8 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
         <section class="space-y-4" aria-labelledby="editor-identity">
           <div>
             <h2 id="editor-identity" class="text-lg tracking-wide">Identidad</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">Nombre público y URL del perfil.</p>
+            <p class="mt-1 text-sm text-dm-offblack/60">Nombre público y sitio web.</p>
+            <p class="text-xs text-dm-offblack/45">La URL se genera sola al guardar; solo admin puede cambiarla.</p>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <label class="block space-y-1.5 sm:col-span-2">
@@ -125,18 +126,10 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
                 class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
               />
             </label>
-            <label class="block space-y-1.5">
-              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-                >Slug</span
-              >
-              <input
-                type="text"
-                name="slug"
-                data-field="slug"
-                class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 font-mono text-sm outline-none focus:border-dm-offblack/50"
-              />
-            </label>
-            <label class="block space-y-1.5">
+            <p class="sm:col-span-2 text-[11px] text-dm-offblack/55" data-profile-slug hidden>
+              URL del perfil: <span class="font-mono text-dm-offblack/70" data-profile-slug-value></span>
+            </p>
+            <label class="block space-y-1.5 sm:col-span-2">
               <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
                 >Sitio web</span
               >
@@ -245,7 +238,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
                   Subir avatar
                 </button>
               </div>
-              <p class="text-[11px] text-dm-offblack/50">JPEG, PNG, WebP o GIF · máx. 2 MB</p>
+              <p class="text-[11px] text-dm-offblack/50">JPEG, PNG, WebP o GIF · máx. 2 MB · recorte circular</p>
             </div>
           </div>
           <input
@@ -355,6 +348,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
 
 <script>
   import { bindBioToolbar, mountBioEditor, type BioEditor } from "../../lib/bioEditor";
+  import { openAvatarCropper } from "../../lib/imageCropper";
 
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
@@ -423,10 +417,21 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       if (el) el.value = value;
     };
     set("name", name);
-    set("slug", slug);
     set("estado", estado);
     set("website", website);
     set("customCss", customCss);
+
+    const slugEl = document.querySelector<HTMLElement>("[data-profile-slug]");
+    const slugVal = document.querySelector<HTMLElement>("[data-profile-slug-value]");
+    if (slugEl && slugVal) {
+      if (slug) {
+        slugEl.hidden = false;
+        slugVal.textContent = `/directorio/${slug}/`;
+      } else {
+        slugEl.hidden = true;
+        slugVal.textContent = "";
+      }
+    }
 
     form.querySelectorAll<HTMLInputElement>("[data-servicio]").forEach((box) => {
       box.checked = servicios.has(box.value);
@@ -502,7 +507,6 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     if (bio && hidden) hidden.value = bio.getHTML();
     return {
       name: form.querySelector<HTMLInputElement>('[data-field="name"]')?.value || "",
-      slug: form.querySelector<HTMLInputElement>('[data-field="slug"]')?.value || "",
       estado: form.querySelector<HTMLSelectElement>('[data-field="estado"]')?.value || "",
       website: form.querySelector<HTMLInputElement>('[data-field="website"]')?.value || "",
       customCss: form.querySelector<HTMLTextAreaElement>('[data-field="customCss"]')?.value || "",
@@ -795,11 +799,7 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
     input.click();
   }
 
-  async function uploadSelectedFile(file: File) {
-    const kind = pendingUploadKind;
-    pendingUploadKind = null;
-    if (!kind) return;
-
+  async function uploadProfileImage(kind: "cover" | "avatar", file: File) {
     setUploadBusy(true);
     toast(kind === "cover" ? "Subiendo portada…" : "Subiendo avatar…");
     try {
@@ -942,9 +942,20 @@ import { MEXICO_ESTADOS, SERVICIOS } from "../../data/taxonomy";
       const uploadInput = document.querySelector<HTMLInputElement>("[data-upload-input]");
       if (uploadInput && !uploadInput.dataset.ready) {
         uploadInput.dataset.ready = "1";
-        uploadInput.addEventListener("change", () => {
+        uploadInput.addEventListener("change", async () => {
           const file = uploadInput.files?.[0];
-          if (file) void uploadSelectedFile(file);
+          const kind = pendingUploadKind;
+          pendingUploadKind = null;
+          if (!file || !kind) return;
+
+          if (kind === "avatar") {
+            const cropped = await openAvatarCropper(file);
+            if (!cropped) return;
+            await uploadProfileImage("avatar", cropped);
+            return;
+          }
+
+          await uploadProfileImage(kind, file);
         });
       }
       const galleryInput = document.querySelector<HTMLInputElement>("[data-gallery-input]");

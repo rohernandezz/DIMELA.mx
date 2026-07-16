@@ -158,9 +158,16 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
     return `<li class="rounded border border-dm-offblack/15 bg-white p-4" data-slug="${escapeHtml(p.slug)}">
       <div class="flex flex-wrap items-start justify-between gap-2">
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1">
           <p class="font-bold text-dm-offblack">${escapeHtml(p.name)}</p>
-          <p class="text-sm text-dm-offblack/55">${escapeHtml(p.estado)} · <span class="font-mono text-xs">${escapeHtml(p.slug)}</span></p>
+          <p class="text-sm text-dm-offblack/55">${escapeHtml(p.estado)}</p>
+          <div class="mt-2 flex flex-wrap items-end gap-2">
+            <label class="block min-w-0 flex-1 space-y-1">
+              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Slug (URL)</span>
+              <input type="text" value="${escapeHtml(p.slug)}" data-slug-input class="w-full min-w-[10rem] rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 font-mono text-xs outline-none focus:border-dm-offblack/50" />
+            </label>
+            <button type="button" data-save-slug="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar slug</button>
+          </div>
           <p class="mt-0.5 text-xs text-dm-offblack/45">${escapeHtml(p.ownerEmail || "sin dueño")} · ${STATUS_LABEL[p.status] || p.status}${p.tier === "pro" ? " · Pro" : ""}</p>
         </div>
         <span class="rounded border border-dm-offblack/15 bg-dm-blue/50 px-2 py-0.5 text-[10px] font-semibold uppercase">${STATUS_LABEL[p.status] || p.status}</span>
@@ -203,6 +210,27 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           : `${profiles.length} perfil${profiles.length === 1 ? "" : "es"} · ${STATUS_LABEL[filter] || filter}`;
     }
     list.innerHTML = profiles.map(rowHtml).join("");
+  }
+
+  async function saveSlug(btn: HTMLElement) {
+    const currentSlug = btn.dataset.saveSlug || "";
+    const li = btn.closest("li");
+    const input = li?.querySelector<HTMLInputElement>("[data-slug-input]");
+    const newSlug = input?.value.trim() || "";
+    if (!newSlug || newSlug === currentSlug) return;
+    const res = await fetch(`/api/admin/profiles/${encodeURIComponent(currentSlug)}`, {
+      method: "PATCH",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: newSlug }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      toast(data.error || "No se pudo guardar el slug.");
+      return;
+    }
+    toast(`Slug actualizado → ${data.profile.slug}`);
+    await loadQueue();
   }
 
   async function decide(slug: string, action: "approve" | "reject") {
@@ -289,8 +317,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         const t = e.target as HTMLElement;
         const approve = t.closest<HTMLElement>("[data-approve]");
         const reject = t.closest<HTMLElement>("[data-reject]");
+        const saveSlugBtn = t.closest<HTMLElement>("[data-save-slug]");
         if (approve?.dataset.approve) void decide(approve.dataset.approve, "approve");
         if (reject?.dataset.reject) void decide(reject.dataset.reject, "reject");
+        if (saveSlugBtn?.dataset.saveSlug) void saveSlug(saveSlugBtn);
       });
       document.querySelector("[data-action='refresh']")?.addEventListener("click", () => void loadQueue());
       document.querySelector("[data-action='logout']")?.addEventListener("click", async () => {
