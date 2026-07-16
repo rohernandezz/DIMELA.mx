@@ -1,7 +1,7 @@
 ---
 /**
- * Profile card — fixed size in the directory grid (Free and Pro).
- * Pro keeps badge + stronger border; outer dimensions match Free.
+ * Profile card — Pro fills the grid cell; Free is full width, 96% tall from center
+ * (visual margin inside the same cell). Pro keeps badge + stronger border.
  */
 import type { MockProfile } from "../data/mockProfiles";
 
@@ -17,7 +17,9 @@ const href = `/directorio/${profile.slug}/`;
 <article
   class:list={[
     "profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
-    isPro ? "border-dm-offblack/35 shadow-lg" : "border-dm-offblack/15",
+    isPro
+      ? "border-dm-offblack/35 shadow-lg"
+      : "origin-center scale-y-[0.96] border-dm-offblack/15",
   ]}
   data-profile-card
   data-name={profile.name}
