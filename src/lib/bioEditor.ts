@@ -42,7 +42,7 @@ export function mountBioEditor(options: {
     editorProps: {
       attributes: {
         class:
-          "dm-content min-h-[9rem] px-3 py-3 outline-none focus:outline-none",
+          "dm-content min-h-[9rem] bg-white px-3 py-3 outline-none focus:outline-none",
       },
     },
     onUpdate: ({ editor: ed }) => {

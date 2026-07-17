@@ -1,12 +1,16 @@
 -- Demo accounts for beta one-click login (see shared/demoAccounts.js)
 
--- Romina — primary editor demo (real email)
+-- Romina — primary editor demo (real email, Pro)
 INSERT OR IGNORE INTO users (id, email, role)
 VALUES ('user_romina', 'romina@tortilla.studio', 'member');
 
 UPDATE profiles
-SET user_id = 'user_romina'
+SET user_id = 'user_romina', tier = 'pro'
 WHERE slug = 'romina-hernandez';
+
+UPDATE profiles
+SET tier = 'pro'
+WHERE user_id = 'user_romina';
 
 -- Featured realistic profiles (example cards)
 INSERT OR IGNORE INTO users (id, email, role)

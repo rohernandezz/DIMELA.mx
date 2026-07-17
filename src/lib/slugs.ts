@@ -12,6 +12,11 @@ export function toSlug(label: string): string {
     .replace(/^-|-$/g, "");
 }
 
+/** Profile URL slug from display name — mirrors worker/slugs.js slugFromName. */
+export function slugFromName(name: string): string {
+  return toSlug(name);
+}
+
 /** Short public slugs for common estados. */
 const ESTADO_SLUG_BY_LABEL: Partial<Record<MexicoEstado, string>> = {
   "Ciudad de México": "cdmx",

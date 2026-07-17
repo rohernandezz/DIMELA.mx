@@ -15,6 +15,27 @@ const SESSION_COOKIE = "dm_session";
 const SESSION_DAYS = 14;
 const MAGIC_MINUTES = 30;
 
+/** Demo accounts with an explicit Pro entitlement (beta). */
+function demoProTierForEmail(email) {
+  const e = String(email || "")
+    .trim()
+    .toLowerCase();
+  if (!e) return null;
+  const demo = Object.values(DEMO_ACCOUNTS).find((a) => String(a.email || "").toLowerCase() === e);
+  return demo?.tier === "pro" ? "pro" : null;
+}
+
+/** Keep demo Pro accounts upgraded even if their working profile was created as free. */
+async function ensureDemoProTier(env, user) {
+  if (!demoProTierForEmail(user?.email)) return;
+  await env.DB.prepare(
+    `UPDATE profiles SET tier = 'pro', updated_at = datetime('now')
+     WHERE user_id = ? AND tier != 'pro'`,
+  )
+    .bind(user.id)
+    .run();
+}
+
 function isLocalDevHost(url) {
   const h = url.hostname;
   return h === "localhost" || h === "127.0.0.1" || h === "[::1]" || h.endsWith(".localhost");
@@ -492,6 +513,12 @@ export async function handleAuthMe(request, env) {
   const user = await getSessionUser(env, request);
   if (!user) return json({ ok: false, error: "No autenticado." }, 401);
 
+  try {
+    await ensureDemoProTier(env, user);
+  } catch (err) {
+    console.error("ensureDemoProTier failed:", err);
+  }
+
   let profile;
   try {
     profile = await env.DB.prepare(
@@ -651,17 +678,21 @@ export async function handleMeProfilePut(request, env) {
   }
 
   const owned = await env.DB.prepare(
-    `SELECT slug, tier FROM profiles WHERE user_id = ? LIMIT 1`,
+    `SELECT slug, tier,
+            EXISTS(SELECT 1 FROM profile_publications pp WHERE pp.slug = profiles.slug) AS has_publication
+     FROM profiles WHERE user_id = ? LIMIT 1`,
   )
     .bind(user.id)
     .first();
 
+  const existing = owned;
+  const demoPro = demoProTierForEmail(user.email);
+  const effectiveTier = demoPro || owned?.tier || "free";
+
   let customCss = null;
-  if (body.customCss != null && owned?.tier === "pro") {
+  if (body.customCss != null && effectiveTier === "pro") {
     customCss = sanitizeCustomCss(body.customCss);
   }
-
-  const existing = owned;
 
   if (!existing) {
     const claimable = await listClaimableProfiles(env, user);
@@ -678,7 +709,7 @@ export async function handleMeProfilePut(request, env) {
   }
 
   let slug;
-  if (existing) {
+  if (existing?.has_publication) {
     slug = existing.slug;
   } else {
     const base = slugFromName(name);
@@ -689,26 +720,28 @@ export async function handleMeProfilePut(request, env) {
   }
 
   const serviciosJson = JSON.stringify(servicios);
+  const tier = demoPro || existing?.tier || "free";
 
   if (existing) {
     await markProfileDraftForEdit(env, user.id);
     await env.DB.prepare(
       `UPDATE profiles SET
-        name = ?, estado = ?, servicios = ?, description = ?, website = ?,
+        slug = ?, name = ?, estado = ?, servicios = ?, description = ?, website = ?,
+        tier = ?,
         custom_css = COALESCE(?, custom_css),
         updated_at = datetime('now')
        WHERE user_id = ?`,
     )
-      .bind(name, estado, serviciosJson, description, website, customCss, user.id)
+      .bind(slug, name, estado, serviciosJson, description, website, tier, customCss, user.id)
       .run();
   } else {
     await env.DB.prepare(
       `INSERT INTO profiles (
         slug, name, estado, servicios, description, website, tier, featured,
         cover, avatar, custom_css, custom_fonts, user_id, status
-      ) VALUES (?, ?, ?, ?, ?, ?, 'free', 0, NULL, NULL, ?, '[]', ?, 'draft')`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, NULL, NULL, ?, '[]', ?, 'draft')`,
     )
-      .bind(slug, name, estado, serviciosJson, description, website, customCss || "", user.id)
+      .bind(slug, name, estado, serviciosJson, description, website, tier, customCss || "", user.id)
       .run();
   }
 

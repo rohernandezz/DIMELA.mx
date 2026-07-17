@@ -8,8 +8,9 @@ export const DEMO_ACCOUNTS = {
     label: "Romina Hernández",
     role: "member",
     slug: "romina-hernandez",
+    tier: "pro",
     next: "/editar/",
-    blurb: "Miembro · edita el perfil romina-hernandez",
+    blurb: "Miembro Pro · edita el perfil romina-hernandez",
   },
   cristobal: {
     email: "demo.cristobal@dimela.mx",

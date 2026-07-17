@@ -18,7 +18,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
   <div class="mx-auto max-w-3xl pb-16">
     <!-- Login -->
     <section
-      class="mb-10 space-y-4 rounded border border-dm-offblack/15 bg-white p-5"
+      class="dm-ui-surface mb-10 space-y-4 p-5"
       data-auth-panel
       hidden
     >
@@ -58,7 +58,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
     <!-- Claim seeded profile -->
     <section
-      class="mb-10 hidden space-y-4 rounded border border-dm-offblack/15 bg-dm-offwhite/80 p-5"
+      class="dm-ui-surface mb-10 hidden space-y-4 p-5"
       data-claim-panel
     >
       <div>
@@ -75,14 +75,14 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
     <!-- Editor (shown when logged in) -->
     <div data-editor-root hidden>
-      <header class="mb-8 space-y-3">
+      <header class="dm-ui-surface mb-5 space-y-3 p-5">
         <p class="dm-ui-facet-label">
           Cuenta · <span data-user-email></span>
         </p>
         <div class="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 class="dm-ui-page-title">Editar perfil</h1>
-            <p class="mt-1 text-sm text-dm-offblack/65">
+            <p class="dm-ui-body mt-1">
               Guardado en D1. Publicado solo tras aprobación.
             </p>
           </div>
@@ -104,21 +104,21 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </button>
           <button
             type="button"
-            class="rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-1.5 text-sm text-dm-offwhite transition hover:opacity-90"
+            class="dm-ui-button-primary px-3 py-1.5"
             data-action="submit"
           >
             Enviar a revisión
           </button>
           <a
             href="/directorio/"
-            class="rounded border border-dm-offblack/20 bg-white px-3 py-1.5 text-sm text-dm-offblack/80 hover:border-dm-offblack/40"
+            class="dm-ui-button-secondary px-3 py-1.5"
             data-public-link
           >
             Vista pública
           </a>
           <button
             type="button"
-            class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:border-dm-offblack/30"
+            class="dm-ui-button-small px-3 py-1.5"
             data-action="logout"
           >
             Salir
@@ -132,80 +132,86 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         <p class="hidden text-sm text-dm-offblack/55" data-editor-toast role="status"></p>
       </header>
 
-      <form class="space-y-10" data-profile-editor novalidate>
-        <section class="space-y-4" aria-labelledby="editor-identity">
+      <form class="space-y-5" data-profile-editor novalidate>
+        <section class="dm-ui-surface space-y-5 p-5" aria-labelledby="editor-profile">
           <div>
-            <h2 id="editor-identity" class="dm-ui-section-title">Identidad</h2>
-            <p class="dm-ui-body mt-1">Nombre público y sitio web.</p>
-            <p class="text-xs text-dm-offblack/45">La URL se genera sola al guardar; solo admin puede cambiarla.</p>
+            <h2 id="editor-profile" class="dm-ui-section-title">Perfil</h2>
+            <p class="dm-ui-body mt-1">Nombre, sitio, ubicación y servicios.</p>
           </div>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block space-y-1.5 sm:col-span-2">
-              <span class="dm-ui-facet-label"
-                >Nombre <span data-required-mark="name" class="text-dm-red" aria-hidden="true">*</span></span
-              >
-              <input
-                type="text"
-                name="name"
-                data-field="name"
-                aria-describedby="field-error-name"
-                class="dm-ui-field"
-              />
-              <p id="field-error-name" class="dm-ui-error-text hidden" data-field-error="name"></p>
-            </label>
-            <p class="sm:col-span-2 text-[11px] text-dm-offblack/55" data-profile-slug hidden>
-              URL del perfil: <span class="font-mono text-dm-offblack/70" data-profile-slug-value></span>
-            </p>
-            <label class="block space-y-1.5 sm:col-span-2">
-              <span class="dm-ui-facet-label"
-                >Sitio web</span
-              >
-              <input
-                type="url"
-                name="website"
-                data-field="website"
-                placeholder="https://"
-                aria-describedby="field-error-website"
-                class="dm-ui-field"
-              />
-              <p
-                id="field-error-website"
-                class="dm-ui-error-text hidden"
-                data-field-error="website"
-              ></p>
-            </label>
-          </div>
-        </section>
 
-        <section class="space-y-4" aria-labelledby="editor-facets">
-          <div>
-            <h2 id="editor-facets" class="dm-ui-section-title">Directorio</h2>
-            <p class="dm-ui-body mt-1">Ubicación y servicios.</p>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div class="space-y-4">
+              <label class="block space-y-1.5">
+                <span class="dm-ui-facet-label"
+                  >Nombre <span data-required-mark="name" class="text-dm-red" aria-hidden="true">*</span></span
+                >
+                <input
+                  type="text"
+                  name="name"
+                  data-field="name"
+                  aria-describedby="field-error-name"
+                  class="dm-ui-field"
+                />
+                <p id="field-error-name" class="dm-ui-error-text hidden" data-field-error="name"></p>
+              </label>
+              <label class="block space-y-1.5">
+                <span class="dm-ui-facet-label">Sitio web</span>
+                <input
+                  type="url"
+                  name="website"
+                  data-field="website"
+                  placeholder="https://"
+                  aria-describedby="field-error-website"
+                  class="dm-ui-field"
+                />
+                <p
+                  id="field-error-website"
+                  class="dm-ui-error-text hidden"
+                  data-field-error="website"
+                ></p>
+              </label>
+            </div>
+
+            <div class="space-y-4">
+              <label class="block space-y-1.5">
+                <span class="dm-ui-facet-label"
+                  >Ubicación <span data-required-mark="estado" class="text-dm-red" aria-hidden="true">*</span></span
+                >
+                <select
+                  name="estado"
+                  data-field="estado"
+                  aria-describedby="field-error-estado"
+                  class="dm-ui-field-blue"
+                >
+                  <option value="">Selecciona una ubicación…</option>
+                  <option disabled>────────</option>
+                  <option value={OUTSIDE_MEXICO}>{OUTSIDE_MEXICO}</option>
+                  <option disabled>────────</option>
+                  {estadosMexico.map((estado) => <option value={estado}>{estado}</option>)}
+                </select>
+                <p id="field-error-estado" class="dm-ui-error-text hidden" data-field-error="estado"></p>
+              </label>
+              <label class="block space-y-1.5">
+                <span class="dm-ui-facet-label">URL del perfil</span>
+                <input
+                  type="text"
+                  readonly
+                  tabindex="-1"
+                  value=""
+                  data-profile-slug-value
+                  class="dm-ui-field-soft cursor-default text-dm-offblack/55"
+                  aria-readonly="true"
+                />
+                <p class="text-xs text-dm-offblack/45">
+                  En el primer borrador se recalcula del nombre cada vez que guardas. Con versión
+                  pública, solo admin puede cambiarla.
+                </p>
+              </label>
+            </div>
           </div>
-          <label class="block space-y-1.5">
-            <span class="dm-ui-facet-label"
-              >Ubicación <span data-required-mark="estado" class="text-dm-red" aria-hidden="true">*</span></span
-            >
-            <select
-              name="estado"
-              data-field="estado"
-              aria-describedby="field-error-estado"
-              class="dm-ui-field-blue"
-            >
-              <option value="">Selecciona una ubicación…</option>
-              <option disabled>────────</option>
-              <option value={OUTSIDE_MEXICO}>{OUTSIDE_MEXICO}</option>
-              <option disabled>────────</option>
-              {estadosMexico.map((estado) => <option value={estado}>{estado}</option>)}
-            </select>
-            <p id="field-error-estado" class="dm-ui-error-text hidden" data-field-error="estado"></p>
-          </label>
+
           <fieldset>
-            <legend
-              class="mb-1 dm-ui-facet-label"
-            >
-              Servicios
-            </legend>
+            <legend class="mb-1 dm-ui-panel-title">Servicios</legend>
             <p class="dm-ui-body mb-2">
               Selecciona servicios; arrastra los seleccionados para ordenarlos en el perfil.
             </p>
@@ -213,13 +219,13 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </fieldset>
         </section>
 
-        <section class="space-y-4" aria-labelledby="editor-bio">
+        <section class="dm-ui-surface space-y-5 p-5" aria-labelledby="editor-bio">
           <div>
             <h2 id="editor-bio" class="dm-ui-section-title">Bio</h2>
             <p class="dm-ui-body mt-1">TipTap · HTML sanitizado al guardar.</p>
             <p class="text-xs text-dm-offblack/45">El primer párrafo es el destacado en la tarjeta del directorio; después puedes ampliar en el perfil.</p>
           </div>
-          <div class="overflow-hidden rounded border border-dm-offblack/20 bg-white" data-tiptap-shell>
+          <div class="overflow-hidden rounded border border-dm-offblack/15 bg-dm-offwhite/50" data-tiptap-shell>
             <div
               class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
               data-bio-toolbar
@@ -265,7 +271,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </div>
         </section>
 
-        <section class="space-y-4" aria-labelledby="editor-media">
+        <section class="dm-ui-surface space-y-5 p-5" aria-labelledby="editor-media">
           <div>
             <h2 id="editor-media" class="dm-ui-section-title">Medios</h2>
             <p class="dm-ui-body mt-1">
@@ -330,7 +336,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
             tabindex="-1"
           />
           <div
-            class="rounded border border-dm-offblack/15 bg-dm-offwhite/60 px-3 py-2.5 text-[11px] text-dm-offblack/65"
+            class="dm-ui-subsurface px-3 py-2.5 text-[11px] text-dm-offblack/65"
             data-media-quota
             hidden
           >
@@ -343,7 +349,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </div>
         </section>
 
-        <section class="space-y-4" aria-labelledby="editor-gallery">
+        <section class="dm-ui-surface space-y-5 p-5" aria-labelledby="editor-gallery">
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
               <h2 id="editor-gallery" class="dm-ui-section-title">Galería</h2>
@@ -369,7 +375,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           />
         </section>
 
-        <section class="space-y-4" aria-labelledby="editor-css" data-pro-theme-section>
+        <section class="dm-ui-surface-pro space-y-5 p-5" aria-labelledby="editor-css" data-pro-theme-section>
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
               <h2 id="editor-css" class="dm-ui-section-title">Estilo Pro</h2>
@@ -380,9 +386,9 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
             </div>
             <span class="dm-ui-pro-badge">Pro</span>
           </div>
-          <div class="space-y-3 rounded border border-dm-offblack/15 bg-white/80 p-3" data-font-panel>
+          <div class="dm-ui-subsurface space-y-3 p-3" data-font-panel>
             <p class="dm-ui-facet-label">Fuentes</p>
-            <p class="text-[11px] text-dm-offblack/55">WOFF2, WOFF, TTF u OTF · máx. 768 KB c/u · hasta 2 fuentes.</p>
+            <p class="text-[11px] text-dm-offwhite/45">WOFF2, WOFF, TTF u OTF · máx. 768 KB c/u · hasta 2 fuentes.</p>
             <ul class="space-y-1.5 text-sm" data-font-list></ul>
             <div class="flex flex-wrap items-end gap-2" data-font-upload-row>
               <label class="block min-w-[8rem] flex-1 space-y-1">
@@ -391,13 +397,13 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
                   type="text"
                   data-font-family
                   placeholder="Mi Fuente"
-                  class="w-full rounded border border-dm-offblack/20 bg-white px-2 py-1.5 text-sm outline-none focus:border-dm-offblack/50"
+                  class="w-full rounded border border-white/15 bg-black/20 px-2 py-1.5 text-sm text-dm-offwhite outline-none placeholder:text-white/35 focus:border-dm-pink/50"
                 />
               </label>
               <button
                 type="button"
                 data-action="font-upload"
-                class="rounded border border-dm-offblack/20 px-2.5 py-1.5 text-xs hover:border-dm-offblack/40 disabled:opacity-50"
+                class="rounded border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs text-dm-offwhite transition hover:border-dm-pink/50 hover:bg-white/15 disabled:opacity-50"
               >
                 Subir fuente
               </button>
@@ -409,14 +415,14 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
             data-field="customCss"
             rows="6"
             placeholder={`.profile-card {\n  font-family: "Mi Fuente", sans-serif;\n}\n.profile-detail h1 {\n  letter-spacing: 0.04em;\n}`}
-            class="w-full rounded border border-dm-offblack/20 bg-dm-offblack px-3 py-3 font-mono text-xs leading-relaxed text-dm-offwhite outline-none placeholder:text-dm-offwhite/35 focus:border-dm-pink/50 disabled:opacity-50"
+            class="w-full rounded border border-white/15 bg-black/30 px-3 py-3 font-mono text-xs leading-relaxed text-dm-offwhite outline-none placeholder:text-dm-offwhite/35 focus:border-dm-pink/50 disabled:opacity-50"
           ></textarea>
-          <p class="text-[11px] text-dm-offblack/45" data-pro-theme-hint hidden>
+          <p class="text-[11px] text-dm-offwhite/45" data-pro-theme-hint hidden>
             Actualiza a Pro para personalizar fuentes y CSS.
           </p>
         </section>
 
-        <div class="flex flex-wrap gap-2 border-t border-dm-offblack/10 pt-6">
+        <div class="dm-ui-surface flex flex-wrap gap-3 p-5">
           <button
             type="submit"
             class="dm-ui-button-accent px-4"
@@ -425,7 +431,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </button>
           <button
             type="button"
-            class="rounded border border-dm-offblack/25 bg-dm-offblack px-4 py-2 text-sm text-dm-offwhite transition hover:opacity-90"
+            class="dm-ui-button-primary px-4"
             data-action="submit"
           >
             Enviar a revisión
@@ -441,6 +447,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
   import { openAvatarCropper } from "../../lib/imageCropper";
   import { requestMagicLink, renderDevMagicLink } from "../../lib/authClient";
   import { normalizeServicios, SERVICIOS } from "../../data/taxonomy";
+  import { slugFromName } from "../../lib/slugs";
 
   type GalleryImage = { id: string; url: string; caption?: string };
   type ProfileGallery = { id: string; title: string; images: GalleryImage[] };
@@ -451,6 +458,8 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
   let serviciosOrder: string[] = [];
   let dragServicio: string | null = null;
   let didServicioDrag = false;
+  /** Locked profile URL slug once there is a public version; empty during first-draft setup. */
+  let savedSlug = "";
 
   type Profile = {
     slug: string;
@@ -524,6 +533,14 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
       document.querySelector<HTMLSelectElement>('[data-field="estado"]')?.value.trim() || "";
     updateRequiredMark("name", Boolean(name));
     updateRequiredMark("estado", Boolean(estado));
+  }
+
+  function syncSlugPreview() {
+    const input = document.querySelector<HTMLInputElement>("[data-profile-slug-value]");
+    if (!input) return;
+    const name = document.querySelector<HTMLInputElement>('[data-field="name"]')?.value.trim() || "";
+    const slug = savedSlug || (name ? slugFromName(name) || "perfil" : "");
+    input.value = slug ? `/directorio/${slug}/` : "";
   }
 
   function clearFieldError(field: string) {
@@ -689,19 +706,9 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
     set("estado", estado);
     set("website", website);
     set("customCss", customCss);
+    savedSlug = profile?.hasPublishedVersion ? slug : "";
     syncRequiredMarks();
-
-    const slugEl = document.querySelector<HTMLElement>("[data-profile-slug]");
-    const slugVal = document.querySelector<HTMLElement>("[data-profile-slug-value]");
-    if (slugEl && slugVal) {
-      if (slug) {
-        slugEl.hidden = false;
-        slugVal.textContent = `/directorio/${slug}/`;
-      } else {
-        slugEl.hidden = true;
-        slugVal.textContent = "";
-      }
-    }
+    syncSlugPreview();
 
     renderServiciosPicker();
 
@@ -999,15 +1006,15 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
     if (!list) return;
     currentFonts = fonts;
     if (!fonts.length) {
-      list.innerHTML = `<li class="text-xs text-dm-offblack/45">Sin fuentes subidas.</li>`;
+      list.innerHTML = `<li class="text-xs text-dm-offwhite/40">Sin fuentes subidas.</li>`;
     } else {
       list.innerHTML = fonts
         .map(
           (f) =>
-            `<li class="flex flex-wrap items-center justify-between gap-2 rounded border border-dm-offblack/10 px-2 py-1.5">
-              <span class="font-mono text-xs">${f.family}</span>
-              <span class="text-[10px] text-dm-offblack/45 uppercase">${f.format}</span>
-              <button type="button" class="text-xs text-dm-offblack/55 hover:text-dm-offblack" data-action="font-delete" data-font-id="${f.id}" ${tier !== "pro" ? "disabled" : ""}>Quitar</button>
+            `<li class="flex flex-wrap items-center justify-between gap-2 rounded border border-white/10 bg-black/20 px-2 py-1.5">
+              <span class="font-mono text-xs text-dm-offwhite">${f.family}</span>
+              <span class="text-[10px] text-dm-offwhite/40 uppercase">${f.format}</span>
+              <button type="button" class="text-xs text-dm-offwhite/55 hover:text-dm-pink" data-action="font-delete" data-font-id="${f.id}" ${tier !== "pro" ? "disabled" : ""}>Quitar</button>
             </li>`,
         )
         .join("");
@@ -1159,15 +1166,15 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
         const canDeleteGallery = tier === "pro" && galleries.length > 1 && gallery.id;
         const titleReadonly = !(tier === "pro" && gallery.id);
-        return `<div class="rounded border border-dm-offblack/15 bg-white/80 p-3" data-gallery-panel="${gid}">
+        return `<div class="dm-ui-subsurface p-3" data-gallery-panel="${gid}">
           <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <input type="text" value="${titleEsc}" class="min-w-[8rem] flex-1 rounded border border-dm-offblack/15 px-2 py-1 text-sm ${titleReadonly ? "pointer-events-none opacity-70" : ""}" data-gallery-title="${gid}" ${titleReadonly ? "readonly" : ""} />
+            <input type="text" value="${titleEsc}" class="dm-ui-field min-w-[8rem] flex-1 px-2 py-1 ${titleReadonly ? "pointer-events-none opacity-70" : ""}" data-gallery-title="${gid}" ${titleReadonly ? "readonly" : ""} />
             <span class="text-[11px] text-dm-offblack/50">${count}/${limits.maxImages}</span>
           </div>
           <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">${imgs || `<p class="col-span-full text-xs text-dm-offblack/45">Sin imágenes aún.</p>`}</div>
           <div class="mt-2 flex flex-wrap gap-2">
-            <button type="button" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs disabled:opacity-50" data-action="gallery-upload" data-gallery-id="${gid}" ${atLimit || uploadsBlocked ? "disabled" : ""}>Subir imagen</button>
-            ${canDeleteGallery ? `<button type="button" class="rounded border border-dm-offblack/15 px-2.5 py-1 text-xs text-dm-offblack/60" data-action="gallery-delete" data-gallery-id="${gid}">Eliminar galería</button>` : ""}
+            <button type="button" class="dm-ui-button-small" data-action="gallery-upload" data-gallery-id="${gid}" ${atLimit || uploadsBlocked ? "disabled" : ""}>Subir imagen</button>
+            ${canDeleteGallery ? `<button type="button" class="dm-ui-button-small text-dm-offblack/60" data-action="gallery-delete" data-gallery-id="${gid}">Eliminar galería</button>` : ""}
           </div>
         </div>`;
       })
@@ -1451,6 +1458,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           clearEditorError();
         }
         if (field === "name" || field === "estado") syncRequiredMarks();
+        if (field === "name") syncSlugPreview();
       });
       editorForm.addEventListener("change", (e) => {
         const t = e.target as HTMLElement;
