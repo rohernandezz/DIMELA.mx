@@ -60,9 +60,9 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
     <header class="flex shrink-0 items-center gap-3">
       ${avatar}
       <div class="min-w-0">
-        <a href="${href}" class="block truncate text-lg font-bold text-dm-offblack underline-offset-2 hover:underline">${name}</a>
+        <a href="${href}" class="block truncate dm-ui-card-title text-dm-offblack underline-offset-2 hover:underline">${name}</a>
         <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-          <a href="${estadoHref}" class="relative z-10 truncate text-sm text-dm-offblack/60 hover:underline">${estado}</a>
+          <a href="${estadoHref}" class="dm-ui-meta relative z-10 truncate hover:underline">${estado}</a>
           ${site}
         </div>
       </div>

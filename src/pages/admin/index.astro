@@ -14,8 +14,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   <div class="mx-auto max-w-3xl pb-16">
     <section class="mb-8 space-y-4 rounded border border-dm-offblack/15 bg-white p-5" data-auth-panel hidden>
       <div>
-        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Admin</p>
-        <h1 class="mt-1 text-2xl tracking-wide">Entrar</h1>
+        <p class="dm-ui-facet-label">Admin</p>
+        <h1 class="mt-1 dm-ui-page-title">Entrar</h1>
         <p class="mt-1 text-sm text-dm-offblack/65">
           Usa una cuenta con rol <code class="text-xs">admin</code>. Demo:
           <span class="font-medium">hola@dimela.mx</span>
@@ -23,7 +23,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       </div>
       <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
         <label class="block min-w-0 flex-1 space-y-1.5">
-          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Email</span>
+          <span class="dm-ui-facet-label">Email</span>
           <input
             type="email"
             name="email"
@@ -45,12 +45,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
     <div data-admin-root hidden>
       <header class="mb-8 space-y-3">
-        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+        <p class="dm-ui-facet-label">
           Admin · <span data-user-email></span>
         </p>
         <div class="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 class="text-3xl tracking-wide">Aprobaciones</h1>
+            <h1 class="dm-ui-page-title">Aprobaciones</h1>
             <p class="mt-1 text-sm text-dm-offblack/65">
               Perfiles en revisión. Aprobar publica en el directorio.
             </p>
@@ -174,7 +174,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           <p class="text-sm text-dm-offblack/55">${escapeHtml(p.estado)}</p>
           <div class="mt-2 flex flex-wrap items-end gap-2">
             <label class="block min-w-0 flex-1 space-y-1">
-              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Slug (URL)</span>
+              <span class="dm-ui-facet-label">Slug (URL)</span>
               <input type="text" value="${escapeHtml(p.slug)}" data-slug-input class="w-full min-w-[10rem] rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 font-mono text-xs outline-none focus:border-dm-offblack/50" />
             </label>
             <button type="button" data-save-slug="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar slug</button>
@@ -188,7 +188,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
                 }`
               : `<div class="mt-2 flex flex-wrap items-end gap-2">
                   <label class="block min-w-0 flex-1 space-y-1">
-                    <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Invitar (email)</span>
+                    <span class="dm-ui-facet-label">Invitar (email)</span>
                     <input type="email" value="${escapeHtml(p.inviteEmail || "")}" placeholder="diseñador@email.com" data-invite-input class="w-full min-w-[10rem] rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 text-xs outline-none focus:border-dm-offblack/50" />
                   </label>
                   <button type="button" data-save-invite="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar invite</button>

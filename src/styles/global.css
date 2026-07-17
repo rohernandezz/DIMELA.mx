@@ -42,3 +42,120 @@ i {
 body {
   @apply min-h-screen bg-dm-offwhite text-dm-offblack antialiased;
 }
+
+/* —— Content vs UI typography ——
+   Source of truth: /brand/ · docs/brand.md
+   .dm-content  — user-authored text (bios, long-form)
+   .dm-ui-*     — app chrome (section titles, labels, meta) */
+
+@layer components {
+  .dm-content {
+    @apply text-sm leading-relaxed text-dm-offblack/75;
+  }
+
+  .dm-content p {
+    margin: 0.35rem 0;
+  }
+
+  .dm-content h2 {
+    margin: 0.75rem 0 0.35rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid color-mix(in oklab, var(--color-dm-offblack) 10%, transparent);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+    color: var(--color-dm-offblack);
+  }
+
+  .dm-content > h2:first-child,
+  .dm-content > :first-child h2:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .dm-content h3 {
+    margin: 0.5rem 0 0.35rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-dm-offblack);
+  }
+
+  .dm-content ul {
+    list-style: disc;
+    margin: 0.35rem 0;
+    padding-left: 1.25rem;
+  }
+
+  .dm-content ol {
+    list-style: decimal;
+    margin: 0.35rem 0;
+    padding-left: 1.25rem;
+  }
+
+  .dm-content li + li {
+    margin-top: 0.25rem;
+  }
+
+  .dm-content blockquote {
+    margin: 0.35rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-dm-pink);
+    color: color-mix(in oklab, var(--color-dm-offblack) 60%, transparent);
+  }
+
+  .dm-content a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .dm-content a:hover {
+    color: var(--color-dm-offblack);
+  }
+
+  .dm-content code {
+    border-radius: 0.25rem;
+    background-color: var(--color-dm-offwhite);
+    padding: 0.125rem 0.25rem;
+    font-size: 0.6875rem;
+    color: var(--color-dm-offblack);
+  }
+
+  /* UI chrome — not for user-authored body copy.
+     Change here → preview on /brand/ → applies site-wide. */
+  .dm-ui-lockup {
+    @apply text-lg tracking-wide;
+  }
+
+  .dm-ui-page-title {
+    @apply text-3xl tracking-wide text-dm-offblack sm:text-4xl;
+  }
+
+  .dm-ui-section-title {
+    @apply text-xl font-semibold tracking-wide text-dm-offblack;
+  }
+
+  .dm-ui-panel-title {
+    @apply text-lg tracking-wide text-dm-offblack;
+  }
+
+  .dm-ui-facet-label {
+    @apply text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase;
+  }
+
+  .dm-ui-body {
+    @apply text-sm leading-relaxed text-dm-offblack/70;
+  }
+
+  .dm-ui-meta {
+    @apply text-sm text-dm-offblack/60;
+  }
+
+  .dm-ui-display {
+    @apply text-3xl font-bold tracking-wide text-dm-offblack;
+  }
+
+  .dm-ui-card-title {
+    @apply text-lg font-bold text-dm-offblack;
+  }
+}

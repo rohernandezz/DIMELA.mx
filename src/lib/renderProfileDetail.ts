@@ -64,13 +64,13 @@ export function renderProfileDetailHtml(
                 const cap = img.caption ? escapeHtml(img.caption) : "";
                 return `<figure class="overflow-hidden rounded-md border border-dm-offblack/10 bg-white">
                   <img src="${src}" alt="${cap}" class="aspect-square w-full object-cover" loading="lazy" decoding="async" />
-                  ${cap ? `<figcaption class="px-2 py-1.5 text-xs text-dm-offblack/60">${cap}</figcaption>` : ""}
+                  ${cap ? `<figcaption class="dm-ui-meta px-2 py-1.5">${cap}</figcaption>` : ""}
                 </figure>`;
               })
               .join("");
             const showTitle = galleries.length > 1 || title !== "Galería";
             return `<div>
-              ${showTitle ? `<h2 class="mb-3 text-lg tracking-wide">${title}</h2>` : ""}
+              ${showTitle ? `<h2 class="dm-ui-panel-title mb-3">${title}</h2>` : ""}
               <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">${items}</div>
             </div>`;
           })
@@ -97,17 +97,17 @@ export function renderProfileDetailHtml(
       ${avatar}
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-2">
-          <h1 class="text-3xl font-bold tracking-tight">${name}</h1>
+          <h1 class="dm-ui-display">${name}</h1>
           ${proBadge}
         </div>
         <div class="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-          <a href="${estadoHref}" class="text-sm text-dm-offblack/60 hover:underline">${estado}</a>
+          <a href="${estadoHref}" class="dm-ui-meta hover:underline">${estado}</a>
           ${site}
         </div>
       </div>
     </header>
     ${servicesBlock}
-    ${descriptionHtml ? `<div class="profile-bio mb-6 text-base leading-relaxed text-dm-offblack/80">${descriptionHtml}</div>` : ""}
+    ${descriptionHtml ? `<div class="dm-content profile-bio mb-6">${descriptionHtml}</div>` : ""}
     ${galleryHtml}
     <p class="text-sm text-dm-offblack/45">
       <a href="/directorio/" class="hover:underline">← Volver al directorio</a>

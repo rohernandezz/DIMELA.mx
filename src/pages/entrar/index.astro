@@ -34,9 +34,9 @@ const demos = [...memberDemos, adminEntry];
 >
   <div class="mx-auto max-w-lg pb-16">
     <header class="mb-8 space-y-2">
-      <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Beta</p>
-      <h1 class="text-3xl tracking-wide">Entrar como ejemplo</h1>
-      <p class="text-sm leading-relaxed text-dm-offblack/65">
+      <p class="dm-ui-facet-label">Beta</p>
+      <h1 class="dm-ui-page-title">Entrar como ejemplo</h1>
+      <p class="dm-ui-body">
         Para testers: inicia sesión al instante con una cuenta demo (sin correo). Requiere
         <code class="text-xs">BETA_LOGIN</code> en el Worker (habilitado en staging).
       </p>
@@ -52,7 +52,7 @@ const demos = [...memberDemos, adminEntry];
               data-demo={demo.key}
               class="group block rounded border border-dm-offblack/15 bg-white p-4 transition hover:border-dm-offblack/35 hover:bg-dm-offwhite"
             >
-              <span class="block text-lg tracking-wide group-hover:text-dm-offblack">
+              <span class="block dm-ui-panel-title group-hover:text-dm-offblack">
                 {demo.cta}
               </span>
               <span class="mt-1 block text-sm text-dm-offblack/60">{demo.blurb}</span>

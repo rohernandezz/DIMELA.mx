@@ -23,10 +23,10 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
       hidden
     >
       <div>
-        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+        <p class="dm-ui-facet-label">
           Cuenta
         </p>
-        <h1 class="mt-1 text-2xl tracking-wide">Entrar con email</h1>
+        <h1 class="mt-1 dm-ui-page-title">Entrar con email</h1>
         <p class="mt-1 text-sm text-dm-offblack/65">
           Te enviamos un enlace mágico a tu correo. Si ya entraste, ve a
           <a href="/cuenta/" class="underline hover:text-dm-offblack">Mi cuenta</a>.
@@ -34,7 +34,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
       </div>
       <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
         <label class="block min-w-0 flex-1 space-y-1.5">
-          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          <span class="dm-ui-facet-label"
             >Email</span
           >
           <input
@@ -62,7 +62,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
       data-claim-panel
     >
       <div>
-        <h2 class="text-xl tracking-wide">Reclama tu perfil</h2>
+        <h2 class="dm-ui-section-title">Reclama tu perfil</h2>
         <p class="mt-1 text-sm text-dm-offblack/65">
           Hay un perfil en el directorio asociado a tu correo. Reclámalo antes de crear uno nuevo.
         </p>
@@ -76,12 +76,12 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
     <!-- Editor (shown when logged in) -->
     <div data-editor-root hidden>
       <header class="mb-8 space-y-3">
-        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+        <p class="dm-ui-facet-label">
           Cuenta · <span data-user-email></span>
         </p>
         <div class="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 class="text-3xl tracking-wide">Editar perfil</h1>
+            <h1 class="dm-ui-page-title">Editar perfil</h1>
             <p class="mt-1 text-sm text-dm-offblack/65">
               Guardado en D1. Publicado solo tras aprobación.
             </p>
@@ -135,13 +135,13 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
       <form class="space-y-10" data-profile-editor novalidate>
         <section class="space-y-4" aria-labelledby="editor-identity">
           <div>
-            <h2 id="editor-identity" class="text-lg tracking-wide">Identidad</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">Nombre público y sitio web.</p>
+            <h2 id="editor-identity" class="dm-ui-section-title">Identidad</h2>
+            <p class="dm-ui-body mt-1">Nombre público y sitio web.</p>
             <p class="text-xs text-dm-offblack/45">La URL se genera sola al guardar; solo admin puede cambiarla.</p>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <label class="block space-y-1.5 sm:col-span-2">
-              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+              <span class="dm-ui-facet-label"
                 >Nombre <span data-required-mark="name" class="text-dm-red" aria-hidden="true">*</span></span
               >
               <input
@@ -157,7 +157,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
               URL del perfil: <span class="font-mono text-dm-offblack/70" data-profile-slug-value></span>
             </p>
             <label class="block space-y-1.5 sm:col-span-2">
-              <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+              <span class="dm-ui-facet-label"
                 >Sitio web</span
               >
               <input
@@ -179,11 +179,11 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
         <section class="space-y-4" aria-labelledby="editor-facets">
           <div>
-            <h2 id="editor-facets" class="text-lg tracking-wide">Directorio</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">Ubicación y servicios.</p>
+            <h2 id="editor-facets" class="dm-ui-section-title">Directorio</h2>
+            <p class="dm-ui-body mt-1">Ubicación y servicios.</p>
           </div>
           <label class="block space-y-1.5">
-            <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            <span class="dm-ui-facet-label"
               >Ubicación <span data-required-mark="estado" class="text-dm-red" aria-hidden="true">*</span></span
             >
             <select
@@ -202,11 +202,11 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </label>
           <fieldset>
             <legend
-              class="mb-1 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+              class="mb-1 dm-ui-facet-label"
             >
               Servicios
             </legend>
-            <p class="mb-2 text-xs text-dm-offblack/50">
+            <p class="dm-ui-body mb-2">
               Selecciona servicios; arrastra los seleccionados para ordenarlos en el perfil.
             </p>
             <div class="flex flex-wrap gap-1.5" data-servicios-host></div>
@@ -215,8 +215,8 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
         <section class="space-y-4" aria-labelledby="editor-bio">
           <div>
-            <h2 id="editor-bio" class="text-lg tracking-wide">Bio</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">TipTap · HTML sanitizado al guardar.</p>
+            <h2 id="editor-bio" class="dm-ui-section-title">Bio</h2>
+            <p class="dm-ui-body mt-1">TipTap · HTML sanitizado al guardar.</p>
             <p class="text-xs text-dm-offblack/45">El primer párrafo es el destacado en la tarjeta del directorio; después puedes ampliar en el perfil.</p>
           </div>
           <div class="overflow-hidden rounded border border-dm-offblack/20 bg-white" data-tiptap-shell>
@@ -267,14 +267,14 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
         <section class="space-y-4" aria-labelledby="editor-media">
           <div>
-            <h2 id="editor-media" class="text-lg tracking-wide">Medios</h2>
-            <p class="mt-1 text-sm text-dm-offblack/60">
+            <h2 id="editor-media" class="dm-ui-section-title">Medios</h2>
+            <p class="dm-ui-body mt-1">
               Portada y avatar se guardan en R2. Guarda el borrador al menos una vez antes de subir.
             </p>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
-              <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+              <p class="dm-ui-facet-label">
                 Portada
               </p>
               <div
@@ -296,7 +296,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
               </p>
             </div>
             <div class="space-y-2">
-              <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+              <p class="dm-ui-facet-label">
                 Avatar
               </p>
               <div
@@ -346,8 +346,8 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         <section class="space-y-4" aria-labelledby="editor-gallery">
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <h2 id="editor-gallery" class="text-lg tracking-wide">Galería</h2>
-              <p class="mt-1 text-sm text-dm-offblack/60" data-gallery-hint>
+              <h2 id="editor-gallery" class="dm-ui-section-title">Galería</h2>
+              <p class="dm-ui-body mt-1" data-gallery-hint>
                 Free: 1 galería, hasta 12 imágenes (3 MB c/u). Pro: hasta 5 galerías, 24 imágenes c/u (5 MB).
               </p>
             </div>
@@ -372,8 +372,8 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         <section class="space-y-4" aria-labelledby="editor-css" data-pro-theme-section>
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <h2 id="editor-css" class="text-lg tracking-wide">Estilo Pro</h2>
-              <p class="mt-1 text-sm text-dm-offblack/60">
+              <h2 id="editor-css" class="dm-ui-section-title">Estilo Pro</h2>
+              <p class="dm-ui-body mt-1">
                 Fuentes (máx. 2) y CSS scoped a <code class="text-xs">.profile-card</code> y
                 <code class="text-xs">.profile-detail</code>.
               </p>
@@ -381,12 +381,12 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
             <span class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">Pro</span>
           </div>
           <div class="space-y-3 rounded border border-dm-offblack/15 bg-white/80 p-3" data-font-panel>
-            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Fuentes</p>
+            <p class="dm-ui-facet-label">Fuentes</p>
             <p class="text-[11px] text-dm-offblack/55">WOFF2, WOFF, TTF u OTF · máx. 768 KB c/u · hasta 2 fuentes.</p>
             <ul class="space-y-1.5 text-sm" data-font-list></ul>
             <div class="flex flex-wrap items-end gap-2" data-font-upload-row>
               <label class="block min-w-[8rem] flex-1 space-y-1">
-                <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Nombre CSS</span>
+                <span class="dm-ui-facet-label">Nombre CSS</span>
                 <input
                   type="text"
                   data-font-family

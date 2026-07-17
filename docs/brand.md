@@ -76,3 +76,24 @@ html {
 ```
 
 Update this doc when tokens or type rules change.
+
+## Content vs UI typography
+
+Two class families in `global.css` — preview both on `/brand/`.
+
+| Class | Use |
+|-------|-----|
+| `.dm-content` | User-authored text: bios, long-form copy. Wrap rendered bio HTML and the TipTap editor. |
+| `.dm-ui-lockup` | Header / brand wordmark (`DIMELA.mx`) |
+| `.dm-ui-page-title` | Top-level page title (e.g. Editar perfil, Mi cuenta) |
+| `.dm-ui-section-title` | Major section headings (editor panels: Identidad, Bio; claim screen) |
+| `.dm-ui-panel-title` | Nested block titles one step down (e.g. gallery titles on profile) |
+| `.dm-ui-display` | Large display headings in UI (profile detail name) |
+| `.dm-ui-card-title` | Profile card names |
+| `.dm-ui-facet-label` | Uppercase field labels, filter group labels |
+| `.dm-ui-body` | UI descriptive / helper copy (not bio body) |
+| `.dm-ui-meta` | Secondary meta (ubicación on cards, captions) |
+
+**Rule:** define styles in `global.css`, preview on `/brand/`, then use the classes in components. Do not duplicate content typography with inline Tailwind on profile bios.
+
+Pro custom CSS may still target `.profile-bio` (kept as a hook alongside `.dm-content`).

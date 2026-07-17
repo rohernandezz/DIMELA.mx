@@ -15,15 +15,15 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <!-- Login -->
     <section class="space-y-4" data-cuenta-login>
       <header class="space-y-2">
-        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">Cuenta</p>
-        <h1 class="text-3xl tracking-wide">Mi cuenta</h1>
-        <p class="text-sm leading-relaxed text-dm-offblack/65">
+        <p class="dm-ui-facet-label">Cuenta</p>
+        <h1 class="dm-ui-page-title">Mi cuenta</h1>
+        <p class="dm-ui-body">
           Entra con tu correo — te enviamos un enlace mágico, sin contraseña.
         </p>
       </header>
       <form class="flex flex-col gap-3 sm:flex-row sm:items-end" data-auth-form>
         <label class="block min-w-0 flex-1 space-y-1.5">
-          <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          <span class="dm-ui-facet-label"
             >Email</span
           >
           <input
@@ -49,10 +49,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <!-- Logged in -->
     <section class="hidden space-y-6" data-cuenta-session>
       <header class="space-y-1">
-        <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+        <p class="dm-ui-facet-label">
           Sesión · <span data-user-email></span>
         </p>
-        <h1 class="text-2xl tracking-wide" data-session-title>Mi cuenta</h1>
+        <h1 class="dm-ui-page-title" data-session-title>Mi cuenta</h1>
       </header>
 
       <!-- Has profile -->
@@ -91,7 +91,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       <!-- Claim -->
       <div class="hidden space-y-3" data-claim-panel>
         <div class="rounded border border-dm-offblack/15 bg-white p-5">
-          <h2 class="text-lg tracking-wide">Reclama tu perfil</h2>
+          <h2 class="dm-ui-section-title">Reclama tu perfil</h2>
           <p class="mt-1 text-sm text-dm-offblack/65">
             Encontramos un perfil en el directorio asociado a tu correo. Reclámalo para editarlo.
           </p>
@@ -105,7 +105,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
       <!-- Create new -->
       <div class="hidden space-y-3 rounded border border-dm-offblack/15 bg-dm-offwhite/80 p-5" data-create-panel>
-        <h2 class="text-lg tracking-wide">Crear perfil</h2>
+        <h2 class="dm-ui-section-title">Crear perfil</h2>
         <p class="text-sm text-dm-offblack/65">
           Aún no tienes perfil en DIMELA. Completa tu ficha y envíala a revisión cuando esté lista.
         </p>
@@ -162,7 +162,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         (p) => `<li>
           <button type="button" class="group w-full rounded border border-dm-offblack/15 bg-white p-4 text-left transition hover:border-dm-offblack/35"
             data-claim-slug="${p.slug}">
-            <span class="block text-lg tracking-wide">${p.name}</span>
+            <span class="block dm-ui-panel-title">${p.name}</span>
             <span class="mt-0.5 block text-sm text-dm-offblack/60">${p.estado} · ${statusLabel(p.status)}</span>
             <span class="mt-2 block text-sm text-dm-offblack/80 group-hover:underline">Reclamar perfil →</span>
           </button>

@@ -71,11 +71,9 @@ const colors = [
 >
   <div class="mx-auto max-w-3xl space-y-16 pb-16">
     <header class="space-y-2">
-      <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-        Design sandbox
-      </p>
-      <h1 class="text-3xl tracking-wide sm:text-4xl">Brand</h1>
-      <p class="max-w-xl text-sm leading-relaxed text-dm-offblack/70">
+      <p class="dm-ui-facet-label">Design sandbox</p>
+      <h1 class="dm-ui-page-title">Brand</h1>
+      <p class="dm-ui-body max-w-xl">
         Tokens from <code class="text-dm-offblack">global.css</code> · OutpactVF · live UI
         patterns. Design here, then implement in the app.
       </p>
@@ -84,8 +82,8 @@ const colors = [
     <!-- Colors -->
     <section class="space-y-4" aria-labelledby="brand-colors">
       <div>
-        <h2 id="brand-colors" class="text-xl tracking-wide">Colors</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-colors" class="dm-ui-section-title">Colors</h2>
+        <p class="dm-ui-body mt-1">
           @theme tokens — use Tailwind classes, not hardcoded hex in components.
         </p>
       </div>
@@ -112,9 +110,7 @@ const colors = [
         }
       </ul>
       <div class="rounded-md border border-dm-offblack/15 bg-white p-4">
-        <p class="mb-3 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-          Opacity hierarchy
-        </p>
+        <p class="dm-ui-facet-label mb-3">Opacity hierarchy</p>
         <div class="flex flex-wrap gap-2">
           <span class="rounded border border-dm-offblack/15 bg-dm-offblack/15 px-2.5 py-1 text-xs"
             >offblack/15</span
@@ -141,22 +137,18 @@ const colors = [
     <!-- Typography -->
     <section class="space-y-4" aria-labelledby="brand-type">
       <div>
-        <h2 id="brand-type" class="text-xl tracking-wide">Typography</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-type" class="dm-ui-section-title">Typography</h2>
+        <p class="dm-ui-body mt-1">
           OutpactVF · weights 100–900 · stack via <code class="text-dm-offblack">font-sans</code>
         </p>
       </div>
       <div class="space-y-6 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
         <div>
-          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Brand lockup
-          </p>
-          <p class="text-lg tracking-wide sm:text-2xl">DIMELA.mx</p>
+          <p class="dm-ui-facet-label mb-2">Brand lockup</p>
+          <p class="dm-ui-lockup sm:text-2xl">DIMELA.mx</p>
         </div>
         <div>
-          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Weights
-          </p>
+          <p class="dm-ui-facet-label mb-2">Weights</p>
           <ul class="space-y-1.5">
             <li class="font-thin text-lg">100 Thin — letrista</li>
             <li class="font-light text-lg">300 Light — letrista</li>
@@ -168,82 +160,168 @@ const colors = [
           </ul>
         </div>
         <div>
-          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Sizes & tracking
-          </p>
+          <p class="dm-ui-facet-label mb-2">Sizes & tracking</p>
           <ul class="space-y-2">
-            <li class="text-3xl font-bold tracking-wide">Display · text-3xl tracking-wide</li>
-            <li class="text-xl font-bold">Card name · text-xl font-bold</li>
-            <li class="text-sm leading-relaxed text-dm-offblack/75">
-              Body · text-sm leading-relaxed /75 — Lettering, caligrafía y tipografía para marcas.
-            </li>
-            <li class="text-xs text-dm-offblack/60">Meta · text-xs /60 — Ciudad de México</li>
-            <li
-              class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-            >
-              Facet label · uppercase tracking-wide
-            </li>
+            <li class="dm-ui-display">Display · .dm-ui-display</li>
+            <li class="dm-ui-card-title">Card title · .dm-ui-card-title</li>
+            <li class="dm-ui-body">Body · .dm-ui-body — Lettering, caligrafía y tipografía para marcas.</li>
+            <li class="dm-ui-meta">Meta · .dm-ui-meta — Ciudad de México</li>
+            <li class="dm-ui-facet-label">Facet label · .dm-ui-facet-label</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Content sample -->
+    <!-- Content typography -->
     <section class="space-y-4" aria-labelledby="brand-content">
       <div>
-        <h2 id="brand-content" class="text-xl tracking-wide">Content sample</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
-          Headings, body, and inline elements as they read on a page
+        <h2 id="brand-content" class="dm-ui-section-title">Content typography</h2>
+        <p class="dm-ui-body mt-1">
+          <code class="text-dm-offblack">.dm-content</code> — user-authored text (bios, long-form).
+          Defined here; used on profile pages and the bio editor.
         </p>
       </div>
-      <article class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-6 shadow-sm">
-        <h1 class="text-3xl font-bold tracking-wide sm:text-4xl">
-          Letras con raíz mexicana
-        </h1>
-        <p class="text-sm leading-relaxed text-dm-offblack/75">
+      <article class="dm-content rounded-md border border-dm-offblack/15 bg-white p-6 shadow-sm">
+        <h2>El oficio del trazo</h2>
+        <p>
           Lettering, caligrafía y tipografía hechas en México. Cada trazo cuenta una historia —
           desde rótulos de mercado hasta familias tipográficas completas para
-          <a href="#" class="underline underline-offset-2 hover:text-dm-offblack">marcas y editoriales</a>.
+          <a href="#">marcas y editoriales</a>.
         </p>
 
-        <h2 class="border-t border-dm-offblack/10 pt-5 text-2xl font-bold tracking-wide">
-          El oficio del trazo
-        </h2>
-        <p class="text-sm leading-relaxed text-dm-offblack/75">
+        <h2>Proceso</h2>
+        <p>
           Boceto, revisión, kerning y pruebas en contexto real. Un proceso que empieza con
-          escucha y termina con archivos listos para producción. El detalle importa — y también
-          la intención detrás de cada curva.
+          escucha y termina con archivos listos para producción.
         </p>
 
-        <h3 class="text-lg font-semibold">Servicios frecuentes</h3>
-        <ul class="list-disc space-y-1 pl-5 text-sm leading-relaxed text-dm-offblack/75">
+        <h3>Servicios frecuentes</h3>
+        <ul>
           <li>Logotipos y lettering a la medida</li>
           <li>Familias tipográficas para texto y display</li>
           <li>Murales y rotulación en gran formato</li>
         </ul>
 
-        <h3 class="text-lg font-semibold">Proceso</h3>
-        <ol class="list-decimal space-y-1 pl-5 text-sm leading-relaxed text-dm-offblack/75">
+        <h3>Pasos</h3>
+        <ol>
           <li>Brief y referencias</li>
           <li>Bocetos y dirección</li>
           <li>Digitalización y entrega</li>
         </ol>
 
-        <blockquote class="border-l-2 border-dm-pink pl-4 text-sm leading-relaxed text-dm-offblack/60">
+        <blockquote>
           “La letra es dibujo antes que texto — primero se mira, después se lee.”
         </blockquote>
 
-        <p class="text-xs text-dm-offblack/60">
-          Meta line · Ciudad de México · <code class="rounded bg-dm-offwhite px-1 py-0.5 text-[11px] text-dm-offblack">code sample</code>
+        <p class="dm-ui-meta">
+          Meta line · Ciudad de México · <code>code sample</code>
         </p>
       </article>
+    </section>
+
+    <!-- UI typography -->
+    <section class="space-y-4" aria-labelledby="brand-ui-type">
+      <div>
+        <h2 id="brand-ui-type" class="dm-ui-section-title">UI typography</h2>
+        <p class="dm-ui-body mt-1">
+          <code class="text-dm-offblack">.dm-ui-*</code> — app chrome: section titles, panel
+          headings, labels, meta. Not for user-authored body copy.
+        </p>
+      </div>
+      <p class="dm-ui-meta -mt-1">
+        Live mock of <code>/editar/</code>. Pink tags name the class on each element.
+      </p>
+
+      <!-- Mini editor mockup -->
+      <div class="overflow-hidden rounded-md border border-dm-offblack/15 bg-white shadow-sm">
+        <!-- Header chrome -->
+        <div class="flex items-center gap-3 bg-dm-offblack px-4 py-3 text-dm-offwhite">
+          <span class="dm-ui-lockup">DIMELA.mx</span>
+          <span class="ml-auto rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-lockup</span>
+        </div>
+
+        <div class="space-y-8 p-5 sm:p-6">
+          <!-- Page title -->
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="dm-ui-page-title">Editar perfil</h1>
+              <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-page-title</span>
+            </div>
+          </div>
+
+          <!-- Section: Identidad -->
+          <section class="space-y-4 border-t border-dm-offblack/10 pt-5">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="dm-ui-section-title">Identidad</h2>
+                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-section-title</span>
+              </div>
+              <div class="mt-1 flex flex-wrap items-center gap-2">
+                <p class="dm-ui-body">Nombre público y sitio web.</p>
+                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-body</span>
+              </div>
+            </div>
+            <label class="block space-y-1.5">
+              <span class="flex flex-wrap items-center gap-2">
+                <span class="dm-ui-facet-label">Nombre <span class="text-dm-red">*</span></span>
+                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-facet-label</span>
+              </span>
+              <input
+                type="text"
+                value="Romina Hernández"
+                class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+              />
+            </label>
+          </section>
+
+          <!-- Section: Galería (nested panel title) -->
+          <section class="space-y-4 border-t border-dm-offblack/10 pt-5">
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 class="dm-ui-section-title">Medios</h2>
+              <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-section-title</span>
+            </div>
+            <div class="rounded border border-dm-offblack/10 bg-dm-offwhite/60 p-4">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="dm-ui-panel-title">Galería principal</h3>
+                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-panel-title</span>
+              </div>
+              <div class="mt-2 flex flex-wrap items-center gap-2">
+                <p class="dm-ui-meta">3 imágenes · Ciudad de México</p>
+                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-meta</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Directory card + profile name mock -->
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-md border-2 border-dm-offblack/15 bg-white p-4 shadow-sm">
+          <p class="dm-ui-facet-label mb-3">Directory card</p>
+          <div class="flex items-center gap-2">
+            <p class="dm-ui-card-title">Cristóbal Henestrosa</p>
+            <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-card-title</span>
+          </div>
+          <div class="mt-0.5 flex items-center gap-2">
+            <p class="dm-ui-meta">Ciudad de México</p>
+            <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-meta</span>
+          </div>
+        </div>
+        <div class="rounded-md border-2 border-dm-offblack/15 bg-white p-4 shadow-sm">
+          <p class="dm-ui-facet-label mb-3">Profile detail header</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <p class="dm-ui-display">Romina Hernández</p>
+            <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-display</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Header strip -->
     <section class="space-y-4" aria-labelledby="brand-header">
       <div>
-        <h2 id="brand-header" class="text-xl tracking-wide">Header strip</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-header" class="dm-ui-section-title">Header strip</h2>
+        <p class="dm-ui-body mt-1">
           Off-black chrome · off-white type · hamburger panel
         </p>
       </div>
@@ -254,7 +332,7 @@ const colors = [
         <div
           class="flex items-center justify-between bg-dm-offblack px-4 py-3 text-dm-offwhite"
         >
-          <span class="text-lg tracking-wide">DIMELA.mx</span>
+          <span class="dm-ui-lockup">DIMELA.mx</span>
           <span
             class="flex h-9 w-9 items-center justify-center rounded text-dm-offwhite"
             aria-hidden="true"
@@ -279,16 +357,14 @@ const colors = [
     <!-- Filter chips & Limpiar -->
     <section class="space-y-4" aria-labelledby="brand-filters">
       <div>
-        <h2 id="brand-filters" class="text-xl tracking-wide">Filters</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-filters" class="dm-ui-section-title">Filters</h2>
+        <p class="dm-ui-body mt-1">
           Chips idle / pressed · Limpiar idle / active pink
         </p>
       </div>
       <div class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
         <div>
-          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Servicio
-          </p>
+          <p class="dm-ui-facet-label mb-2">Servicio</p>
           <div class="flex flex-wrap gap-2">
             <button
               type="button"
@@ -320,9 +396,7 @@ const colors = [
 
         <div class="flex flex-wrap items-end gap-4 border-t border-dm-offblack/10 pt-5">
           <div class="space-y-1.5">
-            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-              Limpiar idle
-            </p>
+            <p class="dm-ui-facet-label">Limpiar idle</p>
             <button
               type="button"
               class="cursor-not-allowed rounded border border-dm-offblack/20 bg-transparent px-2 py-1 text-xs text-dm-offblack/40 opacity-50"
@@ -332,9 +406,7 @@ const colors = [
             </button>
           </div>
           <div class="space-y-1.5">
-            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-              Limpiar active
-            </p>
+            <p class="dm-ui-facet-label">Limpiar active</p>
             <button
               type="button"
               class="rounded border border-dm-offblack bg-dm-pink px-2 py-1 text-xs text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
@@ -343,9 +415,7 @@ const colors = [
             </button>
           </div>
           <div class="space-y-1.5">
-            <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-              Count badge
-            </p>
+            <p class="dm-ui-facet-label">Count badge</p>
             <span class="relative inline-flex">
               <span
                 class="rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite"
@@ -366,8 +436,8 @@ const colors = [
     <!-- Pro badge & profile cards -->
     <section class="space-y-4" aria-labelledby="brand-cards">
       <div>
-        <h2 id="brand-cards" class="text-xl tracking-wide">Profile cards</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-cards" class="dm-ui-section-title">Profile cards</h2>
+        <p class="dm-ui-body mt-1">
           Pro fills cell + pink badge · Free scaled 98%×96% · softer border
         </p>
       </div>
@@ -395,11 +465,11 @@ const colors = [
                 </svg>
               </div>
               <div class="min-w-0">
-                <p class="truncate text-lg font-bold">Free Studio</p>
-                <p class="text-sm text-dm-offblack/60">Jalisco</p>
+                <p class="dm-ui-card-title truncate">Free Studio</p>
+                <p class="dm-ui-meta">Jalisco</p>
               </div>
             </header>
-            <p class="line-clamp-2 text-sm leading-relaxed text-dm-offblack/75">
+            <p class="dm-ui-body line-clamp-2">
               Lettering y tipografía. Escala visual Free dentro de la celda.
             </p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -444,11 +514,11 @@ const colors = [
                 </svg>
               </div>
               <div class="min-w-0">
-                <p class="truncate text-lg font-bold">Pro Atelier</p>
-                <p class="text-sm text-dm-offblack/60">CDMX</p>
+                <p class="dm-ui-card-title truncate">Pro Atelier</p>
+                <p class="dm-ui-meta">CDMX</p>
               </div>
             </header>
-            <p class="line-clamp-2 text-sm leading-relaxed text-dm-offblack/75">
+            <p class="dm-ui-body line-clamp-2">
               Identidad con trazo propio. Badge Pro + borde más fuerte.
             </p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -469,8 +539,8 @@ const colors = [
     <!-- Forms & controls -->
     <section class="space-y-4" aria-labelledby="brand-forms">
       <div>
-        <h2 id="brand-forms" class="text-xl tracking-wide">Forms & controls</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-forms" class="dm-ui-section-title">Forms & controls</h2>
+        <p class="dm-ui-body mt-1">
           Search, ubicación, borders — matching filter bar patterns
         </p>
       </div>
@@ -478,7 +548,7 @@ const colors = [
         <div>
           <label
             for="brand-search"
-            class="mb-1.5 block text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            class="dm-ui-facet-label mb-1.5 block"
           >
             Buscar
           </label>
@@ -490,9 +560,7 @@ const colors = [
           />
         </div>
         <div>
-          <p class="mb-1.5 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Ubicación
-          </p>
+          <p class="dm-ui-facet-label mb-1.5">Ubicación</p>
           <button
             type="button"
             class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
@@ -527,16 +595,14 @@ const colors = [
     <!-- Errors & validation -->
     <section class="space-y-4" aria-labelledby="brand-errors">
       <div>
-        <h2 id="brand-errors" class="text-xl tracking-wide">Errors & validation</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">
+        <h2 id="brand-errors" class="dm-ui-section-title">Errors & validation</h2>
+        <p class="dm-ui-body mt-1">
           <code>dm-red</code> for validation — inline hints, required fields, invalid inputs
         </p>
       </div>
       <div class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
         <div>
-          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Inline messages
-          </p>
+          <p class="dm-ui-facet-label mb-2">Inline messages</p>
           <div class="space-y-1.5">
             <p class="text-sm text-dm-red">Campo obligatorio.</p>
             <p class="text-xs text-dm-red">Ingresa un correo válido.</p>
@@ -547,7 +613,7 @@ const colors = [
         <div class="border-t border-dm-offblack/10 pt-5">
           <label
             for="brand-error-field"
-            class="mb-1.5 block text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+            class="dm-ui-facet-label mb-1.5 block"
           >
             Nombre <span class="text-dm-red">*</span>
           </label>
@@ -565,9 +631,7 @@ const colors = [
         </div>
 
         <div class="border-t border-dm-offblack/10 pt-5">
-          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
-            Error banner
-          </p>
+          <p class="dm-ui-facet-label mb-2">Error banner</p>
           <p
             class="rounded border border-dm-red/40 bg-dm-red/10 px-3 py-2 text-sm text-dm-red"
             role="alert"
@@ -581,8 +645,8 @@ const colors = [
     <!-- Borders & shadows -->
     <section class="space-y-4" aria-labelledby="brand-surfaces">
       <div>
-        <h2 id="brand-surfaces" class="text-xl tracking-wide">Borders & shadows</h2>
-        <p class="mt-1 text-sm text-dm-offblack/60">Surface treatments used on cards and shells</p>
+        <h2 id="brand-surfaces" class="dm-ui-section-title">Borders & shadows</h2>
+        <p class="dm-ui-body mt-1">Surface treatments used on cards and shells</p>
       </div>
       <div class="grid gap-3 sm:grid-cols-3">
         <div

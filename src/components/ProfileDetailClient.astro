@@ -68,34 +68,3 @@ const { slug = "" } = Astro.props;
   document.addEventListener("astro:page-load", init);
 </script>
 
-<style is:global>
-  .profile-bio p {
-    margin: 0.35rem 0;
-  }
-  .profile-bio > p:first-child {
-    font-size: 1.0625rem;
-    font-weight: 500;
-    color: color-mix(in oklab, var(--color-dm-offblack) 88%, transparent);
-  }
-  .profile-bio h2 {
-    font-size: 1.125rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    margin: 0.5rem 0 0.35rem;
-  }
-  .profile-bio ul {
-    list-style: disc;
-    padding-left: 1.25rem;
-    margin: 0.35rem 0;
-  }
-  .profile-bio blockquote {
-    margin: 0.35rem 0;
-    padding-left: 0.85rem;
-    border-left: 3px solid color-mix(in oklab, var(--color-dm-offblack) 22%, transparent);
-    color: color-mix(in oklab, var(--color-dm-offblack) 72%, transparent);
-  }
-  .profile-bio a {
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-</style>
