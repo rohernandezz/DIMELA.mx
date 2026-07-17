@@ -1,0 +1,21 @@
+# Cloudflare Workers Static Assets header rules.
+# Copied into dist/ on `astro build`. With run_worker_first, the Worker also
+# applies matching Cache-Control in serveAssets (see worker.js).
+
+/*
+  Cache-Control: public, max-age=60, stale-while-revalidate=300
+
+/data/*
+  Cache-Control: public, max-age=60, stale-while-revalidate=300
+
+/mock/*
+  Cache-Control: public, max-age=86400
+
+/favicon.svg
+  Cache-Control: public, max-age=86400
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

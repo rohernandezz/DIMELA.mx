@@ -58,13 +58,50 @@ function mapD1Row(row) {
   return mapProfileRow(row);
 }
 
+/** Fresh 60s; serve stale up to 5 min while Workers Cache revalidates. */
+const PUBLIC_API_CACHE = "public, max-age=60, stale-while-revalidate=300";
+
 function publicJson(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=60",
+      "Cache-Control": PUBLIC_API_CACHE,
     },
+  });
+}
+
+/**
+ * Cache-Control for static assets. run_worker_first means public/_headers
+ * is not applied by the asset platform alone, so set them here too.
+ */
+function withAssetCacheHeaders(pathname, response, { noStore = false } = {}) {
+  if (!(response.ok || response.status === 304)) return response;
+
+  let cacheControl = null;
+  if (noStore) {
+    cacheControl = "no-store";
+  } else if (pathname.startsWith("/_astro/") || pathname.startsWith("/fonts/")) {
+    cacheControl = "public, max-age=31536000, immutable";
+  } else if (pathname.startsWith("/mock/") || pathname === "/favicon.svg") {
+    cacheControl = "public, max-age=86400";
+  } else if (pathname.startsWith("/data/")) {
+    cacheControl = PUBLIC_API_CACHE;
+  } else {
+    const type = response.headers.get("Content-Type") || "";
+    if (type.includes("text/html") || pathname.endsWith("/") || pathname.endsWith(".html")) {
+      cacheControl = PUBLIC_API_CACHE;
+    }
+  }
+
+  if (!cacheControl) return response;
+
+  const headers = new Headers(response.headers);
+  headers.set("Cache-Control", cacheControl);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
   });
 }
 
@@ -116,7 +153,9 @@ async function canPreviewProfile(env, request, profile) {
 /** Serve static assets; rewrite missing /directorio/{slug}/ to the client shell when visible. */
 async function serveAssets(request, env, url) {
   const assetRes = await env.ASSETS.fetch(request);
-  if (assetRes.status !== 404) return assetRes;
+  if (assetRes.status !== 404) {
+    return withAssetCacheHeaders(url.pathname, assetRes);
+  }
 
   const m = url.pathname.match(/^\/directorio\/([^/]+)\/?$/);
   const slug = m?.[1] ? decodeURIComponent(m[1]) : "";
@@ -124,6 +163,7 @@ async function serveAssets(request, env, url) {
 
   // Only rewrite when the profile is public or the session may preview it.
   let visible = await loadProfileFromD1(env, slug);
+  let draftPreview = false;
   if (!visible) {
     const { profiles } = await loadProfiles(env, url.origin);
     visible = profiles?.find((p) => p.slug === slug) || null;
@@ -132,6 +172,7 @@ async function serveAssets(request, env, url) {
     const draft = await loadProfileFromD1(env, slug, { publishedOnly: false });
     if (draft && draft.status !== "published" && (await canPreviewProfile(env, request, draft))) {
       visible = draft;
+      draftPreview = true;
     }
   }
   if (!visible) return assetRes;
@@ -140,10 +181,15 @@ async function serveAssets(request, env, url) {
   const shellRes = await env.ASSETS.fetch(new Request(shellUrl, request));
   if (!shellRes.ok) return assetRes;
 
-  return new Response(shellRes.body, {
-    status: 200,
-    headers: shellRes.headers,
-  });
+  // Draft shells must not enter Workers Cache (Cookie does not auto-bypass).
+  return withAssetCacheHeaders(
+    url.pathname,
+    new Response(shellRes.body, {
+      status: 200,
+      headers: shellRes.headers,
+    }),
+    { noStore: draftPreview },
+  );
 }
 
 async function loadFromMock(env, origin) {

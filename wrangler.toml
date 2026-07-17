@@ -5,11 +5,18 @@ compatibility_date = "2025-09-07"
 main = "worker.js"
 workers_dev = true
 
+# Workers Cache sits in front of the Worker. Cacheable responses
+# (Cache-Control: public) are served without running Worker code.
+# Auth / mutations already use no-store via json(), so they bypass.
+[cache]
+enabled = true
+
 [assets]
 directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "404-page"
-# Run Worker first so /api/* hits the Worker before static files
+# Keep Worker-first for all routes: D1-only /directorio/{slug}/ rewrite
+# needs the Worker. Revisit scoping later if request volume matters.
 run_worker_first = true
 
 [[d1_databases]]
