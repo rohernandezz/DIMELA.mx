@@ -34,7 +34,7 @@ export function renderProfileDetailHtml(
     : `<div class="flex h-16 w-16 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/40 shadow-md ring-2 ring-white" aria-hidden="true"><svg class="h-9 w-9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"></circle><path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path></svg></div>`;
 
   const proBadge = isPro
-    ? `<span class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">Pro</span>`
+    ? `<span class="dm-ui-pro-badge">Pro</span>`
     : "";
 
   const chips = (profile.servicios || [])

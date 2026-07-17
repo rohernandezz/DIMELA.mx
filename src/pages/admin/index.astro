@@ -29,12 +29,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
             name="email"
             required
             value="hola@dimela.mx"
-            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+            class="dm-ui-field-soft"
           />
         </label>
         <button
           type="submit"
-          class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+          class="dm-ui-button-accent px-4"
         >
           Enviar enlace
         </button>
@@ -156,13 +156,13 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     const actions =
       p.status === "pending_review"
         ? `<div class="mt-3 flex flex-wrap gap-2">
-            <button type="button" data-approve="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white">Aprobar</button>
+            <button type="button" data-approve="${escapeHtml(p.slug)}" class="dm-ui-button-accent px-3 py-1.5">Aprobar</button>
             <button type="button" data-reject="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/25 px-3 py-1.5 text-sm text-dm-offblack/80 hover:border-dm-offblack/50">Rechazar</button>
             <a href="/directorio/${escapeHtml(p.slug)}/?preview=pending" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60 hover:underline">Ver cambios</a>
           </div>`
         : canDecide
           ? `<div class="mt-3 flex flex-wrap gap-2">
-              <button type="button" data-approve="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm">Publicar</button>
+              <button type="button" data-approve="${escapeHtml(p.slug)}" class="dm-ui-button-accent px-3 py-1.5">Publicar</button>
               <a href="/directorio/${escapeHtml(p.slug)}/?preview=pending" class="rounded border border-dm-offblack/15 px-3 py-1.5 text-sm text-dm-offblack/60">Ver borrador</a>
             </div>`
           : `<div class="mt-3"><a href="/directorio/${escapeHtml(p.slug)}/" class="text-sm text-dm-offblack/60 hover:underline">Ver perfil</a></div>`;
@@ -175,7 +175,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           <div class="mt-2 flex flex-wrap items-end gap-2">
             <label class="block min-w-0 flex-1 space-y-1">
               <span class="dm-ui-facet-label">Slug (URL)</span>
-              <input type="text" value="${escapeHtml(p.slug)}" data-slug-input class="w-full min-w-[10rem] rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 font-mono text-xs outline-none focus:border-dm-offblack/50" />
+              <input type="text" value="${escapeHtml(p.slug)}" data-slug-input class="dm-ui-field-soft min-w-[10rem] px-2 py-1 font-mono text-xs" />
             </label>
             <button type="button" data-save-slug="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar slug</button>
           </div>
@@ -189,7 +189,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
               : `<div class="mt-2 flex flex-wrap items-end gap-2">
                   <label class="block min-w-0 flex-1 space-y-1">
                     <span class="dm-ui-facet-label">Invitar (email)</span>
-                    <input type="email" value="${escapeHtml(p.inviteEmail || "")}" placeholder="diseñador@email.com" data-invite-input class="w-full min-w-[10rem] rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-1 text-xs outline-none focus:border-dm-offblack/50" />
+                    <input type="email" value="${escapeHtml(p.inviteEmail || "")}" placeholder="diseñador@email.com" data-invite-input class="dm-ui-field-soft min-w-[10rem] px-2 py-1 text-xs" />
                   </label>
                   <button type="button" data-save-invite="${escapeHtml(p.slug)}" class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs hover:border-dm-offblack/40">Guardar invite</button>
                 </div>

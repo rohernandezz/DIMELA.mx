@@ -7,8 +7,7 @@ export const websiteCapsuleClassLg =
   "inline-flex max-w-full items-center gap-1.5 rounded-full border border-dm-offblack/20 bg-dm-offwhite px-3 py-1 text-xs text-dm-offblack/80 transition hover:border-dm-offblack/35 hover:bg-white";
 
 /** Service taxonomy pills — match profile detail pages. */
-export const profileServicePillClass =
-  "relative z-10 rounded border border-dm-offblack/20 bg-white px-2.5 py-1 text-sm text-dm-offblack/80 hover:border-dm-offblack/40";
+export const profileServicePillClass = "dm-ui-service-pill";
 
 export function websiteHref(url: string): string {
   const trimmed = String(url || "").trim();

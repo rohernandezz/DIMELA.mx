@@ -42,12 +42,12 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
             name="email"
             required
             placeholder="tu@email.com"
-            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+            class="dm-ui-field-soft"
           />
         </label>
         <button
           type="submit"
-          class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack hover:bg-dm-offblack hover:text-white"
+          class="dm-ui-button-accent px-4"
         >
           Enviar enlace
         </button>
@@ -97,7 +97,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         <div class="flex flex-wrap gap-2 pt-1">
           <button
             type="button"
-            class="rounded border border-dm-offblack bg-dm-pink px-3 py-1.5 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
+            class="dm-ui-button-accent px-3 py-1.5"
             data-action="save"
           >
             Guardar borrador
@@ -125,7 +125,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </button>
         </div>
         <p
-          class="hidden rounded border border-dm-red/40 bg-dm-red/10 px-3 py-2 text-sm text-dm-red"
+          class="dm-ui-error-banner hidden"
           data-editor-error
           role="alert"
         ></p>
@@ -149,9 +149,9 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
                 name="name"
                 data-field="name"
                 aria-describedby="field-error-name"
-                class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+                class="dm-ui-field"
               />
-              <p id="field-error-name" class="hidden text-xs text-dm-red" data-field-error="name"></p>
+              <p id="field-error-name" class="dm-ui-error-text hidden" data-field-error="name"></p>
             </label>
             <p class="sm:col-span-2 text-[11px] text-dm-offblack/55" data-profile-slug hidden>
               URL del perfil: <span class="font-mono text-dm-offblack/70" data-profile-slug-value></span>
@@ -166,11 +166,11 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
                 data-field="website"
                 placeholder="https://"
                 aria-describedby="field-error-website"
-                class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+                class="dm-ui-field"
               />
               <p
                 id="field-error-website"
-                class="hidden text-xs text-dm-red"
+                class="dm-ui-error-text hidden"
                 data-field-error="website"
               ></p>
             </label>
@@ -190,7 +190,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
               name="estado"
               data-field="estado"
               aria-describedby="field-error-estado"
-              class="w-full rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+              class="dm-ui-field-blue"
             >
               <option value="">Selecciona una ubicación…</option>
               <option disabled>────────</option>
@@ -198,7 +198,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
               <option disabled>────────</option>
               {estadosMexico.map((estado) => <option value={estado}>{estado}</option>)}
             </select>
-            <p id="field-error-estado" class="hidden text-xs text-dm-red" data-field-error="estado"></p>
+            <p id="field-error-estado" class="dm-ui-error-text hidden" data-field-error="estado"></p>
           </label>
           <fieldset>
             <legend
@@ -284,7 +284,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
                 <div class="relative z-10 w-full bg-gradient-to-t from-dm-offblack/50 to-transparent p-3">
                   <button
                     type="button"
-                    class="rounded border border-white/40 bg-white/90 px-2.5 py-1 text-xs text-dm-offblack disabled:opacity-50"
+                    class="dm-ui-button-small border-white/40 bg-white/90"
                     data-action="upload-cover"
                   >
                     Subir portada
@@ -311,7 +311,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
                 </div>
                 <button
                   type="button"
-                  class="rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80 disabled:opacity-50"
+                  class="dm-ui-button-small"
                   data-action="upload-avatar"
                 >
                   Subir avatar
@@ -353,7 +353,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
             </div>
             <button
               type="button"
-              class="hidden rounded border border-dm-offblack/20 px-2.5 py-1 text-xs text-dm-offblack/80 disabled:opacity-50"
+              class="dm-ui-button-small hidden"
               data-action="gallery-create"
             >
               + Nueva galería
@@ -378,7 +378,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
                 <code class="text-xs">.profile-detail</code>.
               </p>
             </div>
-            <span class="rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">Pro</span>
+            <span class="dm-ui-pro-badge">Pro</span>
           </div>
           <div class="space-y-3 rounded border border-dm-offblack/15 bg-white/80 p-3" data-font-panel>
             <p class="dm-ui-facet-label">Fuentes</p>
@@ -419,7 +419,7 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         <div class="flex flex-wrap gap-2 border-t border-dm-offblack/10 pt-6">
           <button
             type="submit"
-            class="rounded border border-dm-offblack bg-dm-pink px-4 py-2 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
+            class="dm-ui-button-accent px-4"
           >
             Guardar borrador
           </button>
@@ -485,14 +485,10 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
 
   let bio: BioEditor | null = null;
 
-  const FIELD_OK =
-    "w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50";
-  const FIELD_ERR =
-    "w-full rounded border border-dm-red bg-white px-3 py-2 text-sm text-dm-offblack outline-none focus:border-dm-red focus:ring-1 focus:ring-dm-red/40";
-  const SELECT_OK =
-    "w-full rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-offblack/50";
-  const SELECT_ERR =
-    "w-full rounded border border-dm-red bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-red focus:ring-1 focus:ring-dm-red/40";
+  const FIELD_OK = "dm-ui-field";
+  const FIELD_ERR = "dm-ui-field-error";
+  const SELECT_OK = "dm-ui-field-blue";
+  const SELECT_ERR = "dm-ui-field-blue-error";
 
   function clearEditorError() {
     const el = document.querySelector<HTMLElement>("[data-editor-error]");

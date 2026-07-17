@@ -82,7 +82,7 @@ const servicios = [...SERVICIOS];
             servicios.map((servicio) => (
               <button
                 type="button"
-                class="filter-chip rounded border border-dm-offblack/25 bg-dm-offwhite px-3 py-1.5 text-sm text-dm-offblack transition hover:border-dm-offblack"
+                class="filter-chip dm-ui-chip bg-dm-offwhite"
                 data-filter-chip
                 data-value={servicio}
                 aria-pressed="false"
@@ -162,7 +162,7 @@ const servicios = [...SERVICIOS];
         <span
           data-sheet-badge
           hidden
-          class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-dm-pink px-1 text-[10px] font-bold text-dm-offblack"
+          class="dm-ui-count-badge"
         ></span>
       </button>
     </div>
@@ -216,7 +216,7 @@ const servicios = [...SERVICIOS];
             servicios.map((servicio) => (
               <button
                 type="button"
-                class="filter-chip rounded border border-white/25 bg-white/10 px-3 py-1.5 text-sm text-dm-offwhite"
+                class="filter-chip dm-ui-chip border-white/25 bg-white/10 text-dm-offwhite"
                 data-filter-chip
                 data-value={servicio}
                 aria-pressed="false"
@@ -239,22 +239,6 @@ const servicios = [...SERVICIOS];
     </div>
   </div>
 </div>
-
-<style>
-  .filter-chip[aria-pressed="true"] {
-    background-color: var(--color-dm-offwhite);
-    color: var(--color-dm-offblack);
-    border-color: var(--color-dm-offwhite);
-  }
-
-  @media (min-width: 768px) {
-    .filter-chip[aria-pressed="true"] {
-      background-color: var(--color-dm-offblack);
-      color: var(--color-dm-offwhite);
-      border-color: var(--color-dm-offblack);
-    }
-  }
-</style>
 
 <script>
   type FilterState = {
@@ -469,7 +453,10 @@ const servicios = [...SERVICIOS];
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
       const value = chip.dataset.value || "";
-      chip.setAttribute("aria-pressed", state.servicio.has(value) ? "true" : "false");
+      const active = state.servicio.has(value);
+      chip.setAttribute("aria-pressed", active ? "true" : "false");
+      chip.classList.toggle("dm-ui-chip-active", active);
+      chip.classList.toggle("dm-ui-chip", !active);
     });
 
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {

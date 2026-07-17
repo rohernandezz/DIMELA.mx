@@ -229,7 +229,7 @@ const colors = [
         </p>
       </div>
       <p class="dm-ui-meta -mt-1">
-        Live mock of <code>/editar/</code>. Pink tags name the class on each element.
+        Live mock of <code>/editar/</code>. Green tags name the class on each element.
       </p>
 
       <!-- Mini editor mockup -->
@@ -237,7 +237,7 @@ const colors = [
         <!-- Header chrome -->
         <div class="flex items-center gap-3 bg-dm-offblack px-4 py-3 text-dm-offwhite">
           <span class="dm-ui-lockup">DIMELA.mx</span>
-          <span class="ml-auto rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-lockup</span>
+          <span class="dm-brand-annotation ml-auto">.dm-ui-lockup</span>
         </div>
 
         <div class="space-y-8 p-5 sm:p-6">
@@ -245,7 +245,7 @@ const colors = [
           <div>
             <div class="flex flex-wrap items-center gap-2">
               <h1 class="dm-ui-page-title">Editar perfil</h1>
-              <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-page-title</span>
+              <span class="dm-brand-annotation">.dm-ui-page-title</span>
             </div>
           </div>
 
@@ -254,22 +254,22 @@ const colors = [
             <div>
               <div class="flex flex-wrap items-center gap-2">
                 <h2 class="dm-ui-section-title">Identidad</h2>
-                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-section-title</span>
+                <span class="dm-brand-annotation">.dm-ui-section-title</span>
               </div>
               <div class="mt-1 flex flex-wrap items-center gap-2">
                 <p class="dm-ui-body">Nombre público y sitio web.</p>
-                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-body</span>
+                <span class="dm-brand-annotation">.dm-ui-body</span>
               </div>
             </div>
             <label class="block space-y-1.5">
               <span class="flex flex-wrap items-center gap-2">
                 <span class="dm-ui-facet-label">Nombre <span class="text-dm-red">*</span></span>
-                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-facet-label</span>
+                <span class="dm-brand-annotation">.dm-ui-facet-label</span>
               </span>
               <input
                 type="text"
                 value="Romina Hernández"
-                class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
+                class="dm-ui-field"
               />
             </label>
           </section>
@@ -278,16 +278,16 @@ const colors = [
           <section class="space-y-4 border-t border-dm-offblack/10 pt-5">
             <div class="flex flex-wrap items-center gap-2">
               <h2 class="dm-ui-section-title">Medios</h2>
-              <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-section-title</span>
+              <span class="dm-brand-annotation">.dm-ui-section-title</span>
             </div>
-            <div class="rounded border border-dm-offblack/10 bg-dm-offwhite/60 p-4">
+            <div class="dm-ui-subsurface p-4">
               <div class="flex flex-wrap items-center gap-2">
                 <h3 class="dm-ui-panel-title">Galería principal</h3>
-                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-panel-title</span>
+                <span class="dm-brand-annotation">.dm-ui-panel-title</span>
               </div>
               <div class="mt-2 flex flex-wrap items-center gap-2">
                 <p class="dm-ui-meta">3 imágenes · Ciudad de México</p>
-                <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-meta</span>
+                <span class="dm-brand-annotation">.dm-ui-meta</span>
               </div>
             </div>
           </section>
@@ -296,348 +296,170 @@ const colors = [
 
       <!-- Directory card + profile name mock -->
       <div class="grid gap-4 sm:grid-cols-2">
-        <div class="rounded-md border-2 border-dm-offblack/15 bg-white p-4 shadow-sm">
+        <div class="dm-ui-surface p-4">
           <p class="dm-ui-facet-label mb-3">Directory card</p>
           <div class="flex items-center gap-2">
             <p class="dm-ui-card-title">Cristóbal Henestrosa</p>
-            <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-card-title</span>
+            <span class="dm-brand-annotation">.dm-ui-card-title</span>
           </div>
           <div class="mt-0.5 flex items-center gap-2">
             <p class="dm-ui-meta">Ciudad de México</p>
-            <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-meta</span>
+            <span class="dm-brand-annotation">.dm-ui-meta</span>
           </div>
         </div>
-        <div class="rounded-md border-2 border-dm-offblack/15 bg-white p-4 shadow-sm">
+        <div class="dm-ui-surface p-4">
           <p class="dm-ui-facet-label mb-3">Profile detail header</p>
           <div class="flex flex-wrap items-center gap-2">
             <p class="dm-ui-display">Romina Hernández</p>
-            <span class="rounded bg-dm-pink px-1.5 py-0.5 font-mono text-[10px] text-dm-offblack">.dm-ui-display</span>
+            <span class="dm-brand-annotation">.dm-ui-display</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Header strip -->
-    <section class="space-y-4" aria-labelledby="brand-header">
+    <!-- Header / filters / cards / forms -->
+    <section class="space-y-4" aria-labelledby="brand-ui-components">
       <div>
-        <h2 id="brand-header" class="dm-ui-section-title">Header strip</h2>
+        <h2 id="brand-ui-components" class="dm-ui-section-title">UI components</h2>
         <p class="dm-ui-body mt-1">
-          Off-black chrome · off-white type · hamburger panel
+          Real-ish app pieces. Green tags name the class; edit the class in
+          <code>global.css</code> and the site follows.
         </p>
       </div>
-      <div
-        class="overflow-hidden rounded-md border border-dm-offblack/20 shadow-md"
-        aria-hidden="true"
-      >
-        <div
-          class="flex items-center justify-between bg-dm-offblack px-4 py-3 text-dm-offwhite"
-        >
+
+      <!-- Header + filter bar -->
+      <div class="dm-ui-surface overflow-hidden">
+        <div class="flex items-center gap-3 bg-dm-offblack px-4 py-3 text-dm-offwhite">
           <span class="dm-ui-lockup">DIMELA.mx</span>
-          <span
-            class="flex h-9 w-9 items-center justify-center rounded text-dm-offwhite"
-            aria-hidden="true"
-          >
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M4 7h16M4 12h16M4 17h16"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"></path>
-            </svg>
-          </span>
+          <span class="dm-brand-annotation ml-auto">.dm-ui-lockup</span>
         </div>
-        <div class="border-t border-black/10 bg-white py-1 text-dm-offblack shadow-lg">
-          <span class="block px-3 py-2 text-sm text-dm-offblack/50">Todo</span>
-          <span class="block bg-dm-offwhite px-3 py-2 text-sm">Acerca de…</span>
-          <span class="block border-t border-dm-offblack/10 px-3 py-2 text-sm">Brand</span>
+        <div class="space-y-4 p-5">
+          <div>
+            <h3 class="dm-ui-section-title">Directorio</h3>
+            <p class="dm-ui-body mt-1">Busca por nombre, ubicación o servicio.</p>
+          </div>
+          <div class="flex flex-wrap items-end gap-2">
+            <label class="min-w-56 flex-1 space-y-1.5">
+              <span class="dm-ui-facet-label">Buscar</span>
+              <input class="dm-ui-field-soft" type="search" placeholder="Nombre o descripción..." />
+            </label>
+            <button type="button" class="dm-ui-select-button min-w-56 flex-1 gap-2 bg-dm-blue/50">
+              <span class="dm-ui-facet-label shrink-0">Ubicación</span>
+              <span class="min-w-0 flex-1 truncate">Sólo México</span>
+              <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
+            </button>
+            <button type="button" class="dm-ui-button-accent px-2 py-1 text-xs">Limpiar</button>
+            <button type="button" class="dm-ui-filter-toggle">
+              Filtros <span aria-hidden="true" class="ml-0.5 opacity-70">▾</span>
+              <span class="dm-ui-count-badge">2</span>
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 border-t border-dm-offblack/10 pt-4">
+            <button type="button" class="dm-ui-chip">Lettering</button>
+            <button type="button" class="dm-ui-chip-active">Caligrafía</button>
+            <button type="button" class="dm-ui-chip">Tipografía</button>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="dm-brand-annotation">.dm-ui-field-soft</span>
+            <span class="dm-brand-annotation">.dm-ui-select-button</span>
+            <span class="dm-brand-annotation">.dm-ui-button-accent</span>
+            <span class="dm-brand-annotation">.dm-ui-filter-toggle</span>
+            <span class="dm-brand-annotation">.dm-ui-count-badge</span>
+            <span class="dm-brand-annotation">.dm-ui-chip / .dm-ui-chip-active</span>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Filter chips & Limpiar -->
-    <section class="space-y-4" aria-labelledby="brand-filters">
-      <div>
-        <h2 id="brand-filters" class="dm-ui-section-title">Filters</h2>
-        <p class="dm-ui-body mt-1">
-          Chips idle / pressed · Limpiar idle / active pink
-        </p>
-      </div>
-      <div class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
-        <div>
-          <p class="dm-ui-facet-label mb-2">Servicio</p>
-          <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack"
-              aria-pressed="false"
-            >
-              Lettering
-            </button>
-            <button
-              type="button"
-              class="rounded border border-dm-offblack bg-dm-offblack px-3 py-1.5 text-sm text-dm-offwhite"
-              aria-pressed="true"
-            >
-              Caligrafía
-            </button>
-            <button
-              type="button"
-              class="rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm text-dm-offblack hover:border-dm-offblack"
-              aria-pressed="false"
-            >
-              Tipografía
-            </button>
-          </div>
-          <p class="mt-2 text-[11px] text-dm-offblack/50">
-            Idle: <code>border-dm-offblack/25 bg-white</code> · Pressed:
-            <code>bg-dm-offblack text-dm-offwhite</code>
-          </p>
-        </div>
-
-        <div class="flex flex-wrap items-end gap-4 border-t border-dm-offblack/10 pt-5">
-          <div class="space-y-1.5">
-            <p class="dm-ui-facet-label">Limpiar idle</p>
-            <button
-              type="button"
-              class="cursor-not-allowed rounded border border-dm-offblack/20 bg-transparent px-2 py-1 text-xs text-dm-offblack/40 opacity-50"
-              disabled
-            >
-              Limpiar
-            </button>
-          </div>
-          <div class="space-y-1.5">
-            <p class="dm-ui-facet-label">Limpiar active</p>
-            <button
-              type="button"
-              class="rounded border border-dm-offblack bg-dm-pink px-2 py-1 text-xs text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
-            >
-              Limpiar
-            </button>
-          </div>
-          <div class="space-y-1.5">
-            <p class="dm-ui-facet-label">Count badge</p>
-            <span class="relative inline-flex">
-              <span
-                class="rounded border border-dm-offblack/25 bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite"
-              >
-                Filtros ▾
-              </span>
-              <span
-                class="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-dm-pink px-1 text-[10px] font-bold text-dm-offblack"
-              >
-                2
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pro badge & profile cards -->
-    <section class="space-y-4" aria-labelledby="brand-cards">
-      <div>
-        <h2 id="brand-cards" class="dm-ui-section-title">Profile cards</h2>
-        <p class="dm-ui-body mt-1">
-          Pro fills cell + pink badge · Free scaled 98%×96% · softer border
-        </p>
-      </div>
+      <!-- Profile card -->
       <div class="grid gap-4 sm:grid-cols-2">
-        <!-- Free sketch -->
-        <article
-          class="profile-card relative flex flex-col overflow-hidden rounded-md border-2 border-dm-offblack/15 bg-white shadow-md origin-center scale-x-[0.98] scale-y-[0.96]"
-        >
-          <div
-            class="relative aspect-[16/10] bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-offwhite p-4"
-          >
-            <span class="absolute bottom-4 left-4 text-3xl font-bold text-dm-offblack/25"
-              >Aa</span
-            >
+        <article class="group dm-ui-profile-card dm-ui-profile-card-free">
+          <div class="relative aspect-[16/10] bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-offwhite p-4">
+            <span class="absolute bottom-4 left-4 text-3xl font-bold text-dm-offblack/25">Aa</span>
           </div>
           <div class="flex flex-1 flex-col gap-3 p-4">
             <header class="flex items-center gap-3">
-              <div
-                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
-                aria-hidden="true"
-              >
-                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="8" r="4"></circle>
-                  <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
-                </svg>
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white" aria-hidden="true">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"></circle><path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path></svg>
               </div>
               <div class="min-w-0">
                 <p class="dm-ui-card-title truncate">Free Studio</p>
                 <p class="dm-ui-meta">Jalisco</p>
               </div>
             </header>
-            <p class="dm-ui-body line-clamp-2">
-              Lettering y tipografía. Escala visual Free dentro de la celda.
-            </p>
+            <p class="dm-ui-body line-clamp-2">Lettering y tipografía. Escala visual Free dentro de la celda.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
-              <span
-                class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80"
-                >Lettering</span
-              >
+              <span class="dm-ui-service-pill">Lettering</span>
             </div>
           </div>
-          <p
-            class="absolute bottom-2 left-2 rounded bg-dm-offblack/80 px-1.5 py-0.5 text-[9px] tracking-wide text-dm-offwhite uppercase"
-          >
-            Free
-          </p>
         </article>
 
-        <!-- Pro sketch -->
-        <article
-          class="profile-card relative flex flex-col overflow-hidden rounded-md border-2 border-dm-offblack/35 bg-white shadow-lg"
-        >
-          <span
-            class="absolute top-3 right-3 z-10 rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase"
-          >
-            Pro
-          </span>
-          <div
-            class="relative aspect-[16/10] bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-pink/40 p-4"
-          >
-            <span class="absolute bottom-4 left-4 text-3xl font-bold text-dm-offblack/25"
-              >Aa</span
-            >
+        <article class="group dm-ui-profile-card dm-ui-profile-card-pro">
+          <span class="dm-ui-pro-badge absolute top-3 right-3 z-10">Pro</span>
+          <div class="relative aspect-[16/10] bg-gradient-to-br from-dm-blue-strong via-dm-blue to-dm-pink/40 p-4">
+            <span class="absolute bottom-4 left-4 text-3xl font-bold text-dm-offblack/25">Aa</span>
           </div>
           <div class="flex flex-1 flex-col gap-3 p-4">
             <header class="flex items-center gap-3">
-              <div
-                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white"
-                aria-hidden="true"
-              >
-                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="8" r="4"></circle>
-                  <path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path>
-                </svg>
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dm-offblack/10 text-dm-offblack/50 shadow-md ring-2 ring-white" aria-hidden="true">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"></circle><path d="M4 22c0-5 4-8 8-8s8 3 8 8v2H4v-2z"></path></svg>
               </div>
               <div class="min-w-0">
                 <p class="dm-ui-card-title truncate">Pro Atelier</p>
                 <p class="dm-ui-meta">CDMX</p>
               </div>
             </header>
-            <p class="dm-ui-body line-clamp-2">
-              Identidad con trazo propio. Badge Pro + borde más fuerte.
-            </p>
+            <p class="dm-ui-body line-clamp-2">Identidad con trazo propio. Badge Pro + borde más fuerte.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
-              <span
-                class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80"
-                >Caligrafía</span
-              >
-              <span
-                class="rounded border border-dm-offblack/20 bg-dm-offwhite px-2 py-0.5 text-[11px] text-dm-offblack/80"
-                >Tipografía</span
-              >
+              <span class="dm-ui-service-pill">Caligrafía</span>
+              <span class="dm-ui-service-pill">Tipografía</span>
             </div>
           </div>
         </article>
+        <div class="sm:col-span-2 flex flex-wrap gap-1.5">
+          <span class="dm-brand-annotation">.dm-ui-profile-card-free</span>
+          <span class="dm-brand-annotation">.dm-ui-profile-card-pro</span>
+          <span class="dm-brand-annotation">.dm-ui-pro-badge</span>
+          <span class="dm-brand-annotation">.dm-ui-service-pill</span>
+        </div>
       </div>
-    </section>
 
-    <!-- Forms & controls -->
-    <section class="space-y-4" aria-labelledby="brand-forms">
-      <div>
-        <h2 id="brand-forms" class="dm-ui-section-title">Forms & controls</h2>
-        <p class="dm-ui-body mt-1">
-          Search, ubicación, borders — matching filter bar patterns
-        </p>
-      </div>
-      <div class="space-y-4 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
+      <!-- Forms + validation -->
+      <div class="dm-ui-surface space-y-5 p-5">
         <div>
-          <label
-            for="brand-search"
-            class="dm-ui-facet-label mb-1.5 block"
-          >
-            Buscar
+          <h3 class="dm-ui-section-title">Identidad</h3>
+          <p class="dm-ui-body mt-1">Nombre público y sitio web.</p>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="block space-y-1.5">
+            <span class="dm-ui-facet-label">Nombre <span class="text-dm-red">*</span></span>
+            <input class="dm-ui-field" type="text" value="Romina Hernández" />
           </label>
-          <input
-            id="brand-search"
-            type="search"
-            placeholder="Nombre o descripción…"
-            class="w-full rounded border border-dm-offblack/20 bg-dm-offwhite px-3 py-2 text-sm outline-none focus:border-dm-offblack"
-          />
+          <label class="block space-y-1.5">
+            <span class="dm-ui-facet-label">Ubicación <span class="text-dm-red">*</span></span>
+            <select class="dm-ui-field-blue">
+              <option>Ciudad de México</option>
+              <option>Fuera de México</option>
+            </select>
+          </label>
+          <label class="block space-y-1.5 sm:col-span-2">
+            <span class="dm-ui-facet-label">Sitio web</span>
+            <input class="dm-ui-field-error" type="url" value="romina" aria-invalid="true" />
+            <p class="dm-ui-error-text">Ingresa una URL válida.</p>
+          </label>
         </div>
-        <div>
-          <p class="dm-ui-facet-label mb-1.5">Ubicación</p>
-          <button
-            type="button"
-            class="flex w-full items-center justify-between rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-left text-sm"
-          >
-            <span>Todo México</span>
-            <span class="text-dm-offblack/40" aria-hidden="true">▾</span>
-          </button>
-        </div>
+        <p class="dm-ui-error-banner" role="alert">No se pudo guardar. Revisa los campos marcados.</p>
         <div class="flex flex-wrap gap-3 border-t border-dm-offblack/10 pt-4">
-          <button
-            type="button"
-            class="rounded border border-dm-offblack bg-dm-offblack px-3 py-2 text-sm text-dm-offwhite transition hover:opacity-90"
-          >
-            Primario
-          </button>
-          <button
-            type="button"
-            class="rounded border border-dm-offblack/25 bg-white px-3 py-2 text-sm text-dm-offblack transition hover:border-dm-offblack"
-          >
-            Secundario
-          </button>
-          <button
-            type="button"
-            class="rounded border border-dm-offblack bg-dm-pink px-3 py-2 text-sm text-dm-offblack transition hover:bg-dm-offblack hover:text-white"
-          >
-            Acento
-          </button>
+          <button type="button" class="dm-ui-button-primary">Guardar borrador</button>
+          <button type="button" class="dm-ui-button-secondary">Cancelar</button>
+          <button type="button" class="dm-ui-button-accent">Enviar a revisión</button>
         </div>
-      </div>
-    </section>
-
-    <!-- Errors & validation -->
-    <section class="space-y-4" aria-labelledby="brand-errors">
-      <div>
-        <h2 id="brand-errors" class="dm-ui-section-title">Errors & validation</h2>
-        <p class="dm-ui-body mt-1">
-          <code>dm-red</code> for validation — inline hints, required fields, invalid inputs
-        </p>
-      </div>
-      <div class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
-        <div>
-          <p class="dm-ui-facet-label mb-2">Inline messages</p>
-          <div class="space-y-1.5">
-            <p class="text-sm text-dm-red">Campo obligatorio.</p>
-            <p class="text-xs text-dm-red">Ingresa un correo válido.</p>
-            <p class="text-sm font-medium text-dm-red">Máximo 8 etiquetas.</p>
-          </div>
-        </div>
-
-        <div class="border-t border-dm-offblack/10 pt-5">
-          <label
-            for="brand-error-field"
-            class="dm-ui-facet-label mb-1.5 block"
-          >
-            Nombre <span class="text-dm-red">*</span>
-          </label>
-          <input
-            id="brand-error-field"
-            type="text"
-            value=""
-            aria-invalid="true"
-            aria-describedby="brand-error-msg"
-            class="w-full rounded border border-dm-red bg-white px-3 py-2 text-sm text-dm-offblack outline-none focus:border-dm-red focus:ring-1 focus:ring-dm-red/40"
-          />
-          <p id="brand-error-msg" class="mt-1.5 text-xs text-dm-red">
-            Campo obligatorio — escribe tu nombre.
-          </p>
-        </div>
-
-        <div class="border-t border-dm-offblack/10 pt-5">
-          <p class="dm-ui-facet-label mb-2">Error banner</p>
-          <p
-            class="rounded border border-dm-red/40 bg-dm-red/10 px-3 py-2 text-sm text-dm-red"
-            role="alert"
-          >
-            No se pudo guardar. Revisa los campos marcados.
-          </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="dm-brand-annotation">.dm-ui-field</span>
+          <span class="dm-brand-annotation">.dm-ui-field-blue</span>
+          <span class="dm-brand-annotation">.dm-ui-field-error</span>
+          <span class="dm-brand-annotation">.dm-ui-error-text</span>
+          <span class="dm-brand-annotation">.dm-ui-error-banner</span>
+          <span class="dm-brand-annotation">.dm-ui-button-*</span>
         </div>
       </div>
     </section>
@@ -646,26 +468,26 @@ const colors = [
     <section class="space-y-4" aria-labelledby="brand-surfaces">
       <div>
         <h2 id="brand-surfaces" class="dm-ui-section-title">Borders & shadows</h2>
-        <p class="dm-ui-body mt-1">Surface treatments used on cards and shells</p>
+        <p class="dm-ui-body mt-1">Surface treatments used by editor panels, cards, and shells.</p>
       </div>
       <div class="grid gap-3 sm:grid-cols-3">
         <div
-          class="rounded-md border border-dm-offblack/15 bg-white p-4 text-center text-xs shadow-sm"
+          class="dm-ui-surface p-4 text-center text-xs"
         >
           <p class="font-semibold">Soft</p>
-          <p class="mt-1 text-dm-offblack/50">border /15 · shadow-sm</p>
+          <p class="mt-1 text-dm-offblack/50">.dm-ui-surface</p>
         </div>
         <div
-          class="rounded-md border-2 border-dm-offblack/15 bg-white p-4 text-center text-xs shadow-md"
+          class="group dm-ui-profile-card dm-ui-profile-card-free p-4 text-center text-xs"
         >
           <p class="font-semibold">Free card</p>
-          <p class="mt-1 text-dm-offblack/50">border-2 /15 · shadow-md</p>
+          <p class="mt-1 text-dm-offblack/50">.dm-ui-profile-card-free</p>
         </div>
         <div
-          class="rounded-md border-2 border-dm-offblack/35 bg-white p-4 text-center text-xs shadow-lg"
+          class="group dm-ui-profile-card dm-ui-profile-card-pro p-4 text-center text-xs"
         >
           <p class="font-semibold">Pro card</p>
-          <p class="mt-1 text-dm-offblack/50">border-2 /35 · shadow-lg</p>
+          <p class="mt-1 text-dm-offblack/50">.dm-ui-profile-card-pro</p>
         </div>
       </div>
     </section>

@@ -94,6 +94,23 @@ Two class families in `global.css` — preview both on `/brand/`.
 | `.dm-ui-body` | UI descriptive / helper copy (not bio body) |
 | `.dm-ui-meta` | Secondary meta (ubicación on cards, captions) |
 
-**Rule:** define styles in `global.css`, preview on `/brand/`, then use the classes in components. Do not duplicate content typography with inline Tailwind on profile bios.
+## Shared UI components
+
+`/brand/` also previews component hooks used by the live app.
+
+| Class | Use |
+|-------|-----|
+| `.dm-ui-surface` / `.dm-ui-subsurface` | White panels and nested soft panels |
+| `.dm-ui-profile-card`, `.dm-ui-profile-card-free`, `.dm-ui-profile-card-pro` | Directory card shell and tier variants |
+| `.dm-ui-pro-badge` | Pro badge |
+| `.dm-ui-field`, `.dm-ui-field-soft`, `.dm-ui-field-blue` | Inputs and selects |
+| `.dm-ui-field-error`, `.dm-ui-field-blue-error` | Invalid inputs/selects |
+| `.dm-ui-select-button` | Fake select/dropdown button |
+| `.dm-ui-chip`, `.dm-ui-chip-active`, `.dm-ui-service-pill` | Filter chips and service pills |
+| `.dm-ui-button-primary`, `.dm-ui-button-secondary`, `.dm-ui-button-accent`, `.dm-ui-button-small` | Buttons |
+| `.dm-ui-filter-toggle`, `.dm-ui-count-badge` | Mobile filters button and count badge |
+| `.dm-ui-error-text`, `.dm-ui-error-banner` | Validation messages |
+
+**Rule:** define styles in `global.css`, preview on `/brand/`, then use the classes in components. Do not duplicate content typography or shared UI styling with inline Tailwind when a hook exists.
 
 Pro custom CSS may still target `.profile-bio` (kept as a hook alongside `.dm-content`).

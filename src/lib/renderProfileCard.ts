@@ -26,12 +26,10 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const lead = escapeHtml(leadPlain);
   const description = escapeHtml(descriptionPlain);
   const serviciosJson = escapeHtml(JSON.stringify(profile.servicios || []));
-  const shell = isPro
-    ? "border-dm-offblack/35 shadow-lg"
-    : "origin-center scale-x-[0.98] scale-y-[0.96] border-dm-offblack/15";
+  const shell = isPro ? "dm-ui-profile-card-pro" : "dm-ui-profile-card-free";
 
   const proBadge = isPro
-    ? `<span class="absolute top-3 right-3 z-10 rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">Pro</span>`
+    ? `<span class="dm-ui-pro-badge absolute top-3 right-3 z-10">Pro</span>`
     : "";
 
   const cover = profile.cover
@@ -53,14 +51,14 @@ export function renderProfileCardHtml(profile: SearchableProfile): string {
   const siteLabel = profile.website ? escapeHtml(websiteLabel(profile.website)) : "";
   const site = siteHref ? websiteCapsuleHtml(escapeHtml(siteHref), siteLabel) : "";
 
-  return `<article class="profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${shell}" data-profile-card data-profile-theme="${escapeHtml(profile.slug)}" data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
+  return `<article class="profile-card group dm-ui-profile-card ${shell}" data-profile-card data-profile-theme="${escapeHtml(profile.slug)}" data-slug="${escapeHtml(profile.slug)}" data-name="${name}" data-description="${description}" data-estado="${estado}" data-servicios="${serviciosJson}">
   ${proBadge}
   <div class="relative aspect-[16/10] shrink-0 overflow-hidden bg-dm-blue">${cover}</div>
   <div class="flex min-h-0 flex-1 flex-col gap-3 p-4">
     <header class="flex shrink-0 items-center gap-3">
       ${avatar}
       <div class="min-w-0">
-        <a href="${href}" class="block truncate dm-ui-card-title text-dm-offblack underline-offset-2 hover:underline">${name}</a>
+        <a href="${href}" class="dm-ui-card-title block truncate underline-offset-2 hover:underline">${name}</a>
         <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
           <a href="${estadoHref}" class="dm-ui-meta relative z-10 truncate hover:underline">${estado}</a>
           ${site}

@@ -71,7 +71,7 @@ const servicios = [...SERVICIOS];
             servicios.map((servicio) => (
               <button
                 type="button"
-                class="filter-chip rounded border border-dm-offblack/25 bg-white px-3 py-1.5 text-sm"
+                class="filter-chip dm-ui-chip"
                 data-filter-chip
                 data-value={servicio}
                 aria-pressed="false"
@@ -119,11 +119,6 @@ const servicios = [...SERVICIOS];
 </div>
 
 <style>
-  .filter-chip[aria-pressed="true"] {
-    background-color: var(--color-dm-offblack);
-    color: var(--color-dm-offwhite);
-    border-color: var(--color-dm-offblack);
-  }
   .crumb-pill {
     display: inline-flex;
     align-items: center;
@@ -223,7 +218,10 @@ const servicios = [...SERVICIOS];
     renderCrumbs(root.querySelector("[data-servicio-crumbs]"), state.servicio, "servicio");
 
     root.querySelectorAll<HTMLButtonElement>("[data-filter-chip]").forEach((chip) => {
-      chip.setAttribute("aria-pressed", state.servicio.has(chip.dataset.value || "") ? "true" : "false");
+      const active = state.servicio.has(chip.dataset.value || "");
+      chip.setAttribute("aria-pressed", active ? "true" : "false");
+      chip.classList.toggle("dm-ui-chip-active", active);
+      chip.classList.toggle("dm-ui-chip", !active);
     });
     root.querySelectorAll<HTMLInputElement>("[data-estado-option]").forEach((box) => {
       box.checked = state.estado.has(box.value);

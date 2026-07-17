@@ -24,10 +24,8 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
 
 <article
   class:list={[
-    "profile-card group relative flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border-2 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg",
-    isPro
-      ? "border-dm-offblack/35 shadow-lg"
-      : "origin-center scale-x-[0.98] scale-y-[0.96] border-dm-offblack/15",
+    "profile-card group dm-ui-profile-card",
+    isPro ? "dm-ui-profile-card-pro" : "dm-ui-profile-card-free",
   ]}
   data-profile-card
   data-profile-theme={profile.slug}
@@ -39,7 +37,7 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
 >
   {
     isPro && (
-      <span class="absolute top-3 right-3 z-10 rounded bg-dm-pink px-2 py-0.5 text-[10px] font-semibold tracking-wide text-dm-offblack uppercase">
+      <span class="dm-ui-pro-badge absolute top-3 right-3 z-10">
         Pro
       </span>
     )
@@ -94,7 +92,7 @@ const estadoHref = `/estado/${estadoSlug(profile.estado)}/`;
       <div class="min-w-0">
         <a
           href={href}
-          class="block truncate dm-ui-card-title text-dm-offblack underline-offset-2 hover:underline"
+          class="dm-ui-card-title block truncate underline-offset-2 hover:underline"
         >
           {profile.name}
         </a>
