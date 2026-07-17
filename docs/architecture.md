@@ -28,21 +28,50 @@ Browser → Cloudflare Worker (worker.js)
 1. `astro build` writes static HTML/CSS/JS to `dist/` (+ emits `public/data/profiles.json`)
 2. `wrangler deploy` uploads the Worker + binds `dist/` as `[assets]` + D1 `DB` + R2 `MEDIA`
 3. `not_found_handling = "404-page"` serves Astro’s `404.html`
-4. `run_worker_first = true` so API / media routes never get shadowed by static files
+4. `run_worker_first = true` so API / media routes never get shadowed by static files (also required for D1-only `/directorio/{slug}/` → `/directorio/ver/` rewrite)
+5. `[cache] enabled = true` in `wrangler.toml` — [Workers Cache](https://developers.cloudflare.com/workers/cache/) sits in front of the Worker
 
 This matches the [sitioCelest](https://github.com/rohernandezz/sitioCelest) pattern: **no `@astrojs/cloudflare` adapter yet** — the Worker serves files and API handlers.
+
+### Caching
+
+Workers Cache uses standard `Cache-Control` headers (no manual `caches.default` wrapper):
+
+| Response | Cache-Control | Notes |
+|----------|---------------|--------|
+| Public `/api/search`, `/api/profile` (`publicJson`) | `public, max-age=60, stale-while-revalidate=300` | Edge hit skips Worker + D1; ~60s freshness |
+| Auth / mutations / draft preview (`json`) | `no-store` | Never cached |
+| `/_astro/*`, `/fonts/*` | `public, max-age=31536000, immutable` | Fingerprinted / static |
+| HTML, `/data/*` | same short public TTL as APIs | Applied in `serveAssets` + `public/_headers` |
+| Draft profile shell rewrite | `no-store` | Cookie alone does not bypass Workers Cache |
+
+No purge-on-publish yet — short TTL is enough. Keep `run_worker_first = true` until D1-only profile URLs have another path (scoped `run_worker_first` would free most asset requests later).
+
+### Quality / CI
+
+| Command | Role |
+|---------|------|
+| `npm run lint` | ESLint flat config (`eslint.config.js`) — Astro + TS/JS |
+| `npm run check` | `astro check` (strict TS) |
+| `npm run test` | Vitest — pure helpers in `src/lib/*.test.ts`, `worker/slugs.test.js` |
+| `npm run ci` | lint + check + test + build |
+
+GitHub Actions: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs `npm run ci` on push/PR to `main`.
 
 ### Key files
 
 | File | Role |
 |------|------|
 | `astro.config.mjs` | `site`, `output: "static"`, Tailwind Vite plugin, `/api` + `/media` → `:8787` |
-| `wrangler.toml` | Worker name, assets, D1 `DB`, R2 `MEDIA`, `run_worker_first` |
-| `worker.js` | Fetch router + search/profile + asset rewrite |
+| `wrangler.toml` | Worker name, assets, D1 `DB`, R2 `MEDIA`, `run_worker_first`, `[cache]` |
+| `public/_headers` | Static asset Cache-Control (copied into `dist/` on build) |
+| `worker.js` | Fetch router + search/profile + asset rewrite + asset cache headers |
 | `worker/auth.js` | Magic link, session, member profile put/submit |
 | `worker/admin.js` | Admin queue / approve / reject |
 | `worker/media.js` | Cover/avatar upload + quota guard + `/media/*` serve |
 | `worker/gallery.js` | Gallery upload + CRUD (Free/Pro caps) |
+| `eslint.config.js` | Flat ESLint (Astro + typescript-eslint) |
+| `vitest.config.ts` | Node Vitest for `src/**/*.test.ts`, `worker/**/*.test.js` |
 | `db/schema.sql` | D1 users, sessions, magic_links, profiles, media quota |
 | `db/migrations/004_media_quota.sql` | `media_objects` + `media_quota` tables |
 | `db/seed.sql` / `seed-auth.sql` | Mock profiles + demo member/admin |

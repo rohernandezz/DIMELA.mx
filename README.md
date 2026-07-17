@@ -69,15 +69,18 @@ DIMELA.mx/
 │   ├── layouts/BaseLayout.astro
 │   ├── components/            # Header, FilterBar, ProfileCard, …
 │   └── styles/global.css      # Tailwind entry + theme tokens
-├── public/                    # fonts, favicon, emitted profiles.json
+├── public/                    # fonts, favicon, emitted profiles.json, `_headers`
 ├── worker.js                  # Cloudflare entry (API + assets)
 ├── worker/                    # auth, admin, media (R2)
 ├── db/                        # D1 schema + seeds
-├── wrangler.toml
+├── eslint.config.js           # ESLint (Astro + TS/JS)
+├── vitest.config.ts           # Unit tests
+├── .github/workflows/ci.yml   # lint + check + test + build
+├── wrangler.toml              # Worker + assets + D1/R2 + Workers Cache
 └── docs/                      # Product & architecture notes
 ```
 
-**Mental model:** Astro builds HTML/CSS/JS into `dist/`. The Worker serves those files and handles `/api/*` (+ `/media/*`). Client pages hydrate directory/profile data from the API.
+**Mental model:** Astro builds HTML/CSS/JS into `dist/`. The Worker serves those files and handles `/api/*` (+ `/media/*`). Client pages hydrate directory/profile data from the API. Public search/profile JSON is edge-cached via Workers Cache (`Cache-Control`); see [architecture.md](docs/architecture.md#caching).
 
 ### Location search aliases
 
@@ -89,7 +92,7 @@ To add an alias, edit `LOCATION_ALIASES` with `alias: "Canonical estado"`, using
 
 | Doc | What’s in it |
 |-----|----------------|
-| [docs/architecture.md](docs/architecture.md) | Worker routes, D1/R2, local vs prod |
+| [docs/architecture.md](docs/architecture.md) | Worker routes, caching, CI, D1/R2, local vs prod |
 | [docs/beta-launch.md](docs/beta-launch.md) | Dev/beta toggles — turn off at public launch |
 | [docs/brand.md](docs/brand.md) | Colors + Outpact type tokens |
 | [docs/product.md](docs/product.md) | Free/Pro, approval, discovery UI |
