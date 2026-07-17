@@ -171,7 +171,7 @@ body {
     @apply rounded border border-dm-offblack/10 bg-dm-offwhite/60;
   }
 
-  /** Softened dark Pro panel (editor Estilo Pro). */
+  /** Softened dark Pro panel (editor Fuentes y estilos personalizados). */
   .dm-ui-surface-pro {
     border-radius: 0.375rem;
     border: 1px solid color-mix(in oklab, var(--color-dm-pink) 45%, transparent);

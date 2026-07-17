@@ -349,12 +349,19 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
           </div>
         </section>
 
-        <section class="dm-ui-surface space-y-5 p-5" aria-labelledby="editor-gallery">
+        <section
+          class="dm-ui-surface space-y-5 p-5"
+          aria-labelledby="editor-gallery"
+          data-gallery-section
+        >
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <h2 id="editor-gallery" class="dm-ui-section-title">Galería</h2>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 id="editor-gallery" class="dm-ui-section-title">Galería</h2>
+                <span class="dm-ui-pro-badge hidden" data-gallery-pro-badge>Pro</span>
+              </div>
               <p class="dm-ui-body mt-1" data-gallery-hint>
-                Free: 1 galería, hasta 12 imágenes (3 MB c/u). Pro: hasta 5 galerías, 24 imágenes c/u (5 MB).
+                1 galería, hasta 12 imágenes (3 MB c/u).
               </p>
             </div>
             <button
@@ -378,13 +385,15 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         <section class="dm-ui-surface-pro space-y-5 p-5" aria-labelledby="editor-css" data-pro-theme-section>
           <div class="flex flex-wrap items-baseline justify-between gap-2">
             <div>
-              <h2 id="editor-css" class="dm-ui-section-title">Estilo Pro</h2>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 id="editor-css" class="dm-ui-section-title">Fuentes y estilos personalizados</h2>
+                <span class="dm-ui-pro-badge">Pro</span>
+              </div>
               <p class="dm-ui-body mt-1">
                 Fuentes (máx. 2) y CSS scoped a <code class="text-xs">.profile-card</code> y
                 <code class="text-xs">.profile-detail</code>.
               </p>
             </div>
-            <span class="dm-ui-pro-badge">Pro</span>
           </div>
           <div class="dm-ui-subsurface space-y-3 p-3" data-font-panel>
             <p class="dm-ui-facet-label">Fuentes</p>
@@ -1132,11 +1141,42 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
     return tier === "pro" ? GALLERY_LIMITS.pro : GALLERY_LIMITS.free;
   }
 
+  function syncGalleryHint(tier: string) {
+    const hint = document.querySelector<HTMLElement>("[data-gallery-hint]");
+    if (!hint) return;
+    const limits = galleryLimitsFor(tier);
+    hint.textContent =
+      tier === "pro"
+        ? `Hasta ${limits.maxGalleries} galerías, ${limits.maxImages} imágenes c/u (${limits.maxMb} MB).`
+        : `1 galería, hasta ${limits.maxImages} imágenes (${limits.maxMb} MB c/u).`;
+  }
+
+  function syncGalleryProSurface(tier: string) {
+    const section = document.querySelector<HTMLElement>("[data-gallery-section]");
+    const badge = document.querySelector<HTMLElement>("[data-gallery-pro-badge]");
+    const createBtn = document.querySelector<HTMLButtonElement>("[data-action='gallery-create']");
+    const isPro = tier === "pro";
+    if (section) {
+      section.classList.toggle("dm-ui-surface", !isPro);
+      section.classList.toggle("dm-ui-surface-pro", isPro);
+    }
+    if (badge) badge.classList.toggle("hidden", !isPro);
+    if (createBtn) {
+      createBtn.className = isPro
+        ? "rounded border border-white/20 bg-white/10 px-2.5 py-1 text-xs text-dm-offwhite transition hover:border-dm-pink/50 hover:bg-white/15 disabled:opacity-50"
+        : "dm-ui-button-small";
+    }
+  }
+
   function renderGalleries(galleries: ProfileGallery[], tier: string) {
     const root = document.querySelector<HTMLElement>("[data-gallery-root]");
     const createBtn = document.querySelector<HTMLButtonElement>("[data-action='gallery-create']");
     const limits = galleryLimitsFor(tier);
     if (!root) return;
+
+    const isPro = tier === "pro";
+    syncGalleryHint(tier);
+    syncGalleryProSurface(tier);
 
     const list =
       galleries.length > 0
@@ -1144,9 +1184,20 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         : [{ id: "", title: "Galería", images: [] as GalleryImage[] }];
 
     if (createBtn) {
-      createBtn.classList.toggle("hidden", tier !== "pro");
+      createBtn.classList.toggle("hidden", !isPro);
       createBtn.disabled = uploadsBlocked || galleries.length >= limits.maxGalleries;
     }
+
+    const countClass = isPro ? "text-[11px] text-dm-offwhite/50" : "text-[11px] text-dm-offblack/50";
+    const deleteBtnClass = isPro
+      ? "rounded border border-white/20 bg-white/10 px-2.5 py-1 text-xs text-dm-offwhite/70 transition hover:border-dm-pink/50 hover:bg-white/15"
+      : "dm-ui-button-small text-dm-offblack/60";
+    const uploadBtnClass = isPro
+      ? "rounded border border-white/20 bg-white/10 px-2.5 py-1 text-xs text-dm-offwhite transition hover:border-dm-pink/50 hover:bg-white/15 disabled:opacity-50"
+      : "dm-ui-button-small";
+    const fieldClass = isPro
+      ? `w-full min-w-[8rem] flex-1 rounded border border-white/15 bg-black/20 px-2 py-1 text-sm text-dm-offwhite outline-none focus:border-dm-pink/50`
+      : `dm-ui-field min-w-[8rem] flex-1 px-2 py-1`;
 
     root.innerHTML = list
       .map((gallery) => {
@@ -1157,24 +1208,24 @@ const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXIC
         const imgs = (gallery.images || [])
           .map(
             (img) =>
-              `<div class="group relative aspect-square overflow-hidden rounded border border-dm-offblack/15 bg-dm-blue">
+              `<div class="group relative aspect-square overflow-hidden rounded border ${isPro ? "border-white/15" : "border-dm-offblack/15"} bg-dm-blue">
               <img src="${img.url}" alt="" class="h-full w-full object-cover" loading="lazy" />
               <button type="button" class="absolute top-1 right-1 rounded bg-dm-offblack/70 px-1.5 py-0.5 text-[10px] text-white opacity-0 transition group-hover:opacity-100" data-action="gallery-delete-image" data-gallery-id="${gid}" data-image-id="${img.id}">×</button>
             </div>`,
           )
           .join("");
 
-        const canDeleteGallery = tier === "pro" && galleries.length > 1 && gallery.id;
-        const titleReadonly = !(tier === "pro" && gallery.id);
+        const canDeleteGallery = isPro && galleries.length > 1 && gallery.id;
+        const titleReadonly = !(isPro && gallery.id);
         return `<div class="dm-ui-subsurface p-3" data-gallery-panel="${gid}">
           <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <input type="text" value="${titleEsc}" class="dm-ui-field min-w-[8rem] flex-1 px-2 py-1 ${titleReadonly ? "pointer-events-none opacity-70" : ""}" data-gallery-title="${gid}" ${titleReadonly ? "readonly" : ""} />
-            <span class="text-[11px] text-dm-offblack/50">${count}/${limits.maxImages}</span>
+            <input type="text" value="${titleEsc}" class="${fieldClass} ${titleReadonly ? "pointer-events-none opacity-70" : ""}" data-gallery-title="${gid}" ${titleReadonly ? "readonly" : ""} />
+            <span class="${countClass}">${count}/${limits.maxImages}</span>
           </div>
-          <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">${imgs || `<p class="col-span-full text-xs text-dm-offblack/45">Sin imágenes aún.</p>`}</div>
+          <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">${imgs || `<p class="col-span-full text-xs ${isPro ? "text-dm-offwhite/45" : "text-dm-offblack/45"}">Sin imágenes aún.</p>`}</div>
           <div class="mt-2 flex flex-wrap gap-2">
-            <button type="button" class="dm-ui-button-small" data-action="gallery-upload" data-gallery-id="${gid}" ${atLimit || uploadsBlocked ? "disabled" : ""}>Subir imagen</button>
-            ${canDeleteGallery ? `<button type="button" class="dm-ui-button-small text-dm-offblack/60" data-action="gallery-delete" data-gallery-id="${gid}">Eliminar galería</button>` : ""}
+            <button type="button" class="${uploadBtnClass}" data-action="gallery-upload" data-gallery-id="${gid}" ${atLimit || uploadsBlocked ? "disabled" : ""}>Subir imagen</button>
+            ${canDeleteGallery ? `<button type="button" class="${deleteBtnClass}" data-action="gallery-delete" data-gallery-id="${gid}">Eliminar galería</button>` : ""}
           </div>
         </div>`;
       })

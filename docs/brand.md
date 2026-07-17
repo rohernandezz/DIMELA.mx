@@ -101,7 +101,7 @@ Two class families in `global.css` — preview both on `/brand/`.
 | Class | Use |
 |-------|-----|
 | `.dm-ui-surface` / `.dm-ui-subsurface` | White panels and nested soft panels |
-| `.dm-ui-surface-pro` | Softened dark Pro panel with pink accents (Estilo Pro editor) |
+| `.dm-ui-surface-pro` | Softened dark Pro panel with pink accents (Fuentes y estilos personalizados) |
 | `.dm-ui-profile-card`, `.dm-ui-profile-card-free`, `.dm-ui-profile-card-pro` | Directory card shell and tier variants |
 | `.dm-ui-pro-badge` | Pro badge |
 | `.dm-ui-field`, `.dm-ui-field-soft`, `.dm-ui-field-blue` | Inputs and selects |
