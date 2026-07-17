@@ -45,6 +45,6 @@ export function servicioFromSlug(slug: string): Servicio | undefined {
   return SERVICIO_BY_SLUG.get(slug);
 }
 
-export function servicioSlug(servicio: Servicio): string {
+export function servicioSlug(servicio: string): string {
   return toSlug(servicio);
 }

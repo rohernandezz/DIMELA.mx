@@ -53,7 +53,7 @@ async function saveGalleries(env, userId, galleries) {
     .run();
 }
 
-function ensureDefaultGallery(galleries, tier) {
+function ensureDefaultGallery(galleries, _tier) {
   if (galleries.length) return galleries;
   return [{ id: newId(), title: DEFAULT_GALLERY_TITLE, images: [] }];
 }

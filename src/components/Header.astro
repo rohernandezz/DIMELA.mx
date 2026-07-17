@@ -280,7 +280,7 @@ const betaLinks = [
 
       toggle.addEventListener("click", (e) => {
         e.stopPropagation();
-        setOpen(panel.hidden);
+        setOpen(Boolean(panel.hidden));
       });
 
       panel.addEventListener("click", (e) => e.stopPropagation());

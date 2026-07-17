@@ -625,7 +625,7 @@ const servicios = [...SERVICIOS];
     mobileToggle?.addEventListener("click", (e) => {
       e.stopPropagation();
       const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
-      const open = panel?.hidden ?? true;
+      const open = Boolean(panel?.hidden ?? true);
       setMobileFiltersOpen(root, open);
     });
 

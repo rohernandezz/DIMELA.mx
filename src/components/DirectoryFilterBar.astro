@@ -1207,7 +1207,7 @@ const servicios = [...SERVICIOS];
       (e) => {
         e.stopPropagation();
         const panel = root.querySelector<HTMLElement>("[data-mobile-filters]");
-        const willOpen = panel?.hidden ?? true;
+        const willOpen = Boolean(panel?.hidden ?? true);
         setMobileFiltersOpen(root, willOpen, { fromUser: true });
       },
       { signal },

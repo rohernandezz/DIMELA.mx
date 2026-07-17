@@ -36,7 +36,7 @@ export function scopeCustomCss(slug: string, css: string): string {
     if (!trimmed) return match;
     const scoped = trimmed
       .split(",")
-      .map((sel) => scopeSelector(scope, sel.trim()))
+      .map((sel: string) => scopeSelector(scope, sel.trim()))
       .join(", ");
     return `${brace} ${scoped} {`;
   });

@@ -33,6 +33,12 @@
     "dev:all": "npx --yes concurrently -k -n api,web -c cyan,magenta \"npm run dev:api\" \"npm run dev\"",
     "preview": "astro preview",
     "astro": "astro",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ci": "npm run lint && npm run check && npm run test && npm run build",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
@@ -44,8 +50,16 @@
     "astro": "^7.0.9"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@tailwindcss/vite": "^4.1.16",
+    "@types/node": "^26.1.1",
+    "@typescript-eslint/parser": "^8.64.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-astro": "^1.7.0",
     "tailwindcss": "^4.1.16",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.64.0",
+    "vitest": "^3.2.7",
     "wrangler": "^4.111.0"
   }
 }

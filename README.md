@@ -43,6 +43,10 @@ Demo logins (after D1 seed): member `romina@tortilla.studio` → `/editar/` · a
 | `npm run dev:all` | API + Astro together |
 | `npm run build` | Emit profiles + build → `dist/` |
 | `npm run preview` | Preview production build locally |
+| `npm run lint` | ESLint (Astro + TS/JS) |
+| `npm run check` | Astro/TypeScript type check |
+| `npm run test` | Vitest unit tests |
+| `npm run ci` | lint + check + test + build |
 | `npm run deploy` | Build + `wrangler deploy` |
 | `npm run db:migrate:local` / `:remote` | Apply D1 schema |
 | `npm run db:migrate:media:local` / `:remote` | Apply media quota tables |
