@@ -15,13 +15,22 @@
   --color-dm-blue: #e8f2fb;
   --color-dm-blue-strong: #cde7fe;
   --color-dm-green: #d9f7d9;
+  --color-dm-red: #e82525;
   /* Wide enough for 4 directory columns on large screens */
   --max-width-dm-page: 96rem;
 }
 
 html {
   font-family: var(--font-sans);
+  /* Never synthesize missing bold/italic faces. See docs/brand.md. */
+  font-synthesis: none;
   --dm-page-px: 1rem;
+}
+
+/* Until a real italic face ships, do not slant em/i. */
+em,
+i {
+  font-style: normal;
 }
 
 @media (min-width: 640px) {

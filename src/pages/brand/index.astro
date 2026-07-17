@@ -54,6 +54,14 @@ const colors = [
     text: "text-dm-offblack",
     border: "border-dm-offblack/20",
   },
+  {
+    token: "dm-red",
+    hex: "#e82525",
+    role: "Errors — validation, required fields",
+    swatch: "bg-dm-red",
+    text: "text-dm-offwhite",
+    border: "border-dm-red/40",
+  },
 ] as const;
 ---
 
@@ -178,6 +186,57 @@ const colors = [
           </ul>
         </div>
       </div>
+    </section>
+
+    <!-- Content sample -->
+    <section class="space-y-4" aria-labelledby="brand-content">
+      <div>
+        <h2 id="brand-content" class="text-xl tracking-wide">Content sample</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          Headings, body, and inline elements as they read on a page
+        </p>
+      </div>
+      <article class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-6 shadow-sm">
+        <h1 class="text-3xl font-bold tracking-wide sm:text-4xl">
+          Letras con raíz mexicana
+        </h1>
+        <p class="text-sm leading-relaxed text-dm-offblack/75">
+          Lettering, caligrafía y tipografía hechas en México. Cada trazo cuenta una historia —
+          desde rótulos de mercado hasta familias tipográficas completas para
+          <a href="#" class="underline underline-offset-2 hover:text-dm-offblack">marcas y editoriales</a>.
+        </p>
+
+        <h2 class="border-t border-dm-offblack/10 pt-5 text-2xl font-bold tracking-wide">
+          El oficio del trazo
+        </h2>
+        <p class="text-sm leading-relaxed text-dm-offblack/75">
+          Boceto, revisión, kerning y pruebas en contexto real. Un proceso que empieza con
+          escucha y termina con archivos listos para producción. El detalle importa — y también
+          la intención detrás de cada curva.
+        </p>
+
+        <h3 class="text-lg font-semibold">Servicios frecuentes</h3>
+        <ul class="list-disc space-y-1 pl-5 text-sm leading-relaxed text-dm-offblack/75">
+          <li>Logotipos y lettering a la medida</li>
+          <li>Familias tipográficas para texto y display</li>
+          <li>Murales y rotulación en gran formato</li>
+        </ul>
+
+        <h3 class="text-lg font-semibold">Proceso</h3>
+        <ol class="list-decimal space-y-1 pl-5 text-sm leading-relaxed text-dm-offblack/75">
+          <li>Brief y referencias</li>
+          <li>Bocetos y dirección</li>
+          <li>Digitalización y entrega</li>
+        </ol>
+
+        <blockquote class="border-l-2 border-dm-pink pl-4 text-sm leading-relaxed text-dm-offblack/60">
+          “La letra es dibujo antes que texto — primero se mira, después se lee.”
+        </blockquote>
+
+        <p class="text-xs text-dm-offblack/60">
+          Meta line · Ciudad de México · <code class="rounded bg-dm-offwhite px-1 py-0.5 text-[11px] text-dm-offblack">code sample</code>
+        </p>
+      </article>
     </section>
 
     <!-- Header strip -->
@@ -461,6 +520,60 @@ const colors = [
           >
             Acento
           </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Errors & validation -->
+    <section class="space-y-4" aria-labelledby="brand-errors">
+      <div>
+        <h2 id="brand-errors" class="text-xl tracking-wide">Errors & validation</h2>
+        <p class="mt-1 text-sm text-dm-offblack/60">
+          <code>dm-red</code> for validation — inline hints, required fields, invalid inputs
+        </p>
+      </div>
+      <div class="space-y-5 rounded-md border border-dm-offblack/15 bg-white p-5 shadow-sm">
+        <div>
+          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Inline messages
+          </p>
+          <div class="space-y-1.5">
+            <p class="text-sm text-dm-red">Campo obligatorio.</p>
+            <p class="text-xs text-dm-red">Ingresa un correo válido.</p>
+            <p class="text-sm font-medium text-dm-red">Máximo 8 etiquetas.</p>
+          </div>
+        </div>
+
+        <div class="border-t border-dm-offblack/10 pt-5">
+          <label
+            for="brand-error-field"
+            class="mb-1.5 block text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
+          >
+            Nombre <span class="text-dm-red">*</span>
+          </label>
+          <input
+            id="brand-error-field"
+            type="text"
+            value=""
+            aria-invalid="true"
+            aria-describedby="brand-error-msg"
+            class="w-full rounded border border-dm-red bg-white px-3 py-2 text-sm text-dm-offblack outline-none focus:border-dm-red focus:ring-1 focus:ring-dm-red/40"
+          />
+          <p id="brand-error-msg" class="mt-1.5 text-xs text-dm-red">
+            Campo obligatorio — escribe tu nombre.
+          </p>
+        </div>
+
+        <div class="border-t border-dm-offblack/10 pt-5">
+          <p class="mb-2 text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
+            Error banner
+          </p>
+          <p
+            class="rounded border border-dm-red/40 bg-dm-red/10 px-3 py-2 text-sm text-dm-red"
+            role="alert"
+          >
+            No se pudo guardar. Revisa los campos marcados.
+          </p>
         </div>
       </div>
     </section>

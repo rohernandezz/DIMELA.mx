@@ -1,5 +1,8 @@
 /**
  * TipTap bio editor for /editar/ (client-only).
+ *
+ * Bold/italic marks are off: never synthesize missing faces (docs/brand.md).
+ * Toolbar keeps a disabled Itálicas control until a real italic face ships.
  */
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
@@ -22,6 +25,8 @@ export function mountBioEditor(options: {
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
+        bold: false,
+        italic: false,
       }),
       Link.configure({
         openOnClick: false,
@@ -57,8 +62,6 @@ export function bindBioToolbar(toolbar: HTMLElement, editor: Editor) {
     btn.addEventListener("click", () => {
       const cmd = btn.dataset.bioCmd;
       const chain = editor.chain().focus();
-      if (cmd === "bold") chain.toggleBold().run();
-      if (cmd === "italic") chain.toggleItalic().run();
       if (cmd === "h2") chain.toggleHeading({ level: 2 }).run();
       if (cmd === "paragraph") chain.setParagraph().run();
       if (cmd === "bullet") chain.toggleBulletList().run();

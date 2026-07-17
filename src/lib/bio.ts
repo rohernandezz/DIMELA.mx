@@ -1,10 +1,12 @@
 /**
  * Bio HTML from TipTap — sanitize for display, plain text for cards/search.
+ * Strip strong/em/b/i: never rely on synthesized bold/italic (docs/brand.md).
  */
 
 export function sanitizeBioHtml(html: string): string {
   return String(html || "")
     .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+    .replace(/<\/?(?:strong|b|em|i)(?:\s[^>]*)?>/gi, "")
     .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "");
 }
 

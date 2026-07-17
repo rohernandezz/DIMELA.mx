@@ -4,6 +4,9 @@
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { MEXICO_ESTADOS } from "../../data/taxonomy";
+
+const OUTSIDE_MEXICO = "Fuera de México";
+const estadosMexico = MEXICO_ESTADOS.filter((estado) => estado !== OUTSIDE_MEXICO);
 ---
 
 <BaseLayout
@@ -121,6 +124,11 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
             Salir
           </button>
         </div>
+        <p
+          class="hidden rounded border border-dm-red/40 bg-dm-red/10 px-3 py-2 text-sm text-dm-red"
+          data-editor-error
+          role="alert"
+        ></p>
         <p class="hidden text-sm text-dm-offblack/55" data-editor-toast role="status"></p>
       </header>
 
@@ -134,14 +142,16 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
           <div class="grid gap-4 sm:grid-cols-2">
             <label class="block space-y-1.5 sm:col-span-2">
               <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-                >Nombre</span
+                >Nombre <span data-required-mark="name" class="text-dm-red" aria-hidden="true">*</span></span
               >
               <input
                 type="text"
                 name="name"
                 data-field="name"
+                aria-describedby="field-error-name"
                 class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
               />
+              <p id="field-error-name" class="hidden text-xs text-dm-red" data-field-error="name"></p>
             </label>
             <p class="sm:col-span-2 text-[11px] text-dm-offblack/55" data-profile-slug hidden>
               URL del perfil: <span class="font-mono text-dm-offblack/70" data-profile-slug-value></span>
@@ -155,8 +165,14 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
                 name="website"
                 data-field="website"
                 placeholder="https://"
+                aria-describedby="field-error-website"
                 class="w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
               />
+              <p
+                id="field-error-website"
+                class="hidden text-xs text-dm-red"
+                data-field-error="website"
+              ></p>
             </label>
           </div>
         </section>
@@ -168,15 +184,21 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
           </div>
           <label class="block space-y-1.5">
             <span class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase"
-              >Ubicación</span
+              >Ubicación <span data-required-mark="estado" class="text-dm-red" aria-hidden="true">*</span></span
             >
             <select
               name="estado"
               data-field="estado"
+              aria-describedby="field-error-estado"
               class="w-full rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-offblack/50"
             >
-              {MEXICO_ESTADOS.map((estado) => <option value={estado}>{estado}</option>)}
+              <option value="">Selecciona una ubicación…</option>
+              <option disabled>────────</option>
+              <option value={OUTSIDE_MEXICO}>{OUTSIDE_MEXICO}</option>
+              <option disabled>────────</option>
+              {estadosMexico.map((estado) => <option value={estado}>{estado}</option>)}
             </select>
+            <p id="field-error-estado" class="hidden text-xs text-dm-red" data-field-error="estado"></p>
           </label>
           <fieldset>
             <legend
@@ -202,12 +224,15 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
               class="flex flex-wrap gap-1 border-b border-dm-offblack/10 bg-dm-offwhite px-2 py-1.5"
               data-bio-toolbar
             >
-              <button type="button" data-bio-cmd="bold" aria-label="Negritas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-xs font-bold leading-none" aria-hidden="true">B</span>
-                <span>Negritas</span>
-              </button>
-              <button type="button" data-bio-cmd="italic" aria-label="Itálicas" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
-                <span class="w-4 shrink-0 text-center text-xs italic leading-none" aria-hidden="true">I</span>
+              <button
+                type="button"
+                data-bio-cmd="italic"
+                aria-label="Itálicas (próximamente)"
+                title="Itálicas — próximamente (requiere cara italic real; no sintetizar)"
+                disabled
+                class="inline-flex cursor-not-allowed items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px] text-dm-offblack/40 opacity-50"
+              >
+                <span class="w-4 shrink-0 text-center text-xs leading-none" aria-hidden="true">I</span>
                 <span>Itálicas</span>
               </button>
               <button type="button" data-bio-cmd="h2" aria-label="Título" class="inline-flex items-center gap-1.5 rounded border border-dm-offblack/15 bg-white px-2 py-1 text-[11px]">
@@ -266,7 +291,9 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
                   </button>
                 </div>
               </div>
-              <p class="text-[11px] text-dm-offblack/50">JPEG, PNG, WebP o GIF · máx. 5 MB</p>
+              <p class="text-[11px] text-dm-offblack/50">
+                Sugerido: 1600×1000 px (16:10) · JPEG, PNG, WebP o GIF · máx. 5 MB
+              </p>
             </div>
             <div class="space-y-2">
               <p class="text-[10px] font-semibold tracking-wide text-dm-offblack/45 uppercase">
@@ -290,7 +317,9 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
                   Subir avatar
                 </button>
               </div>
-              <p class="text-[11px] text-dm-offblack/50">JPEG, PNG, WebP o GIF · máx. 2 MB · recorte circular</p>
+              <p class="text-[11px] text-dm-offblack/50">
+                Sugerido: 512×512 px · JPEG, PNG, WebP o GIF · máx. 2 MB · recorte circular
+              </p>
             </div>
           </div>
           <input
@@ -456,12 +485,139 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
 
   let bio: BioEditor | null = null;
 
-  function toast(message: string) {
-    const el = document.querySelector<HTMLElement>("[data-editor-toast]");
+  const FIELD_OK =
+    "w-full rounded border border-dm-offblack/20 bg-white px-3 py-2 text-sm outline-none focus:border-dm-offblack/50";
+  const FIELD_ERR =
+    "w-full rounded border border-dm-red bg-white px-3 py-2 text-sm text-dm-offblack outline-none focus:border-dm-red focus:ring-1 focus:ring-dm-red/40";
+  const SELECT_OK =
+    "w-full rounded border border-dm-offblack/20 bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-offblack/50";
+  const SELECT_ERR =
+    "w-full rounded border border-dm-red bg-dm-blue/40 px-3 py-2 text-sm outline-none focus:border-dm-red focus:ring-1 focus:ring-dm-red/40";
+
+  function clearEditorError() {
+    const el = document.querySelector<HTMLElement>("[data-editor-error]");
+    if (!el) return;
+    el.textContent = "";
+    el.classList.add("hidden");
+  }
+
+  function showEditorError(message: string) {
+    const el = document.querySelector<HTMLElement>("[data-editor-error]");
     if (!el) return;
     el.textContent = message;
     el.classList.remove("hidden");
-    window.setTimeout(() => el.classList.add("hidden"), 2800);
+  }
+
+  function updateRequiredMark(field: "name" | "estado", valid: boolean) {
+    const mark = document.querySelector<HTMLElement>(`[data-required-mark="${field}"]`);
+    if (!mark) return;
+    if (valid) {
+      mark.textContent = "✓";
+      mark.className = "relative -top-px inline-block text-green-700";
+      mark.setAttribute("title", "Campo completo");
+    } else {
+      mark.textContent = "*";
+      mark.className = "text-dm-red";
+      mark.setAttribute("title", "Campo obligatorio");
+    }
+  }
+
+  function syncRequiredMarks() {
+    const name = document.querySelector<HTMLInputElement>('[data-field="name"]')?.value.trim() || "";
+    const estado =
+      document.querySelector<HTMLSelectElement>('[data-field="estado"]')?.value.trim() || "";
+    updateRequiredMark("name", Boolean(name));
+    updateRequiredMark("estado", Boolean(estado));
+  }
+
+  function clearFieldError(field: string) {
+    const input = document.querySelector<HTMLElement>(`[data-field="${field}"]`);
+    const msg = document.querySelector<HTMLElement>(`[data-field-error="${field}"]`);
+    if (msg) {
+      msg.textContent = "";
+      msg.classList.add("hidden");
+    }
+    if (!input) return;
+    input.removeAttribute("aria-invalid");
+    if (input instanceof HTMLSelectElement) {
+      input.className = SELECT_OK;
+    } else {
+      input.className = FIELD_OK;
+    }
+    if (field === "name" || field === "estado") syncRequiredMarks();
+  }
+
+  function setFieldError(field: string, message: string) {
+    const input = document.querySelector<HTMLElement>(`[data-field="${field}"]`);
+    const msg = document.querySelector<HTMLElement>(`[data-field-error="${field}"]`);
+    if (msg) {
+      msg.textContent = message;
+      msg.classList.remove("hidden");
+    }
+    if (!input) return;
+    input.setAttribute("aria-invalid", "true");
+    if (input instanceof HTMLSelectElement) {
+      input.className = SELECT_ERR;
+    } else {
+      input.className = FIELD_ERR;
+    }
+    if (field === "name" || field === "estado") updateRequiredMark(field, false);
+  }
+
+  function clearAllFieldErrors() {
+    clearEditorError();
+    for (const field of ["name", "estado", "website"]) clearFieldError(field);
+  }
+
+  function isValidWebsite(raw: string): boolean {
+    const trimmed = raw.trim();
+    if (!trimmed) return true;
+    try {
+      const withProto = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+      const u = new URL(withProto);
+      return Boolean(u.hostname.includes("."));
+    } catch {
+      return false;
+    }
+  }
+
+  /** Client-side checks before save/submit. Returns false if invalid. */
+  function validateProfileForm(): boolean {
+    clearAllFieldErrors();
+    const body = readForm();
+    const name = String(body.name || "").trim();
+    const estado = String(body.estado || "").trim();
+    const website = String(body.website || "").trim();
+    let ok = true;
+
+    if (!name) {
+      setFieldError("name", "Campo obligatorio.");
+      ok = false;
+    }
+    if (!estado) {
+      setFieldError("estado", "Campo obligatorio.");
+      ok = false;
+    }
+    if (website && !isValidWebsite(website)) {
+      setFieldError("website", "Ingresa una URL válida (ej. https://sitio.com).");
+      ok = false;
+    }
+
+    if (!ok) {
+      showEditorError("Revisa los campos marcados.");
+      document.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
+    }
+    return ok;
+  }
+
+  function toast(message: string, kind: "ok" | "error" = "ok") {
+    const el = document.querySelector<HTMLElement>("[data-editor-toast]");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.toggle("text-dm-red", kind === "error");
+    el.classList.toggle("text-dm-offblack/55", kind !== "error");
+    el.classList.remove("hidden");
+    window.setTimeout(() => el.classList.add("hidden"), 3200);
   }
 
   type Claimable = { slug: string; name: string; estado: string; status: string };
@@ -504,7 +660,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo reclamar.");
+      toast(data.error || "No se pudo reclamar.", "error");
       return;
     }
     toast("Perfil reclamado.");
@@ -516,9 +672,11 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     const form = document.querySelector<HTMLFormElement>("[data-profile-editor]");
     if (!form) return;
 
+    clearAllFieldErrors();
+
     const name = profile?.name || "";
     const slug = profile?.slug || "";
-    const estado = profile?.estado || "Ciudad de México";
+    const estado = profile?.estado || "";
     const website = profile?.website || "";
     const description = profile?.description || "";
     const customCss = profile?.customCss || "";
@@ -535,6 +693,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     set("estado", estado);
     set("website", website);
     set("customCss", customCss);
+    syncRequiredMarks();
 
     const slugEl = document.querySelector<HTMLElement>("[data-profile-slug]");
     const slugVal = document.querySelector<HTMLElement>("[data-profile-slug-value]");
@@ -765,7 +924,11 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     };
   }
 
-  async function saveDraft() {
+  async function saveDraft(): Promise<boolean> {
+    if (!validateProfileForm()) {
+      toast("Completa los campos requeridos.", "error");
+      return false;
+    }
     const body = readForm();
     const res = await fetch("/api/me/profile", {
       method: "PUT",
@@ -775,24 +938,34 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo guardar.");
-      return;
+      const msg = data.error || "No se pudo guardar.";
+      showEditorError(msg);
+      if (/nombre/i.test(msg)) setFieldError("name", "Campo obligatorio.");
+      if (/ubicaci/i.test(msg)) setFieldError("estado", "Campo obligatorio.");
+      toast(msg, "error");
+      return false;
     }
+    clearAllFieldErrors();
     fillProfile(data.profile);
     toast("Guardado en D1.");
+    return true;
   }
 
   async function submitReview() {
-    await saveDraft();
+    const saved = await saveDraft();
+    if (!saved) return;
     const res = await fetch("/api/me/profile/submit", {
       method: "POST",
       credentials: "same-origin",
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo enviar.");
+      const msg = data.error || "No se pudo enviar.";
+      showEditorError(msg);
+      toast(msg, "error");
       return;
     }
+    clearAllFieldErrors();
     fillProfile(data.profile);
     toast("Enviado a revisión.");
   }
@@ -852,7 +1025,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     const familyInput = document.querySelector<HTMLInputElement>("[data-font-family]");
     const family = familyInput?.value.trim() || "";
     if (!family) {
-      toast("Escribe el nombre CSS de la fuente.");
+      toast("Escribe el nombre CSS de la fuente.", "error");
       return;
     }
     setUploadBusy(true);
@@ -864,14 +1037,14 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
       const res = await fetch("/api/me/profile/font", { method: "POST", credentials: "same-origin", body });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        toast(data.error || "No se pudo subir la fuente.");
+        toast(data.error || "No se pudo subir la fuente.", "error");
         return;
       }
       fillProfile(data.profile);
       if (familyInput) familyInput.value = "";
       toast("Fuente subida.");
     } catch {
-      toast("API no disponible.");
+      toast("API no disponible.", "error");
     } finally {
       setUploadBusy(false);
     }
@@ -886,7 +1059,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo quitar la fuente.");
+      toast(data.error || "No se pudo quitar la fuente.", "error");
       return;
     }
     fillProfile(data.profile);
@@ -895,11 +1068,11 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
 
   function pickFontUpload() {
     if (currentTier !== "pro") {
-      toast("Fuentes personalizadas solo en Pro.");
+      toast("Fuentes personalizadas solo en Pro.", "error");
       return;
     }
     if (currentFonts.length >= FONT_LIMITS.maxFonts) {
-      toast(`Máximo ${FONT_LIMITS.maxFonts} fuentes.`);
+      toast(`Máximo ${FONT_LIMITS.maxFonts} fuentes.`, "error");
       return;
     }
     const input = document.querySelector<HTMLInputElement>("[data-font-input]");
@@ -1014,7 +1187,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo renombrar la galería.");
+      toast(data.error || "No se pudo renombrar la galería.", "error");
       return;
     }
     fillProfile(data.profile);
@@ -1032,7 +1205,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo crear la galería.");
+      toast(data.error || "No se pudo crear la galería.", "error");
       return;
     }
     fillProfile(data.profile);
@@ -1049,7 +1222,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo eliminar.");
+      toast(data.error || "No se pudo eliminar.", "error");
       return;
     }
     fillProfile(data.profile);
@@ -1066,7 +1239,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
-      toast(data.error || "No se pudo eliminar la imagen.");
+      toast(data.error || "No se pudo eliminar la imagen.", "error");
       return;
     }
     fillProfile(data.profile);
@@ -1075,7 +1248,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
 
   function pickGalleryUpload(galleryId: string) {
     if (uploadsBlocked) {
-      toast("Límite de almacenamiento alcanzado.");
+      toast("Límite de almacenamiento alcanzado.", "error");
       return;
     }
     pendingGalleryId = galleryId && galleryId !== "pending" ? galleryId : "";
@@ -1102,14 +1275,14 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        toast(data.error || "No se pudo subir.");
+        toast(data.error || "No se pudo subir.", "error");
         return;
       }
       fillProfile(data.profile);
       if (data.quota) applyMediaQuota(data.quota);
       toast("Imagen agregada a la galería.");
     } catch {
-      toast("API no disponible.");
+      toast("API no disponible.", "error");
     } finally {
       setUploadBusy(false);
     }
@@ -1140,7 +1313,7 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
 
   function pickUpload(kind: "cover" | "avatar") {
     if (uploadsBlocked) {
-      toast("Límite de almacenamiento alcanzado. Contacta al equipo DIMELA.");
+      toast("Límite de almacenamiento alcanzado. Contacta al equipo DIMELA.", "error");
       return;
     }
     const input = document.querySelector<HTMLInputElement>("[data-upload-input]");
@@ -1164,14 +1337,14 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        toast(data.error || "No se pudo subir la imagen.");
+        toast(data.error || "No se pudo subir la imagen.", "error");
         return;
       }
       fillProfile(data.profile);
       if (data.quota) applyMediaQuota(data.quota);
       toast(kind === "cover" ? "Portada actualizada." : "Avatar actualizado.");
     } catch {
-      toast("API no disponible. Usa `wrangler dev` (proxy /api).");
+      toast("API no disponible. Usa `wrangler dev` (proxy /api).", "error");
     } finally {
       setUploadBusy(false);
     }
@@ -1186,14 +1359,14 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
       }
       if (!res.headers.get("content-type")?.includes("json")) {
         if (res.status >= 500) {
-          toast("API con error. Usa npm run dev:all (Astro + wrangler).");
+          toast("API con error. Usa npm run dev:all (Astro + wrangler).", "error");
         }
         setView("login");
         return;
       }
       const data = await res.json();
       if (!data.ok) {
-        if (data.error) toast(data.error);
+        if (data.error) toast(data.error, "error");
         setView("login");
         return;
       }
@@ -1273,6 +1446,23 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
       editorForm.addEventListener("submit", (e) => {
         e.preventDefault();
         void saveDraft();
+      });
+      editorForm.addEventListener("input", (e) => {
+        const t = e.target as HTMLElement;
+        const field = t.getAttribute?.("data-field");
+        if (field === "name" || field === "website" || field === "estado") {
+          clearFieldError(field);
+          clearEditorError();
+        }
+        if (field === "name" || field === "estado") syncRequiredMarks();
+      });
+      editorForm.addEventListener("change", (e) => {
+        const t = e.target as HTMLElement;
+        if (t.getAttribute?.("data-field") === "estado") {
+          clearFieldError("estado");
+          clearEditorError();
+          syncRequiredMarks();
+        }
       });
       document.querySelectorAll<HTMLElement>("[data-action]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -1393,7 +1583,6 @@ import { MEXICO_ESTADOS } from "../../data/taxonomy";
     padding-left: 0.85rem;
     border-left: 3px solid color-mix(in oklab, var(--color-dm-offblack) 22%, transparent);
     color: color-mix(in oklab, var(--color-dm-offblack) 72%, transparent);
-    font-style: italic;
   }
   .tiptap p {
     margin: 0.35rem 0;

@@ -15,6 +15,21 @@ Canonical tokens live in `src/styles/global.css` (`@theme`). Use Tailwind classe
 
 Outpact is the Tortilla / DIMELA display-sans used across the product — brand lockups, UI chrome, and body. Prefer weight + tracking (e.g. logo `tracking-wide`, facet labels `uppercase` + `tracking-wide`) over introducing a second family.
 
+### Never synthesize missing faces
+
+Browsers must **not** fake bold or italic when a font does not provide that face.
+
+| Rule | Implementation |
+|------|----------------|
+| No synthetic bold / italic | `font-synthesis: none` on `html` in `global.css` |
+| No italic presentation by default | `em, i { font-style: normal; }` until a real italic face exists |
+| Bio editor | TipTap `bold` / `italic` marks disabled; sanitize strips `<strong>` / `<b>` / `<em>` / `<i>` tags (keeps text) |
+| Italics (later) | Toolbar **Itálicas** button stays in `/editar/` but **disabled** until we ship a real italic face + re-enable TipTap italic |
+
+**Do not** use browser-faked bold for hierarchy on custom / Pro fonts. Use a weight the file actually contains (Outpact VF exposes 100–900), or size / color / tracking.
+
+When italics return: load an italic face (or VF italic axis), then re-enable TipTap italic and the toolbar button — still keep `font-synthesis: none`.
+
 ## Colors
 
 | Token | Hex | Tailwind | Role |
@@ -25,6 +40,7 @@ Outpact is the Tortilla / DIMELA display-sans used across the product — brand 
 | **Blue** | `#e8f2fb` | `dm-blue` | Soft fill — card cover fallback, ubicación control |
 | **Blue strong** | `#cde7fe` | `dm-blue-strong` | Stronger blue in gradients / covers |
 | **Green** | `#d9f7d9` | `dm-green` | Accent (available; use sparingly) |
+| **Red** | `#e82525` | `dm-red` | Errors — validation, required fields |
 
 ### Surfaces in practice
 
@@ -35,6 +51,7 @@ Outpact is the Tortilla / DIMELA display-sans used across the product — brand 
 | Cards / filter shell | White (`bg-white`) on off-white page; borders `border-dm-offblack/15`–`/35` |
 | Selected filter chips | `bg-dm-offblack` + `text-dm-offwhite` |
 | Interactive accent | Pink fill + off-black text; hover often flips to off-black + white |
+| Errors | `text-dm-red`, invalid borders `border-dm-red`, banners `bg-dm-red/10` |
 
 Opacity modifiers (`/15`, `/45`, `/60`, …) are part of the system for hierarchy — prefer those over new greys.
 
@@ -50,7 +67,12 @@ Opacity modifiers (`/15`, `/45`, `/60`, …) are part of the system for hierarch
   --color-dm-blue: #e8f2fb;
   --color-dm-blue-strong: #cde7fe;
   --color-dm-green: #d9f7d9;
+  --color-dm-red: #e82525;
+}
+
+html {
+  font-synthesis: none; /* never fake bold/italic */
 }
 ```
 
-Update this doc when tokens change.
+Update this doc when tokens or type rules change.
